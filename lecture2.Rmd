@@ -1,0 +1,458 @@
+---
+title: 'Lecture 2: Atomic Data Types/Vectors'
+author: "Wim R.M. Cardoen, PhD"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+urlcolor: red
+---
+R can be summarized in three principles (John M. Chambers, 2016)
+
+* $\texttt{Everything that exists in R is an \textbf{object}.}$
+* $\texttt{Everything that happens in R is a \textbf{function} call.}$
+* $\texttt{\textbf{Interfaces} to other languages are a part of R.}$
+
+\newpage
+
+# R Objects 
+
+* An object in R is (internally) represented as a pair: (**symbol**, **value**).
+* A **symbol** is assigned a **value** by the use of an arrow pointing to the left ($\textcolor{blue}{\textbf{<-}}$).
+* There are $\textbf{less favored}$ ways:
+  * A simple equality sign ($\textcolor{blue}{\textbf{=}}$).
+  * Using the $\textcolor{blue}{\textbf{assign()}}$ function.
+  
+## Examples 
+
+* Clean up the global environment i.e. remove all objects from the current R environment.\newline
+  $\textcolor{green}{\textbf{STRONGLY RECOMMENDED!}}$
+
+```{r}
+rm(list=ls())
+ls()
+```
+
+$\newline$
+
+* $\textbf{preferred}$ way to assign variables
+```{r}
+x <- 5.0 
+x
+```
+
+$\newline$
+
+* alternative 1: mainly used to assign default function arguments
+```{r}
+y = 5.0 
+y
+
+mysamplevariance <- function(x, av=0){
+  
+  n <- length(x)
+  if(n>1){
+      return(1.0/(n-1)*sum((x-av)^2))
+  }
+  else{
+      stop("ERROR:: Dividing by zero (n==1) || (n==0) ")
+  }  
+}
+
+x <- rnorm(10)
+mysamplevariance(x)
+mysamplevariance(x,mean(x))
+var(x)
+```
+
+$\newline$
+
+* alternative 2: even less used
+
+```{r}
+assign("z", 5.0) 
+z
+```
+
+$\newline$
+
+* functions are objects
+```{r}
+f <- mean
+f
+val <- f(1:10)
+val
+```
+
+\newpage
+# Atomic Data Types 
+
+$\texttt{Nothing exists except atoms and empty space; everything else is opinion. (Democritos)}\newline$
+
+* R has the following 6 $\textcolor{blue}{\textbf{atomic}}$ data types:
+
+  * logical (i.e. boolean)
+  * integer
+  * double
+  * character (i.e. string)
+  * complex
+  * raw (i.e. byte)
+
+The latter 2 types (i.e. complex and especially raw) are less common.
+
+The $\textcolor{blue}{\textbf{typeof()}}$ 
+function determines the **INTERNAL** storage/type of an R object.
+
+```{r, echo=FALSE, results='hide'}
+# Clean up env.
+rm(list=ls())
+ls()
+```
+
+## Examples
+
+* boolean/logical values: either $\textcolor{blue}{\textbf{TRUE}}$ or $\textcolor{blue}{\textbf{FALSE}}$
+
+```{r echo=TRUE}
+x1 <- TRUE
+x1
+typeof(x1)
+```
+
+$\newline$
+
+* integer values ($\in \, \mathbb{Z}$): 
+
+```{r echo=TRUE}
+x2 <- 3L
+x2  
+typeof(x2)
+```
+
+$\newline$
+
+* double (precision) values:
+
+```{r echo=TRUE}
+x3 <- 3.14
+x3 
+typeof(x3)
+```
+
+$\newline$
+
+* character values/strings
+
+```{r echo=TRUE}
+x4 <- "Hello world"
+x4
+typeof(x4)
+```
+
+$\newline$
+
+* complex values ($\in \, \mathbb{C}$):
+
+```{r echo=TRUE}
+x5 <- 2.0 + 3i 
+x5  
+typeof(x5)
+```
+
+\newpage
+
+# Operations on atomic data types:
+* logical operators:  $\textcolor{blue}{\textbf{==}}$, $\textcolor{blue}{\textbf{!=}}$, $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$, $\textcolor{blue}{\textbf{!}}$
+* numerical operators: $\textcolor{blue}{\textbf{+}}$, $\textcolor{blue}{\textbf{-}}$, $\textcolor{blue}{\textbf{*}}$, $\textcolor{blue}{\textbf{/}}$, $\textcolor{blue}{\textbf{\textasciicircum}}$, $\textcolor{blue}{\textbf{**}}$
+* but also:
+  * integer division: $\textcolor{blue}{\textbf{\%/\%}}$
+  * modulo operation: $\textcolor{blue}{\textbf{\%\%}}$
+  * $\textcolor{orange}{\textbf{Note}}$: matrix multiplication will be performed using $\textcolor{blue}{\textbf{\%*\%}}$
+* string manipulation: 
+  * nchar():
+  * paste()
+  * cat()
+  * sprintf()
+  * substr
+  * strsplit()
+  * $\textcolor{orange}{\textbf{Note}}$: Specialized R libraries were developed to manipulate strings e.g. $\href{https://cran.r-project.org/web/packages/stringr/index.html}{stringr}$
+* explicit casts/conversion: https://data-flair.training/blogs/r-string-manipulation/
+  * as.{logical, integer, double, character, complex}()
+* explicit tests of the type of a variable:
+  * is.{logical, integer, double, character, complex}()
+ 
+
+
+\newpage
+
+# Atomic vectors
+
+* An $\textbf{atomic}$ vector is a data structure containing 
+elements of $\textbf{only one atomic}$ data type.\newline
+Therefore, an atomic vector is $\textbf{homogeneous}$.
+* Atomic vectors are stored in a $\textbf{linear}$ fashion.
+* R does $\textbf{NOT}$ have scalars:
+    * An atomic vector of $\textbf{length 1}$ plays the role of a scalar. 
+    * Vectors of $\textbf{length 0}$ also exist (and they have some use!).
+* A $\textbf{list}$ is a vector not necessarily of the atomic type.\newline A list is also
+known as a $\textbf{recursive/generic}$ vector ($\textit{vide infra}$).
+
+## Creation of atomic vectors
+Atomic vectors can be created in a multiple ways:
+
+* Use of the $\textcolor{blue}{\textbf{vector()}}$ function.
+* Use of the $\textcolor{blue}{\textbf{c()}}$ function (**c** stands for concatenate).
+* Use of the column operator $\textcolor{blue}{\textbf{:}}$
+* Use of the $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions.
+
+The length of a vector can be retrieved using the $\textcolor{blue}{\textbf{length()}}$ function.
+
+
+```{r, echo=FALSE, results='hide'}
+rm(list=ls())
+ls()
+``` 
+
+### Examples 
+
+```{r}
+# Create empty vector (Default mode:"logical")
+x <- vector(); x
+length(x)
+typeof(x)
+```
+
+```{r}
+x <- vector(mode="complex", length=4) ;x
+length(x)
+x
+x[1] <- 4
+x
+```
+<br><br>
+
+```{r}
+# Concatenate operator
+x1 <- c(3, 2, 5.2, 7) ; x1
+x2 <- c(8, 12, 13) ; x2
+x3 <- c(x2, x1) ; x3
+x4 <- c(FALSE,TRUE,FALSE) ; x4
+x5 <- c("Hello", "Salt", "Lake", "City") ; x5
+```
+<br><br>
+
+```{r}
+# Use of the column operator
+y1 <- 1:10 ; y1
+y2 <- 5:-5 ; y2
+y3 <- 2.3:10 ; y3
+y4 <- 2.0*7:1 ; y4
+y5 <- 1:7-1 ; y5
+```
+
+<br><br>
+
+```{r}
+# The seq function
+z1 <- seq(from=1, to=15, by=3); z1
+z2 <- seq(from=-2,to=5,length=4); z2
+
+# The rep function
+z3 <- rep(c(3,2,4), time=2); z3
+z4 <- rep(c(3,2,4), each=3); z4
+z5 <- rep(c(1,7), each=2, time=3) ; z5
+length(z5)
+```
+
+## Operations on vectors: element-wise
+
+* All operations on vectors in R happen $\textbf{element by element}$ (cfr. $\textit{NumPy}$).
+* $\textcolor{blue}{\textbf{Vector Recycling}}$:
+
+  If 2 vectors of \textbf{different} lengths are involved in an operation, the \textbf{shortest vector} 
+  will be repeated until all elements of the longest vector are matched. \newline
+  A message will be sent to the stdout.
+
+### Examples  
+```{r}
+# Operations on vectors :: element-wise
+x <- -3:3; x
+y <- 1:7; y
+xy <- x*y; xy
+xpy <- x^y; xpy
+```
+<br>
+```{r}
+# R: allows recycling
+x <- 0:10
+y <- 1:2
+length(x)
+length(y)
+x
+y
+x+y
+```
+
+## Retrieving elements of vectors
+
+* Indexing: starts at $\textbf{1}$ ($\textbf{not 0}$ like C/C++, Python, Java, ....)
+  see also: $\newline$
+  \href{https://www.cs.utexas.edu/users/EWD/ewd08xx/EWD831.PDF}{Edsger Dijkstra: Why numbering should start at zero}
+* Use of vector with indices to extract values.
+* Advanced features:
+  * use of boolean values to extract values.
+  * the membership operator: $\textcolor{blue}{\textbf{\%in\%}}$.
+  * the deselect/omit operator: $\textcolor{blue}{\textbf{-}}$ 
+  * $\textcolor{blue}{\textbf{which()}}$: returns the indices for which the condition is true.
+  * $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
+    * $\textcolor{blue}{\textbf{any()}}$ : $\textcolor{blue}{\textbf{TRUE}}$ if at least $1$ value is true
+    * $\textcolor{blue}{\textbf{all()}}$ : $\textcolor{blue}{\textbf{TRUE}}$ if all values are true
+
+### Examples
+
+* Use of a simple index:
+```{r}
+x <- seq(2,100,by=15)
+x[4]
+x[1]
+```
+
+
+$\newline\newline$
+
+* Select several indices at once using vectors:
+```{r}
+x
+x[3:5]
+x[c(1,3,5,7)]
+x[seq(1,7,by=2)]
+```
+
+
+$\newline\newline$
+
+* Extraction via booleans (i.e. retain only those values that are equal to $\textcolor{blue}{\textbf{TRUE}}$):
+```{r}
+x
+x>45
+x[x>45]
+```
+
+$\newline\newline$
+
+* Use of the $\textcolor{blue}{\textbf{\%in\%}}$ operator:
+```{r}
+x
+10 %in% x
+62 %in% x
+c(32,33,43) %in% x
+!(c(32,33,43) %in% x)
+```
+
+
+$\newline\newline$
+
+* Negate/filter out the elements with $\textbf{negative}$ indices:
+```{r}
+x
+x[-c(2,4,6)]
+z <- x[-1] - x[-length(x)]
+z
+```
+
+$\newline\newline$
+
+* The $\textcolor{blue}{\textbf{which()}}$ function returns 
+$\textbf{only those indices}$ of which the condition/expression is \textbf{true}.
+
+```{r}
+# Sample 10 numbers from N(0,1)
+vecnum <- rnorm(n=10)
+vecnum
+which(vecnum>1.0)
+```
+
+$\newline\newline$
+
+* Use of the $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
+  
+```{r}
+y <- seq(0,100,by=10)
+x
+y
+any(x<y)
+all(x[6:7]>y[2:3])
+```
+
+
+
+
+## Other topics w.r.t vectors {-}
+* Coercion (implicit & explicit) # STILL TO be done
+* Hash Table
+* Presence of NA
+
+## Alia
+* boolean vector vs unique value
+
+
+## Matrices & Arrays {-}
+* Attributes
+* Matrices & arrays
+* Matrix multiplication
+
+#### Exercises 3 {-}
+
+* Special types:
+  * Factors
+  * Date
+  * Time
+* NA, NaN, NULL  
+* Logical operators:
+  * && vs. &.
+  * || vs. |.
+  * xor()
+  
+  
+
+## Other topics on Data structures {-}
+* List
+* Dataframe & Tibble
+* IO (read.csv, read.file)
+
+* Names
+* Subsetting, [[]] vs. []
+
+
+## Conditionals & Loops {-}
+* if, else, else if switch and elseif
+* for
+* while
+* repeat
+* return() 
+
+## Environments {-}
+* search(), attach, detach
+* library
+
+## Functions {-}
+* lexical scoping
+* simple functions
+* args(), formals()
+* default arg, ... 
+* lazy evaluation
+* closure
+* anonymous functions
+* make your own operators
+* loop functions: {l,s,m}apply, split
+
+## Capita selecta {-}
+* profiling, debugging
