@@ -1,0 +1,85 @@
+\documentclass[10pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel} % Language to be used
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{cite}  % Package to cite multiple references at once
+\usepackage{url}
+\usepackage{hyperref}
+\usepackage[usenames,dvipsnames]{xcolor}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{enumitem} 
+\usepackage{mathpazo}
+\usepackage[stable]{footmisc}
+
+\urlstyle{same} 
+
+
+\lstset{
+  basicstyle=\ttfamily,
+  language=python,
+  tabsize=4,
+  frame=single,
+  showstringspaces=false,
+  showspaces=false,
+  showtabs=false,
+  captionpos=b,
+  breaklines=true,
+  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
+  keywordstyle=\color{RoyalBlue},      % keyword style
+  commentstyle=\color{ForestGreen},   % comment style
+  stringstyle=\color{BrickRed}
+}
+
+\hypersetup{%
+  colorlinks=true,    % hyperlinks will be black
+  linkcolor=green,% hyperlink text will be green
+  linkbordercolor=red,% hyperlink borders will be red
+  pdfborderstyle={/S/U/W 1}% border style will be underline of width 1pt
+}
+
+% Parameters to the margins
+\setlength{\topmargin}{-0.50in}
+\setlength{\oddsidemargin}{-0.25in}
+\setlength{\evensidemargin}{-0.25in}
+\setlength{\textwidth}{7.0in}
+\setlength{\textheight}{9.00in}
+
+% Here is where all the new theorem environments are defined.
+% Their use is described in the text.
+\newtheorem{prop}{Proposition}
+\newtheorem{thm}{Theorem}[section]
+\newtheorem{lem}[thm]{Lemma}
+\newtheorem*{Zorn}{Zorn's Lemma}
+
+% Use a new style for definitions
+\theoremstyle{definition}
+\newtheorem{dfn}{Definition}
+
+% Use a new style for remarks
+\theoremstyle{remark}
+\newtheorem*{rmk}{Remark}
+
+\title{\centering{Intro to R}}
+
+\author{Wim R.\,M.\, Cardoen \& Brett Milash\\
+        Center for High-Performance Computing\\
+	University of Utah}
+
+
+\begin{document}
+\date{\today}
+\maketitle
+\thispagestyle{empty}
+% ----------------------------------------------------------------
+\pagestyle{plain}
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\renewcommand \thesection{\Roman{section}}
+
+\include{content}
+
+\end{document}

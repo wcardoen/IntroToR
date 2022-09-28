@@ -1,5 +1,5 @@
 # IntroToR
-Material for the Intro To R Class 
+Intro To R Class 
 
 Author: Wim R.M. Cardoen
 
