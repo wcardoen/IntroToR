@@ -34,7 +34,7 @@ R can be summarized in three principles (John M. Chambers, 2016)
 ## Examples 
 
 * Clean up the global environment i.e. remove all objects from the current R environment.\newline
-  $\textcolor{green}{\textbf{STRONGLY RECOMMENDED!}}$
+  $\textcolor{orange}{\texttt{Recommended!}}$
 
 ```{r}
 rm(list=ls())
@@ -556,26 +556,57 @@ $\textcolor{red}{\textbf{Still to be developed!}}\newline$
 * || vs. |.
 * xor()
 
-$\newline$
+\newpage
 
 # Matrices & Arrays
+
+Matrices and arrays are $\textbf{homogeneous atomic vectors}$ with$\newline$
+an $\textbf{extra}$ attribute: dimension
+
+By default, the elements are stored in a $\textbf{column-major}$ fashion. (cfr. $\textbf{Fortran}$).$\newline$
+However, we can store the elements in $\textbf{row-major}$ order (cfr. $\textbf{C}$) as well.
+
+## Creation of matrices
+
+Matrices can be created in different ways:
+
+* use of the $\textcolor{blue}{\textbf{matrix()}}$ function
+* use of $\textcolor{blue}{\textbf{rbind()}}$/$\textcolor{blue}{\textbf{cbind()}}$
+* set the $\textcolor{blue}{\textbf{attributes()}}$ of a vector
+* special functions like e.g. $\textcolor{blue}{\textbf{diag()}}$
+
+### Examples
+
+## Operations on matrices
+
+* Being in essence a vector, operations like $\textcolor{blue}{\textbf{*,/, +}}$
+  happpen element-wise.
+* There are also specialized functions:
+  * $\textcolor{blue}{\textbf{rowMeans()}}$, $\textcolor{blue}{\textbf{colMeans()}}$: row and column means
+  * $\textcolor{blue}{\textbf{\%*\%}}$: matrix multiplication
+  * linear algebra functions, e.g.:
+    * inversion
+    * det
+    * transpose
+    * eigen
+    * ...
+
+## Retrieving elements of matrices
+
+## Hash Tables
+
+\newpage
+
+# Other types
+
 * Attributes
-* Matrices & arrays
-* Matrix multiplication
-
-## Other
-
 * Special types:
   * Factors
   * Date
   * Time
-* NA, NaN, NULL  
-* Logical operators:
-  
-  
+* NA, NaN, NULL
 
-
-\newpage  
+\newpage
 
 ## Other topics on Data structures {-}
 * List
