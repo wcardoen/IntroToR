@@ -15,6 +15,9 @@ output:
     - hyperref
 urlcolor: violet
 ---
+
+\newpage
+
 R can be summarized in three principles (John M. Chambers, 2016)
 
 * $\texttt{Everything that exists in R is an \textbf{object}.}$
@@ -93,9 +96,10 @@ val
 ```
 
 \newpage
-# Atomic Data Types
 
-$\texttt{Nothing exists except atoms and empty space; everything else is opinion. (Democritos)}\newline$
+$\texttt{"Nothing exists except atoms and empty space; everything else is opinion". (Democritos)}$
+
+# Atomic Data Types
 
 ## The core/atomic data types
 * R has the following 6 $\textcolor{blue}{\textbf{atomic}}$ data types:
@@ -557,6 +561,10 @@ $\textcolor{red}{\textbf{Still to be developed!}}\newline$
 * xor()
 
 \newpage
+
+$\texttt{"It is my experience that proofs involving matrices can be}\newline
+ \texttt{shortened by 50\% if one throws the matrices out" (Emil Artin)}$
+
 
 # Matrices & Arrays
 
