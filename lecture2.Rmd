@@ -1,5 +1,5 @@
 ---
-title: 'Lecture 2: Atomic Data Types/Vectors'
+title: 'Lecture 2: Atomic Data Types/Homogeneous vectors'
 author: "Wim R.M. Cardoen, PhD"
 output:
   pdf_document:
@@ -13,7 +13,7 @@ output:
     - amsmath
     - xcolor
     - hyperref
-urlcolor: red
+urlcolor: violet
 ---
 R can be summarized in three principles (John M. Chambers, 2016)
 
@@ -93,10 +93,11 @@ val
 ```
 
 \newpage
-# Atomic Data Types 
+# Atomic Data Types
 
 $\texttt{Nothing exists except atoms and empty space; everything else is opinion. (Democritos)}\newline$
 
+## The core/atomic data types
 * R has the following 6 $\textcolor{blue}{\textbf{atomic}}$ data types:
 
   * logical (i.e. boolean)
@@ -117,7 +118,7 @@ rm(list=ls())
 ls()
 ```
 
-## Examples
+### Examples
 
 * boolean/logical values: either $\textcolor{blue}{\textbf{TRUE}}$ or $\textcolor{blue}{\textbf{FALSE}}$
 
@@ -169,28 +170,87 @@ typeof(x5)
 
 \newpage
 
-# Operations on atomic data types:
-* logical operators:  $\textcolor{blue}{\textbf{==}}$, $\textcolor{blue}{\textbf{!=}}$, $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$, $\textcolor{blue}{\textbf{!}}$
-* numerical operators: $\textcolor{blue}{\textbf{+}}$, $\textcolor{blue}{\textbf{-}}$, $\textcolor{blue}{\textbf{*}}$, $\textcolor{blue}{\textbf{/}}$, $\textcolor{blue}{\textbf{\textasciicircum}}$, $\textcolor{blue}{\textbf{**}}$
-* but also:
+## Operations on atomic data types
+* $\textbf{logical}$ operators:  $\textcolor{blue}{\textbf{==}}$, $\textcolor{blue}{\textbf{!=}}$, $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$, $\textcolor{blue}{\textbf{!}}$
+* $\textbf{numerical}$ operators: $\textcolor{blue}{\textbf{+}}$, $\textcolor{blue}{\textbf{-}}$, $\textcolor{blue}{\textbf{*}}$, $\textcolor{blue}{\textbf{/}}$, $\textcolor{blue}{\textbf{\textasciicircum}}$, $\textcolor{blue}{\textbf{**}}$ (same as the caret), but also:
   * integer division: $\textcolor{blue}{\textbf{\%/\%}}$
   * modulo operation: $\textcolor{blue}{\textbf{\%\%}}$
   * $\textcolor{orange}{\textbf{Note}}$: matrix multiplication will be performed using $\textcolor{blue}{\textbf{\%*\%}}$
-* string manipulation: 
-  * nchar():
-  * paste()
-  * cat()
-  * sprintf()
-  * substr
-  * strsplit()
+* $\textbf{character/string}$ manipulation: 
+  * $\textcolor{blue}{\textbf{nchar()}}$:
+  * $\textcolor{blue}{\textbf{paste()}}$:
+  * $\textcolor{blue}{\textbf{cat()}}$:
+  * $\textcolor{blue}{\textbf{sprintf()}}$:
+  * $\textcolor{blue}{\textbf{substr()}}$:
+  * $\textcolor{blue}{\textbf{strsplit()}}$:
   * $\textcolor{orange}{\textbf{Note}}$: Specialized R libraries were developed to manipulate strings e.g. $\href{https://cran.r-project.org/web/packages/stringr/index.html}{stringr}$
-* explicit casts/conversion: https://data-flair.training/blogs/r-string-manipulation/
-  * as.{logical, integer, double, character, complex}()
-* explicit tests of the type of a variable:
-  * is.{logical, integer, double, character, complex}()
+* explicit $\textbf{cast}$/conversion: https://data-flair.training/blogs/r-string-manipulation/
+  * $\textcolor{blue}{\textbf{as.\{logical, integer, double, complex, character\}()}}$
+* explicit $\textbf{test}$ of the type of a variable:
+  * $\textcolor{blue}{\textbf{is.\{logical, integer, double, complex, character\}()}}$
+  
+### Examples
+
+* Logical operators:
+```{R, echo=TRUE}
+x <-3 
+y <-7
+(x<=3) &&(y==7)
+!(y<7)
+```
  
+$\newline$
 
+* Mathematical operations
+```{R, echo=TRUE}
+2**4
+7%%4
+7/4
+7%/%4
+```
+ 
+$\newline$ 
+ 
+* String operations
+```{R, echo=TRUE}
+s <- "Hello"
+nchar(s)
+news <- paste(s,"World")
+news
+sprintf("My new string:%20s\n", news)
+city <- "Witwatersrand"
+substr(city,4,8)
+```
+ 
+$\newline$ 
 
+* Conversion and testing of types
+```{R, echo=TRUE}
+s <- "Hello World"
+is.character(s)
+```
+
+$\newline$
+
+```{R, echo=TRUE}
+s1 <- "-500"
+is.character(s1)
+```
+
+$\newline$
+```{R, echo=TRUE}
+s2 <- as.double(s1)
+is.character(s2)
+is.double(s2)
+```
+
+$\newline$
+```{R, echo=TRUE}
+s3 <- as.complex(s2)
+s3
+sqrt(s3)
+```
+ 
 \newpage
 
 # Atomic vectors
@@ -223,52 +283,72 @@ ls()
 
 ### Examples 
 
-```{r}
-# Create empty vector (Default mode:"logical")
-x <- vector(); x
+* use of the $\textcolor{blue}{\textbf{vector()}}$ function:
+```{r echo=TRUE}
+x <- vector()  # Empty vector (Default:'logical')
+x
 length(x)
 typeof(x)
 ```
 
+$\newline$
+
 ```{r}
-x <- vector(mode="complex", length=4) ;x
+x <- vector(mode="complex", length=4) 
+x
 length(x)
 x
 x[1] <- 4
 x
 ```
-<br><br>
 
+* use of the $\textcolor{blue}{\textbf{c()}}$ function:
 ```{r}
-# Concatenate operator
-x1 <- c(3, 2, 5.2, 7) ; x1
-x2 <- c(8, 12, 13) ; x2
-x3 <- c(x2, x1) ; x3
-x4 <- c(FALSE,TRUE,FALSE) ; x4
-x5 <- c("Hello", "Salt", "Lake", "City") ; x5
-```
-<br><br>
-
-```{r}
-# Use of the column operator
-y1 <- 1:10 ; y1
-y2 <- 5:-5 ; y2
-y3 <- 2.3:10 ; y3
-y4 <- 2.0*7:1 ; y4
-y5 <- 1:7-1 ; y5
+x1 <- c(3, 2, 5.2, 7) 
+x1
+x2 <- c(8, 12, 13) 
+x2
+x3 <- c(x2, x1) 
+x3
+x4 <- c(FALSE,TRUE,FALSE) 
+x4
+x5 <- c("Hello", "Salt", "Lake", "City") 
+x5
 ```
 
-<br><br>
+$\newline$
+
+* use of the column operator:
+```{r}
+y1 <- 1:10 
+y1
+y2 <- 5:-5 
+y2
+y3 <- 2.3:10 
+y3
+y4 <- 2.0*7:1 
+y4
+y5 <- 1:7-1 
+y5
+```
+
+* $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions
+```{r}
+z1 <- seq(from=1, to=15, by=3)
+z1
+z2 <- seq(from=-2,to=5,length=4) 
+z2
+```
+
+$\newline$
 
 ```{r}
-# The seq function
-z1 <- seq(from=1, to=15, by=3); z1
-z2 <- seq(from=-2,to=5,length=4); z2
-
-# The rep function
-z3 <- rep(c(3,2,4), time=2); z3
-z4 <- rep(c(3,2,4), each=3); z4
-z5 <- rep(c(1,7), each=2, time=3) ; z5
+z3 <- rep(c(3,2,4), time=2)
+z3
+z4 <- rep(c(3,2,4), each=3)
+z4
+z5 <- rep(c(1,7), each=2, time=3) 
+z5
 length(z5)
 ```
 
@@ -283,15 +363,19 @@ length(z5)
 
 ### Examples  
 ```{r}
-# Operations on vectors :: element-wise
-x <- -3:3; x
-y <- 1:7; y
-xy <- x*y; xy
-xpy <- x^y; xpy
+x <- -3:3
+x
+y <- 1:7
+y
+xy <- x*y
+xy
+xpy <- x^y
+xpy
 ```
-<br>
+
+$\newline$
+
 ```{r}
-# R: allows recycling
 x <- 0:10
 y <- 1:2
 length(x)
@@ -325,8 +409,7 @@ x[4]
 x[1]
 ```
 
-
-$\newline\newline$
+$\newline$
 
 * Select several indices at once using vectors:
 ```{r}
@@ -336,8 +419,7 @@ x[c(1,3,5,7)]
 x[seq(1,7,by=2)]
 ```
 
-
-$\newline\newline$
+$\newline$
 
 * Extraction via booleans (i.e. retain only those values that are equal to $\textcolor{blue}{\textbf{TRUE}}$):
 ```{r}
@@ -346,7 +428,7 @@ x>45
 x[x>45]
 ```
 
-$\newline\newline$
+$\newline$
 
 * Use of the $\textcolor{blue}{\textbf{\%in\%}}$ operator:
 ```{r}
@@ -357,8 +439,7 @@ c(32,33,43) %in% x
 !(c(32,33,43) %in% x)
 ```
 
-
-$\newline\newline$
+$\newline$
 
 * Negate/filter out the elements with $\textbf{negative}$ indices:
 ```{r}
@@ -368,7 +449,7 @@ z <- x[-1] - x[-length(x)]
 z
 ```
 
-$\newline\newline$
+$\newline$
 
 * The $\textcolor{blue}{\textbf{which()}}$ function returns 
 $\textbf{only those indices}$ of which the condition/expression is \textbf{true}.
@@ -380,7 +461,7 @@ vecnum
 which(vecnum>1.0)
 ```
 
-$\newline\newline$
+$\newline$
 
 * Use of the $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
   
@@ -393,23 +474,96 @@ all(x[6:7]>y[2:3])
 ```
 
 
+## Hash tables 
+ 
+A $\textbf{hash table}$ is a data structure which implements an associative array or dictionary.
+It is an abstract data which maps data to keys.
+
+* There are several ways to create one:
+  * Map names to an existing vector
+  * Add names when creating the vector
+* To remove the map, map the names to NULL
 
 
-## Other topics w.r.t vectors {-}
-* Coercion (implicit & explicit) # STILL TO be done
-* Hash Table
-* Presence of NA
+### Examples
 
-## Alia
-* boolean vector vs unique value
+* Creation of 2 independent vectors
+```{R echo=TRUE}
+capitals <- c("Albany", "Providence", "Hartford", "Boston", "Montpelier", "Concord", "Augusta")
+states <- c("NY", "RI", "CT", "MA", "VT", "NH", "ME")
+capitals
+states
+capitals[3]
+```
+$\newline$
+
+* Create the hashtable/dictionary
+```{R echo=TRUE}
+# Method 1
+names(capitals) <- states
+capitals
+capitals["MA"]
+names(capitals)
+```
+
+$\newline$
+
+```{R echo=TRUE}
+# Method 2
+phonecode <- c("801"="SLC", "206"="Seattle", "307"="Wyoming")
+phonecode
+phonecode["801"]
+```
+
+$\newline$
+
+* Dissociate the 2 vectors
+```{R echo=TRUE}
+names(capitals) <- NULL
+capitals
+```
 
 
-## Matrices & Arrays {-}
+## NA (Not Available values)
+
+* $\textcolor{blue}{\textbf{NA}}$: stands for 'Not Available'/Missing values
+* has length of $1$.
+* $\textcolor{blue}{\textbf{is.na()}}$: test all elements of a vector for NA values.
+* some functions e.g. $\textcolor{blue}{\textbf{mean()}}$ return NA when an instance of NA is present.
+
+### Examples
+
+* Check of the NA availability
+```{R, echo=TRUE}
+x <- c(NA, 1, 2, NA)
+is.na(x)
+```
+
+$\newline$
+
+* Functions on a vector containing NA
+```{R, echo=TRUE}
+mean(x)
+mean(x, na.rm=TRUE)
+```
+
+## Alia 
+
+$\textcolor{red}{\textbf{Still to be developed!}}\newline$
+
+* boolean: Vector operators vs. unique value
+* && vs. &.
+* || vs. |.
+* xor()
+
+$\newline$
+
+# Matrices & Arrays
 * Attributes
 * Matrices & arrays
 * Matrix multiplication
 
-#### Exercises 3 {-}
+## Other
 
 * Special types:
   * Factors
@@ -417,11 +571,11 @@ all(x[6:7]>y[2:3])
   * Time
 * NA, NaN, NULL  
 * Logical operators:
-  * && vs. &.
-  * || vs. |.
-  * xor()
   
   
+
+
+\newpage  
 
 ## Other topics on Data structures {-}
 * List
