@@ -1,7 +1,8 @@
 ---
 title: 'Lecture 1 : Overview of R'
-author: "Wim R. M. Cardoen"
-date: "08/09/2022"
+author: 'Wim R.M. Cardoen'
+email:  'wcardoen@gmail.com'
+
 output:
   pdf_document:
     highlight: tango
@@ -138,7 +139,7 @@ getwd()
 ```
 
 ## Creation of variables
-```{R,eval=FALSE}
+```{R,eval=FALSE,results='asis'}
 x1 <- 5
 x1
 typeof(x1)

@@ -1,6 +1,6 @@
 ---
 title: 'Lecture 2: Atomic Data Types/Homogeneous vectors'
-author: "Wim R.M. Cardoen, PhD"
+author: "Wim R.M. Cardoen"
 output:
   pdf_document:
     highlight: tango
@@ -39,7 +39,7 @@ R can be summarized in three principles (John M. Chambers, 2016)
 * Clean up the global environment i.e. remove all objects from the current R environment.\newline
   $\textcolor{orange}{\texttt{Recommended!}}$
 
-```{r}
+```{R, echo=TRUE, comment=''}
 rm(list=ls())
 ls()
 ```
@@ -47,7 +47,7 @@ ls()
 $\newline$
 
 * $\textbf{preferred}$ way to assign variables
-```{r}
+```{R, echo=TRUE, comment=''}
 x <- 5.0 
 x
 ```
@@ -55,7 +55,7 @@ x
 $\newline$
 
 * alternative 1: mainly used to assign default function arguments
-```{r}
+```{R, echo=TRUE, comment=''}
 y = 5.0 
 y
 
@@ -88,7 +88,7 @@ z
 $\newline$
 
 * functions are objects
-```{r}
+```{R, echo=TRUE, comment=''}
 f <- mean
 f
 val <- f(1:10)
@@ -126,7 +126,7 @@ ls()
 
 * boolean/logical values: either $\textcolor{blue}{\textbf{TRUE}}$ or $\textcolor{blue}{\textbf{FALSE}}$
 
-```{r echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x1 <- TRUE
 x1
 typeof(x1)
