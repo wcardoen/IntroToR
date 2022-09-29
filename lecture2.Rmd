@@ -629,13 +629,23 @@ B
 class(B)
 ```
 
-* use of the $\textcolor{blue}{\textbf{attributes()}}$ function :
+* modifying the $\textcolor{blue}{\textbf{dim}}$ attribute.
 
-The fundamental difference between an $\texttt{R}$ vector and matrix is content
-presence of a $\textcolor{blue}{\textbf{dim}}$ attribute. 
+The $\textbf{fundamental}$ difference between an $\texttt{R}$ vector and matrix is
+the presence (in the case of matrices) of a non $\texttt{NULL}$ 
+$\textcolor{blue}{\textbf{dim}}$ attribute. 
 
-to an $\texttt{R}$ matrix.
-The $\textcolor{blue}{\textbf{dim}}$ attribute of an R vector is $\texttt{NULL}$.
+We change easily convert a vector into a matrix by setting the dimensions of the vector:
+
+\begin{itemize}
+\item through the $\textcolor{blue}{\textbf{dim()}}$ function.
+\item through the $\textcolor{blue}{\textbf{attr()}}$ function.
+\end{itemize}
+
+The inverse can be done as well by setting the $\textcolor{blue}{\textbf{dim}}$ attribute 
+of matrix to $\texttt{NULL}$.
+
+### Examples
 
 ```{R, echo=TRUE}
 A <- 1:10 
@@ -647,6 +657,7 @@ dim(A)
 $\newline$
 
 ```{R, echo=TRUE}
+# Matrix
 B <- matrix(1:10,nrow=2,ncol=5,byrow=TRUE) 
 typeof(B)
 class(B)
@@ -663,15 +674,10 @@ typeof(A)
 class(A)
 ```
 
-We change easily convert a vector into matrix by setting the dimensions of the vector:
-
-\begin{itemize}
-\item through the $\textcolor{blue}{\textbf{dim()}}$ function.
-\item through the $\textcolor{blue}{\textbf{attr()}}$ function.
-\end{itemize}
+$\newline \newline$
 
 ```{R, echo=TRUE}
-# Option I:
+# OPTION I: Using the dim function transform a vector into a matrix
 dim(A) <- c(2,5)
 A
 dim(A)
@@ -680,8 +686,20 @@ class(A)
 ```
 
 $\newline$
+
 ```{R, echo=TRUE}
-# Option II: More general way
+# Converting the matrix back to a vector
+dim(A) <- NULL
+dim(A)
+typeof(A)
+class(A)
+```
+
+$\newline \newline$
+
+```{R, echo=TRUE}
+# Option II: More general way 
+# Convert vector into a matrix
 A <- 1:8
 A
 class(A)
@@ -691,22 +709,124 @@ A
 class(A)
 ```
 
+$\newline$
+
+```{R, echo=TRUE}
+# Convert matrix into a vector.
+attr(A, 'dim') <- NULL
+A
+class(A)
+```
+
+
+
 
 ## Operations on matrices
 
-* Being in essence a vector, operations like $\textcolor{blue}{\textbf{*,/, +}}$
-  happpen element-wise.
-* There are also specialized functions:
-  * $\textcolor{blue}{\textbf{rowMeans()}}$, $\textcolor{blue}{\textbf{colMeans()}}$: row and column means
-  * $\textcolor{blue}{\textbf{\%*\%}}$: matrix multiplication
-  * linear algebra functions, e.g.:
-    * inversion
-    * det
-    * transpose
-    * eigen
-    * ...
+* Operations like $\textcolor{blue}{\textbf{*,/, +}}$ happpen element-wise.
+* There are also more specialized functions:
+  * the mean over rows and columns ($\textcolor{blue}{\textbf{rowMeans()}}$, $\textcolor{blue}{\textbf{colMeans()}})$
+  * linear algebra functions ($\textcolor{blue}{\textbf{\%*\%}}$, $\textcolor{blue}{\textbf{t()}}$, ...)
+    
+### Examples
 
-## Retrieving elements of matrices
+* Operations (by $\textbf{default: element-by-element}$):
+
+```{R, echo=TRUE}
+A <- matrix(1:10, nrow=2)
+B <- matrix( seq(10, 100, by=10), nrow=2)
+A
+B
+```
+
+$\newline$
+
+```{R, echo=TRUE}
+A*B
+```
+
+$\newline$
+```{R, echo=TRUE}
+C <- matrix(rep(2,10), nrow=2)
+C**A
+```
+
+* Calculate $\textbf{row and column means}$ :
+
+```{R, echo=TRUE}
+# Means of rows and columns
+A
+rowMeans(A)
+colMeans(A)
+```
+
+* $\textbf{Matrix multiplication}$ ($\textcolor{blue}{\textbf{\%*\%}}$) :
+
+```{R, echo=TRUE}
+A <- matrix(1:6, nrow=2)
+A
+B <- matrix(seq(10,120,by=10), nrow=3)
+B
+C <- A%*%B
+C
+dim(C)
+```
+
+* $\textbf{Linear algebra}$ routines
+
+Some of the more common ones in R:
+\begin{itemize}
+ \item $\textcolor{blue}{\textbf{solve()}}$ : $\textbf{invert}$ a square matrix
+ \item $\textcolor{blue}{\textbf{diag()}}$
+    \begin{itemize}
+       \item $\textbf{extracts}$ the diagonal of a matrix when a matrix is provided.
+       \item $\textbf{creates}$ a diagonal matrix when a vector is provided.
+    \end{itemize}
+ \item $\textcolor{blue}{\textbf{eigen()}}$ : calculates the $\textbf{eigenvalues}$ and $\textbf{eigenvectors}$ of a matrix
+ \item $\textcolor{blue}{\textbf{det()}}$ : calculates the $\textbf{determinant}$ of a matrix.
+ \item $\textcolor{blue}{\textbf{t()}}$: calculates the $\textbf{transpose}$$\footnote{Can also be used for dataframes (see later)}$ of a matrix.
+\end{itemize}
+  
+```{R, echo=TRUE}
+# Invert matrix A
+A <- matrix(c(1, 3, 2, 4), ncol = 2, byrow = T)
+Ainv <- solve(A)
+Ainv %*% A
+```
+
+$\newline$
+
+```{R, echo=TRUE}
+# Create a diagonal matrix
+C <- diag(c(1,4,7))
+C
+
+# Extract the diagonal elements
+D <- matrix(1:8,nrow=4)
+D
+diag(D)
+```
+$\newline$
+
+```{R, echo=TRUE}
+# Calculate eigenvalues and eigenvectors of A
+r <- eigen(A)
+r
+# Eigenvalues
+r$values
+# Matrix with eigenvectors
+r$vectors
+# Diagonal Matrix (Similarity Transformation)
+solve(r$vectors) %*% A %*% r$vectors
+```
+
+Note that under the hood $\texttt{R}$ calls [$\texttt{BLAS}$](https://netlib.org/blas/) and [$\texttt{LAPACK}$](https://netlib.org/lapack/).
+
+```{R, echo=TRUE}
+# Find the version used of BLAS and LAPACK
+La_library()
+extSoftVersion()["BLAS"]
+```
 
 ## Hash Tables
 
