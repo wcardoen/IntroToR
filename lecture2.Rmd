@@ -585,6 +585,113 @@ Matrices can be created in different ways:
 
 ### Examples
 
+* use of the $\textcolor{blue}{\textbf{matrix()}}$ function:
+
+The $\textcolor{blue}{\textbf{matrix()}}$ function creates a matrix based on a vector.$\newline$
+By default, the elements are stored in a $\textbf{column-major}$ fashion. 
+
+The use of the flag $\texttt{byrow=TRUE}$ will store the data in a $\textbf{row-major}$ fashion.
+
+```{R, echo=TRUE}
+A <- matrix(data=1:10, nrow=2)   # Column-major (like Fortran)
+A
+
+B <- matrix(data=c(2,3,893,0.17), nrow=2, ncol=2)
+B
+```
+
+
+$\newline$
+```{R, echo=TRUE}
+C <- matrix(data=1:10, nrow=2, byrow=TRUE)   # Row-major (like C, C++)
+C
+```
+
+$\newline$
+
+* use of the $\textcolor{blue}{\textbf{rbind()}}$/$\textcolor{blue}{\textbf{cbind()}}$ functions:
+  
+  - $\textcolor{blue}{\textbf{rbind()}}$: Bind several vectors (as rows) into a matrix.
+  - $\textcolor{blue}{\textbf{cbind()}}$: Bind several vectors (as columns) into a matrix.
+  
+```{R,echo=TRUE}
+A <- rbind(1:10,11:20)  
+A
+typeof(A)
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE}
+B <- cbind(1:5,6:10,11:15)
+B
+class(B)
+```
+
+* use of the $\textcolor{blue}{\textbf{attributes()}}$ function :
+
+The fundamental difference between an $\texttt{R}$ vector and matrix is content
+presence of a $\textcolor{blue}{\textbf{dim}}$ attribute. 
+
+to an $\texttt{R}$ matrix.
+The $\textcolor{blue}{\textbf{dim}}$ attribute of an R vector is $\texttt{NULL}$.
+
+```{R, echo=TRUE}
+A <- 1:10 
+typeof(A)
+class(A)
+dim(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE}
+B <- matrix(1:10,nrow=2,ncol=5,byrow=TRUE) 
+typeof(B)
+class(B)
+dim(B)
+```  
+
+$\newline$
+```{R, echo=TRUE}
+# Vector
+A <- 1:10
+A
+dim(A) 
+typeof(A)
+class(A)
+```
+
+We change easily convert a vector into matrix by setting the dimensions of the vector:
+
+\begin{itemize}
+\item through the $\textcolor{blue}{\textbf{dim()}}$ function.
+\item through the $\textcolor{blue}{\textbf{attr()}}$ function.
+\end{itemize}
+
+```{R, echo=TRUE}
+# Option I:
+dim(A) <- c(2,5)
+A
+dim(A)
+typeof(A)
+class(A)
+```
+
+$\newline$
+```{R, echo=TRUE}
+# Option II: More general way
+A <- 1:8
+A
+class(A)
+
+attr(A,'dim') <- c(2,4)
+A
+class(A)
+```
+
+
 ## Operations on matrices
 
 * Being in essence a vector, operations like $\textcolor{blue}{\textbf{*,/, +}}$
