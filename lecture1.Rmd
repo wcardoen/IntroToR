@@ -1,7 +1,7 @@
 ---
 title: 'Lecture 1 : Overview of R'
-author: 'Wim R.M. Cardoen'
-email:  'wcardoen@gmail.com'
+author: "Wim R.M. Cardoen"
+date: "Last update: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 
 output:
   pdf_document:
@@ -90,7 +90,7 @@ $\texttt{People are trapped in history and history is trapped in them. (James Ba
   * $\textcolor{blue}{\textbf{help(??cmd)}}$
   * some keywords require quotes e.g. $\textcolor{blue}{\textbf{?'if'}}$, $\textcolor{blue}{\textbf{?'for'}}$
   
-```{r eval=FALSE}
+```{R, eval=FALSE}
 help(mean)
 ?mean()
 ??mean()

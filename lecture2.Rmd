@@ -1,6 +1,7 @@
 ---
 title: 'Lecture 2: Atomic Data Types/Homogeneous vectors'
 author: "Wim R.M. Cardoen"
+date: "Last update: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
   pdf_document:
     highlight: tango
@@ -80,7 +81,7 @@ $\newline$
 
 * alternative 2: even less used
 
-```{r}
+```{R, echo=TRUE, comment=''}
 assign("z", 5.0) 
 z
 ```
@@ -136,7 +137,7 @@ $\newline$
 
 * integer values ($\in \, \mathbb{Z}$): 
 
-```{r echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x2 <- 3L
 x2  
 typeof(x2)
@@ -146,7 +147,7 @@ $\newline$
 
 * double (precision) values:
 
-```{r echo=TRUE}
+```{R, echo=TRUE, comment=""}
 x3 <- 3.14
 x3 
 typeof(x3)
@@ -156,7 +157,7 @@ $\newline$
 
 * character values/strings
 
-```{r echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x4 <- "Hello world"
 x4
 typeof(x4)
@@ -166,7 +167,7 @@ $\newline$
 
 * complex values ($\in \, \mathbb{C}$):
 
-```{r echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x5 <- 2.0 + 3i 
 x5  
 typeof(x5)
@@ -196,7 +197,7 @@ typeof(x5)
 ### Examples
 
 * Logical operators:
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x <-3 
 y <-7
 (x<=3) &&(y==7)
@@ -206,7 +207,7 @@ y <-7
 $\newline$
 
 * Mathematical operations
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 2**4
 7%%4
 7/4
@@ -216,7 +217,7 @@ $\newline$
 $\newline$ 
  
 * String operations
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 s <- "Hello"
 nchar(s)
 news <- paste(s,"World")
@@ -229,27 +230,27 @@ substr(city,4,8)
 $\newline$ 
 
 * Conversion and testing of types
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 s <- "Hello World"
 is.character(s)
 ```
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 s1 <- "-500"
 is.character(s1)
 ```
 
 $\newline$
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 s2 <- as.double(s1)
 is.character(s2)
 is.double(s2)
 ```
 
 $\newline$
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 s3 <- as.complex(s2)
 s3
 sqrt(s3)
@@ -280,7 +281,7 @@ Atomic vectors can be created in a multiple ways:
 The length of a vector can be retrieved using the $\textcolor{blue}{\textbf{length()}}$ function.
 
 
-```{r, echo=FALSE, results='hide'}
+```{R, echo=FALSE, results='hide'}
 rm(list=ls())
 ls()
 ``` 
@@ -288,7 +289,7 @@ ls()
 ### Examples 
 
 * use of the $\textcolor{blue}{\textbf{vector()}}$ function:
-```{r echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x <- vector()  # Empty vector (Default:'logical')
 x
 length(x)
@@ -297,7 +298,7 @@ typeof(x)
 
 $\newline$
 
-```{r}
+```{R, echo=TRUE, comment=''}
 x <- vector(mode="complex", length=4) 
 x
 length(x)
@@ -307,7 +308,7 @@ x
 ```
 
 * use of the $\textcolor{blue}{\textbf{c()}}$ function:
-```{r}
+```{R, echo=TRUE, comment=''}
 x1 <- c(3, 2, 5.2, 7) 
 x1
 x2 <- c(8, 12, 13) 
@@ -323,7 +324,7 @@ x5
 $\newline$
 
 * use of the column operator:
-```{r}
+```{R, echo=TRUE, comment=''}
 y1 <- 1:10 
 y1
 y2 <- 5:-5 
@@ -337,7 +338,7 @@ y5
 ```
 
 * $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions
-```{r}
+```{R, echo=TRUE, comment=''}
 z1 <- seq(from=1, to=15, by=3)
 z1
 z2 <- seq(from=-2,to=5,length=4) 
@@ -346,7 +347,7 @@ z2
 
 $\newline$
 
-```{r}
+```{R, echo=TRUE, comment=''}
 z3 <- rep(c(3,2,4), time=2)
 z3
 z4 <- rep(c(3,2,4), each=3)
@@ -366,7 +367,7 @@ length(z5)
   A message will be sent to the stdout.
 
 ### Examples  
-```{r}
+```{R, echo=TRUE, comment=''}
 x <- -3:3
 x
 y <- 1:7
@@ -379,7 +380,7 @@ xpy
 
 $\newline$
 
-```{r}
+```{R, echo=TRUE, comment=''}
 x <- 0:10
 y <- 1:2
 length(x)
@@ -407,7 +408,7 @@ x+y
 ### Examples
 
 * Use of a simple index:
-```{r}
+```{R, echo=TRUE, comment=''}
 x <- seq(2,100,by=15)
 x[4]
 x[1]
@@ -416,7 +417,7 @@ x[1]
 $\newline$
 
 * Select several indices at once using vectors:
-```{r}
+```{R, echo=TRUE, comment=''}
 x
 x[3:5]
 x[c(1,3,5,7)]
@@ -426,7 +427,7 @@ x[seq(1,7,by=2)]
 $\newline$
 
 * Extraction via booleans (i.e. retain only those values that are equal to $\textcolor{blue}{\textbf{TRUE}}$):
-```{r}
+```{R, echo=TRUE, comment=''}
 x
 x>45
 x[x>45]
@@ -435,7 +436,7 @@ x[x>45]
 $\newline$
 
 * Use of the $\textcolor{blue}{\textbf{\%in\%}}$ operator:
-```{r}
+```{R, echo=TRUE, comment=''}
 x
 10 %in% x
 62 %in% x
@@ -446,7 +447,7 @@ c(32,33,43) %in% x
 $\newline$
 
 * Negate/filter out the elements with $\textbf{negative}$ indices:
-```{r}
+```{R, echo=TRUE, comment=''}
 x
 x[-c(2,4,6)]
 z <- x[-1] - x[-length(x)]
@@ -458,7 +459,7 @@ $\newline$
 * The $\textcolor{blue}{\textbf{which()}}$ function returns 
 $\textbf{only those indices}$ of which the condition/expression is \textbf{true}.
 
-```{r}
+```{R, echo=TRUE, comment=''}
 # Sample 10 numbers from N(0,1)
 vecnum <- rnorm(n=10)
 vecnum
@@ -469,7 +470,7 @@ $\newline$
 
 * Use of the $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
   
-```{r}
+```{R, echo=TRUE, comment=''}
 y <- seq(0,100,by=10)
 x
 y
@@ -492,7 +493,7 @@ It is an abstract data which maps data to keys.
 ### Examples
 
 * Creation of 2 independent vectors
-```{R echo=TRUE}
+```{R, echo=TRUE, comment=''}
 capitals <- c("Albany", "Providence", "Hartford", "Boston", "Montpelier", "Concord", "Augusta")
 states <- c("NY", "RI", "CT", "MA", "VT", "NH", "ME")
 capitals
@@ -502,7 +503,7 @@ capitals[3]
 $\newline$
 
 * Create the hashtable/dictionary
-```{R echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Method 1
 names(capitals) <- states
 capitals
@@ -512,7 +513,7 @@ names(capitals)
 
 $\newline$
 
-```{R echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Method 2
 phonecode <- c("801"="SLC", "206"="Seattle", "307"="Wyoming")
 phonecode
@@ -522,7 +523,7 @@ phonecode["801"]
 $\newline$
 
 * Dissociate the 2 vectors
-```{R echo=TRUE}
+```{R, echo=TRUE, comment=''}
 names(capitals) <- NULL
 capitals
 ```
@@ -538,7 +539,7 @@ capitals
 ### Examples
 
 * Check of the NA availability
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 x <- c(NA, 1, 2, NA)
 is.na(x)
 ```
@@ -546,7 +547,7 @@ is.na(x)
 $\newline$
 
 * Functions on a vector containing NA
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 mean(x)
 mean(x, na.rm=TRUE)
 ```
@@ -592,7 +593,7 @@ By default, the elements are stored in a $\textbf{column-major}$ fashion.
 
 The use of the flag $\texttt{byrow=TRUE}$ will store the data in a $\textbf{row-major}$ fashion.
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 A <- matrix(data=1:10, nrow=2)   # Column-major (like Fortran)
 A
 
@@ -602,7 +603,7 @@ B
 
 
 $\newline$
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 C <- matrix(data=1:10, nrow=2, byrow=TRUE)   # Row-major (like C, C++)
 C
 ```
@@ -614,7 +615,7 @@ $\newline$
   - $\textcolor{blue}{\textbf{rbind()}}$: Bind several vectors (as rows) into a matrix.
   - $\textcolor{blue}{\textbf{cbind()}}$: Bind several vectors (as columns) into a matrix.
   
-```{R,echo=TRUE}
+```{R, echo=TRUE, comment=''}
 A <- rbind(1:10,11:20)  
 A
 typeof(A)
@@ -623,7 +624,7 @@ class(A)
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 B <- cbind(1:5,6:10,11:15)
 B
 class(B)
@@ -647,7 +648,7 @@ of matrix to $\texttt{NULL}$.
 
 ### Examples
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 A <- 1:10 
 typeof(A)
 class(A)
@@ -656,7 +657,7 @@ dim(A)
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Matrix
 B <- matrix(1:10,nrow=2,ncol=5,byrow=TRUE) 
 typeof(B)
@@ -665,7 +666,7 @@ dim(B)
 ```  
 
 $\newline$
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Vector
 A <- 1:10
 A
@@ -676,7 +677,7 @@ class(A)
 
 $\newline \newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # OPTION I: Using the dim function transform a vector into a matrix
 dim(A) <- c(2,5)
 A
@@ -687,7 +688,7 @@ class(A)
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Converting the matrix back to a vector
 dim(A) <- NULL
 dim(A)
@@ -697,7 +698,7 @@ class(A)
 
 $\newline \newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Option II: More general way 
 # Convert vector into a matrix
 A <- 1:8
@@ -711,7 +712,7 @@ class(A)
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Convert matrix into a vector.
 attr(A, 'dim') <- NULL
 A
@@ -732,7 +733,7 @@ class(A)
 
 * Operations (by $\textbf{default: element-by-element}$):
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 A <- matrix(1:10, nrow=2)
 B <- matrix( seq(10, 100, by=10), nrow=2)
 A
@@ -741,19 +742,19 @@ B
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 A*B
 ```
 
 $\newline$
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 C <- matrix(rep(2,10), nrow=2)
 C**A
 ```
 
 * Calculate $\textbf{row and column means}$ :
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Means of rows and columns
 A
 rowMeans(A)
@@ -762,7 +763,7 @@ colMeans(A)
 
 * $\textbf{Matrix multiplication}$ ($\textcolor{blue}{\textbf{\%*\%}}$) :
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 A <- matrix(1:6, nrow=2)
 A
 B <- matrix(seq(10,120,by=10), nrow=3)
@@ -787,7 +788,7 @@ Some of the more common ones in R:
  \item $\textcolor{blue}{\textbf{t()}}$: calculates the $\textbf{transpose}$$\footnote{Can also be used for dataframes (see later)}$ of a matrix.
 \end{itemize}
   
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Invert matrix A
 A <- matrix(c(1, 3, 2, 4), ncol = 2, byrow = T)
 Ainv <- solve(A)
@@ -796,7 +797,7 @@ Ainv %*% A
 
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Create a diagonal matrix
 C <- diag(c(1,4,7))
 C
@@ -808,7 +809,7 @@ diag(D)
 ```
 $\newline$
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Calculate eigenvalues and eigenvectors of A
 r <- eigen(A)
 r
@@ -822,7 +823,7 @@ solve(r$vectors) %*% A %*% r$vectors
 
 Note that under the hood $\texttt{R}$ calls [$\texttt{BLAS}$](https://netlib.org/blas/) and [$\texttt{LAPACK}$](https://netlib.org/lapack/).
 
-```{R, echo=TRUE}
+```{R, echo=TRUE, comment=''}
 # Find the version used of BLAS and LAPACK
 La_library()
 extSoftVersion()["BLAS"]
