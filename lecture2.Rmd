@@ -1,7 +1,7 @@
 ---
 title: 'Lecture 2: Atomic Data Types/Homogeneous vectors'
 author: "Wim R.M. Cardoen"
-date: "Last update: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
   pdf_document:
     highlight: tango
@@ -255,6 +255,19 @@ s3 <- as.complex(s2)
 s3
 sqrt(s3)
 ```
+
+### Exercise
+
+* - Calculate $\log_2(10)$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{log()}}$ function
+  - Perform the inverse operation and check that you get $10$ back
+  
+* Let $z\:= 3\,+\,4i$
+  - Use $\texttt{R}$'s $\textcolor{blue}{\textbf{Re()}}$, $\textcolor{blue}{\textbf{Im()}}$ functions to extract the real and imaginary parts of z.
+  - Calculate the modulus of $z$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{Mod()}}$ function and check$\newline$ whether you the same answer 
+    using $\sqrt{ \Re(z)^2 + \Im(z)^2 }$.
+  - Calculate the argument of $z$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{Arg()}}$ function and check$\newline$ 
+    whether you have the same answer using $\arctan{\Big(\frac{\Im(z)}{\Re(z)}\Big)}$.
+
  
 \newpage
 
@@ -560,6 +573,27 @@ $\textcolor{red}{\textbf{Still to be developed!}}\newline$
 * && vs. &.
 * || vs. |.
 * xor()
+
+
+## Exercises
+
+* Use the $\textcolor{blue}{\textbf{seq()}}$ function to generate the following sequence: $\newline$
+  6 13 20 27 34 41 48
+  
+* R has the its own inversion function, $\textcolor{blue}{\textbf{rev()}}$, e.g,:$\newline$
+  ```{R, echo=TRUE,comment=''}
+  x <- seq(from=2,to=33,by=3)
+  x
+  y <- rev(x)
+  y
+  ```
+  Invert the vector x without invoking the $\textcolor{blue}{\textbf{rev()}}$ function.
+  
+* Create the following R vector using $\textbf{only}$ the $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions:$\newline$
+  -8 -8 -8 -8 0 8 8 8 16 16 16 16 16
+  
+* Create the following vector: $\newline$
+  -512  -216  -64  -8  0  8  64  216  512  1000  
 
 \newpage
 
