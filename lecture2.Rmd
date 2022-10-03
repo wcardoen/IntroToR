@@ -609,7 +609,7 @@ $\textcolor{red}{\textbf{Still to be developed!}}\newline$
      \ln(1+x)  = x-\frac{x^2}{2}+\frac{x^3}{3}-\frac{x^4}{4}+\frac{x^5}{5}-\frac{x^6}{6} +\ldots \nonumber
   \end{equation}
   
-  Calculate the sum of the first 10, 15, 20, 100 terms in the above expression to
+  Calculate the sum of the first 5, 10, 15 terms in the above expression to
   approximate $\ln(1.2)$.
   Compare with $\texttt{R}$'s value i.e.: $\textcolor{blue}{\textbf{log(1.2)}}$.
   
