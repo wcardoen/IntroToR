@@ -603,7 +603,47 @@ $\textcolor{red}{\textbf{Still to be developed!}}\newline$
   - Find if there are any integers in the vector $\texttt{x}$ which can be divided by 4 and 6
   - Find those numbers and their corresponding indices in the vector $\texttt{x}$.
   
-\newpage
+* The Taylor series for $\ln(1+x)$ is converging when $|x| <1$ and is given by:
+  \begin{equation}
+     \ln(1+x)  = x-\frac{x^2}{2}+\frac{x^3}{3}-\frac{x^4}{4}+\frac{x^5}{5}-\frac{x^6}{6} +\ldots \nonumber
+  \end{equation}
+  
+  Calculate the sum of the first 10, 15, 20 terms in the above expression to
+  approximate $\ln(1.2)$.
+  Compare with $\texttt{R}$'s value i.e.: $\textcolor{blue}{\textbf{log(1.2)}}$.
+  
+* The $\texttt{logarithmic}$ return in finance is defined as:
+  \begin{equation}
+      R_t = \ln \Big ( \frac{P_t}{P_{t-1}} \Big ) \nonumber
+  \end{equation}
+  
+  - Generate a financial time series using the following $\texttt{R}$ code:
+  ```{R, echo=TRUE,comment='', results=FALSE }
+  thecasino <- abs(rcauchy(1000))+1.E-6
+  ```
+  - Calculate the $\texttt{logarithmic return}$ for the financial time series $\texttt{thecasino}$.$\newline$
+    Your adjusted time series will be $1$ element shorter in length than the original one.$\newline$
+    Compare your result with $\textcolor{blue}{\textbf{diff(log(thecasino))}}$.
+    
+* Monte-Carlo approximation of $\pi$
+
+  Let $\texttt{S1}$ be the square spanned by the following $4$ vertices: $\{(0,0),(0,1),(1,0),(1,1)\}$.$\newline$
+  Let $\texttt{S2}$ be the first quadrant of the unit-circle $\mathcal{C}:\,x^2+y^2 =1$.$\newline$
+  
+  The ratio $\rho$ defined as:
+  \begin{equation}
+     \rho:=\frac{\mathrm{Area\;S2}}{\mathrm{Area\;S1}}= \frac{\mathrm{\#Points\;in\;S2}}{\mathrm{\#Points\;in\;S1}} \nonumber 
+  \end{equation}
+  allows us to estimate $\frac{\pi}{4}$ numerically.
+  
+  Therefore:
+  - Sample $100000$ independent $x$-coordinates from $\texttt{Unif}$.
+  - Sample $100000$ independent $y$-coordinates from $\texttt{Unif}$.
+  - Calculate an approximate value for $\pi$ using the Monte-Carlo approach.
+  
+  Note: The uniform distribution $[0,1)$ ($\texttt{Unif}$) can be sampled using $\textcolor{blue}{\textbf{runif()}}$.
+
+\newpage  
 
 $\texttt{"It is my experience that proofs involving matrices can be}\newline
  \texttt{shortened by 50\% if one throws the matrices out" (Emil Artin)}$
