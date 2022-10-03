@@ -594,7 +594,15 @@ $\textcolor{red}{\textbf{Still to be developed!}}\newline$
   
 * Create the following vector: $\newline$
   -512  -216  -64  -8  0  8  64  216  512  1000  
-
+  
+* Generate a random vector of integers using the following code:
+  ```{R, echo=TRUE,comment='', results=FALSE }
+  x <- sample(x=0:1000,size=100, replace=TRUE)
+  ```
+  - Invoke the above code to generate the vector $\texttt{x}$
+  - Find if there are any integers in the vector $\texttt{x}$ which can be divided by 4 and 6
+  - Find those numbers and their corresponding indices in the vector $\texttt{x}$.
+  
 \newpage
 
 $\texttt{"It is my experience that proofs involving matrices can be}\newline
