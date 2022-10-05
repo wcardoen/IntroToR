@@ -1107,47 +1107,11 @@ Say something about arrays.
 
 \newpage
 
-# Other types
+# Still to be done.
 
 * Attributes
 * Special types:
-  * Factors
+  * Factors/Categorical variables (to be covered in dataframes)
   * Date
   * Time
 * NA, NaN, NULL
-
-\newpage
-
-## Other topics on Data structures {-}
-* List
-* Dataframe & Tibble
-* IO (read.csv, read.file)
-
-* Names
-* Subsetting, [[]] vs. []
-
-
-## Conditionals & Loops {-}
-* if, else, else if switch and elseif
-* for
-* while
-* repeat
-* return() 
-
-## Environments {-}
-* search(), attach, detach
-* library
-
-## Functions {-}
-* lexical scoping
-* simple functions
-* args(), formals()
-* default arg, ... 
-* lazy evaluation
-* closure
-* anonymous functions
-* make your own operators
-* loop functions: {l,s,m}apply, split
-
-## Capita selecta {-}
-* profiling, debugging
