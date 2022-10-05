@@ -923,7 +923,187 @@ La_library()
 extSoftVersion()["BLAS"]
 ```
 
-## Hash Tables
+## Retrieving elements/subsetting 
+
+Matrices (and arrays) can be subsetted in different ways:
+
+* use an $\textbf{index}$ for each dimension, where the dimensions are comma-separated
+  - If an $\textbf{index}$ for a dimension is $\textbf{omitted}$: $\newline$ 
+    consider all dimensions (may lead to reduction of the dimension)
+  - $\textbf{but}$ you can use $\textcolor{blue}{\textbf{drop=FALSE}}$ to prevent dimensionality reduction.
+* use another $\textbf{vector}$ (can be either linear or a vector for each dimension)
+* by using another $\textbf{matrix}$.
+
+### Examples
+
+* Use of $\textbf{indices}$:
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:30, nrow=6, ncol=5)
+A
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+A[3,4]
+A[6,2]
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+x1 <- A[2,]
+x1
+dim(x1)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+x2 <- A[,3]
+x2
+dim(x2)
+```
+
+$\newline$
+The flag $\textcolor{blue}{\textbf{drop=FALSE}}$ can be used to prevent dimensionality reduction
+
+```{R, echo=TRUE, comment=''}
+y1 <- A[2,,drop=FALSE]
+y1
+dim(y1)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+y2 <- A[,3,drop=FALSE]
+y2
+dim(y2)
+```
+
+* Use of $\textbf{vector(s)}$:
+
+```{R, echo=TRUE, comment=''}
+A
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+x1 <- A[2:4,]
+x1
+dim(x1)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+x2 <- A[,1:3]
+x2
+dim(x2)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Using a vector for EACH dimension
+A[c(1,3),c(2,4)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Using 1 vector => Linear index
+A[c(1,3,8,10)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE),c(2,3)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE),]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Use of a linear index
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE)]
+```
+
+* Use of a $\textbf{matrix}$:
+```{R, echo=TRUE, comment=''}
+A
+```
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+mysubset <- matrix(c( 2, 1,
+                      3, 5,
+                      4, 2,
+                      6, 5), ncol=2, byrow=TRUE )
+A[mysubset]
+```
+
+## Hash tables/dictionaries
+
+We can also use hashes for matrices. We can select one or both dimensions.
+To create hashes, for:
+- rows: use $\textcolor{blue}{\textbf{rownames}}$
+- columns: use $\textcolor{blue}{\textbf{colnames}}$
+
+To remove the hash, use the $\textcolor{blue}{\textbf{NULL}}$ (like for vectors).
+
+### Examples
+```{R, echo=TRUE, comment=''}
+A1 <- c(0      ,       5471.52, 5091.57,       5392.82, 
+        5416.45,       4584.33, 4904.83,       3851.73)
+A2 <- c(5471.52,       0, 1315.28,      927.35, 
+        1505.11,        944.40, 1157.42,       1945.42)
+A3 <- c(5091.57,     1315.28,             0, 2166.00, 
+        2724.01,       1571.76,        293.52, 1240.77)
+A4 <- c(5392.82,      927.35, 2166.00,             0,        
+        577.85,  973.23, 1947.28,       2422.32)
+A5 <- c(5416.45,     1505.11, 2724.01,        577.85,             
+        0, 1366.63, 2490.97,       2838.62)
+A6 <- c(4584.33,      944.40, 1571.76,        973.23, 
+        1366.63,             0, 1290.15,       1474.26)
+A7 <- c(4904.83,     1157.42,  293.52,       1947.28, 
+        2490.97,       1290.15,             0, 1064.41)
+A8 <- c(3851.73,     1945.42, 1240.77,       2422.32, 
+        2838.62,       1474.26, 1064.41,       0)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist <- rbind(A1,A2,A3,A4,A5,A6,A7,A8)
+dist
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Adding hashes to both rows and columns 
+cities <- c("Anchorage","Atlanta","Austin","Baltimore","Boston", "Chicago", "Dallas","Denver")
+rownames(dist) <- cities
+colnames(dist) <- cities
+dist
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist["Chicago", "Denver"]
+dist["Austin", "Boston"]
+```
+
+## Arrays
+
+Say something about arrays.
+
+\newpage
+
+## Exercises
+
+* Do some slicing
+* Calculate the colSums/rowSums
+  with and without colSums
+* outer, lower and upper tridiag
+* Linear regression
+  Y = XBeta+epsilon
+  Create a model Y = 0.2 + 1.5 X + 2.5 X^2 + epsilon(0, sig=2.)
+  Choose: X from 1 to 10
+  Create matrix X
 
 \newpage
 
