@@ -1,0 +1,54 @@
+---
+title: 'Lecture 3: Control structures, environments and functions'
+author: "Wim R.M. Cardoen"
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+urlcolor: violet
+---
+
+\newpage
+
+# R Control structures
+
+* if, else, else if, switch and elseif
+* for (also seq_along)
+* while
+* repeat
+* next and break
+
+## Examples 
+
+\newpage
+
+# R environments
+## Environments {-}
+* search(), attach, detach
+* library
+
+## Examples
+
+# R Functions
+* lexical scoping
+* simple functions
+* args(), formals()
+* default arg, ...
+* lazy evaluation
+* closure
+* anonymous functions
+* make your own operators
+* loop functions: {l,s,m}apply, split
+
+## Examples
+
+

@@ -1,0 +1,33 @@
+---
+title: 'Lecture 7: Plotting in R: plot and ggplot'
+author: "Wim R.M. Cardoen"
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+urlcolor: violet
+---
+
+\newpage
+
+# The default plot function:
+
+## Examples 
+
+\newpage
+
+# ggplot2 
+
+## Examples
+
+
+
