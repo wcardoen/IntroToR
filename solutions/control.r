@@ -1,4 +1,4 @@
-# Solutions to control constructs (Lecture 3)
+# Solutions to control structures (Lecture 3)
 
 # Exercise 1::
 num1 <- 21
