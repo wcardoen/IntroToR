@@ -1,5 +1,5 @@
 # IntroToR
-Intro To R Class 
+Intro To R 
 
 Author: Wim R.M. Cardoen
 
