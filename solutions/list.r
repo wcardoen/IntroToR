@@ -31,6 +31,7 @@ res <- as.double(res)
 res[!is.na(res)]
 
 
+
 # Exercise 2:
 # ==========
 lstex2 <- list(1:10,
@@ -47,3 +48,54 @@ lstex2[[4]] <- list('a','b','c','d')
 lstex2[[3]] <- NULL
 lstex2[[1]] <- NULL
 lstex2
+
+
+
+# Exercise 3:
+# ==========
+# Auxiliary function to count the occurrence of each character in the vec
+countAux <- function(vec){
+
+  uniq_el <- unique(vec)
+
+  if(length(uniq_el)>0) {
+     count <- vector(mode="integer", length=length(uniq_el))
+     for(i in seq_along(uniq_el)){
+         count[i] <- sum(uniq_el[i] == vec)
+     }
+     names(count) <- uniq_el
+     return(count)
+  }
+  return(NULL)
+}
+
+# Count the occurrence  of
+#   a.the letters in content
+#   b.the non-letters in content
+countOccurrence <- function(content){
+
+  vec <- strsplit(content, split='')
+  vec <- tolower(vec[[1]])
+  vecLetters <- sort(vec[vec %in% letters])
+  cvecLetters <- vec[!(vec %in% letters)]
+
+  return(list(  countAlpha=countAux(vecLetters),
+                countNonAlpha=countAux(cvecLetters)))
+}
+
+# Example 1:
+# =========
+cat(sprintf("First amendment::\n"))
+l1 <- "Congress shall make no law respecting an establishment of religion,"
+l2 <- "or prohibiting the free exercise thereof;"
+l3 <- "or abridging the freedom of speech, or of the press;"
+l4 <- "or the right of the people peaceably to assemble,"
+l5 <- "and to petition the government for a redress of grievances."
+firstamend <- paste(l1,l2,l3,l4, l5, sep=" ")
+res <- countOccurrence(firstamend)
+print(res)
+
+# Example 2:
+# ---------
+res <- countOccurrence("")
+print(res)
