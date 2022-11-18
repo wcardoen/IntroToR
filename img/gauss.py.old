@@ -1,0 +1,15 @@
+import numpy as np
+from scipy.stats import norm
+import matplotlib.pyplot as plt
+
+loc = 5.0
+scale = 2.0
+
+x = np.linspace(norm.ppf(0.0025,loc=loc,scale=scale),norm.ppf(0.9975,loc=loc,scale=scale),1001)
+y = norm.pdf(x, loc=loc,scale=scale)
+yt= np.max(y)
+print(f"Max of y:{yt}")
+plt.plot(x, y, 'r-', lw=3, alpha=0.6, label='norm pdf')
+plt.ylim((0.0,0.225))
+plt.axvline(x=loc, ymin=0, ymax=yt/0.225, c='g')
+plt.show()
