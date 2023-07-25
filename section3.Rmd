@@ -405,7 +405,7 @@ cat(sprintf("AFTER call:\n"))
 x
 ```
 
-### Exercises:
+### Exercises
 
 * Write your own factorial function named $\texttt{myfactorial(n)}$.$\newline$
   The factorial function, $n!$ is defined as:

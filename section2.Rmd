@@ -673,7 +673,7 @@ mean(x)
 mean(x, na.rm=TRUE)
 ```
 
-### Exercises:
+### Exercises
 
 * A family has installed a device to monitor their daily energy consumption (in kWh).$\newline$
   When a measurement fails or is unavailable NA is recorded.
@@ -870,7 +870,9 @@ B
 class(B)
 ```
 
-* modifying the $\textcolor{blue}{\textbf{dim}}$ attribute.
+
+
+### Matrices: vectors with a non-NULL dim attribute
 
 The $\textbf{fundamental}$ difference between an $\texttt{R}$ vector and matrix is
 the presence (in the case of matrices) of a non $\texttt{NULL}$ 
@@ -886,7 +888,6 @@ We can easily convert a vector into a matrix by setting the dimensions of the ve
 The inverse can be done as well by setting the $\textcolor{blue}{\textbf{dim}}$ attribute 
 of matrix to $\texttt{NULL}$.
 
-### Examples
 
 ```{R, echo=TRUE, comment=''}
 A <- 1:10 
