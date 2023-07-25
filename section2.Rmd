@@ -1,0 +1,1635 @@
+---
+title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Part 2: Atomic Data Types - Homogeneous vectors'
+author: "Wim R.M. Cardoen"
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+bibliography: [latex/intro.bib]  
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
+urlcolor: violet
+---
+
+
+\newpage
+
+R can be summarized in $\textbf{three}$ principles (John M. Chambers, 2016)
+
+* $\texttt{Everything that exists in R is an \textbf{object}.}$
+* $\texttt{Everything that happens in R is a \textbf{function} call.}$
+* $\texttt{\textbf{Interfaces} to other languages are a part of R.}$
+
+\newpage
+
+# R Objects 
+
+* An object in R is (internally) represented as a pair: (**symbol**, **value**).
+* A **symbol** is assigned a **value** by the use of an arrow pointing to the left ($\textcolor{blue}{\textbf{<-}}$).
+* There are $\textbf{less favored}$ ways:
+  * A simple equality sign ($\textcolor{blue}{\textbf{=}}$).
+  * Using the $\textcolor{blue}{\textbf{assign()}}$ function.
+  
+## Examples 
+
+* Clean up the global environment i.e. remove all objects from the current R environment.\newline
+  $\textcolor{orange}{\texttt{Recommended!}}$
+
+```{R, echo=TRUE, comment=''}
+rm(list=ls())
+ls()
+```
+
+$\newline$
+
+* $\textbf{preferred}$ way to assign variables
+```{R, echo=TRUE, comment=''}
+x <- 5.0 
+x
+```
+
+$\newline$
+
+* alternative 1: mainly used to assign default function arguments
+```{R, echo=TRUE, comment=''}
+y = 5.0 
+y
+
+mysamplevariance <- function(x, av=0){
+  
+  n <- length(x)
+  if(n>1){
+      return(1.0/(n-1)*sum((x-av)^2))
+  }
+  else{
+      stop("ERROR:: Dividing by zero (n==1) || (n==0) ")
+  }  
+}
+
+x <- rnorm(10)
+mysamplevariance(x)
+mysamplevariance(x,mean(x))
+var(x)
+```
+
+$\newline$
+
+* alternative 2: even less used
+
+```{R, echo=TRUE, comment=''}
+assign("z", 5.0) 
+z
+```
+
+$\newline$
+
+* functions are objects
+```{R, echo=TRUE, comment=''}
+f <- mean
+f
+val <- f(1:10)
+val
+```
+
+\newpage
+
+$\texttt{"Nothing exists except atoms and empty space; everything else is opinion". (Democritos)}$
+
+# Atomic Data Types
+
+## The core/atomic data types
+* R has the following 6 $\textcolor{blue}{\textbf{atomic}}$ data types:
+
+  * logical (i.e. boolean)
+  * integer
+  * double
+  * character (i.e. string)
+  * complex
+  * raw (i.e. byte)
+
+The latter 2 types (i.e. complex and especially raw) are less common.
+
+The $\textcolor{blue}{\textbf{typeof()}}$ 
+function determines the **INTERNAL** storage/type of an R object.
+
+```{r, echo=FALSE, results='hide'}
+# Clean up env.
+rm(list=ls())
+ls()
+```
+
+### Examples
+
+* boolean/logical values: either $\textcolor{blue}{\textbf{TRUE}}$ or $\textcolor{blue}{\textbf{FALSE}}$
+
+```{R, echo=TRUE, comment=''}
+x1 <- TRUE
+x1
+typeof(x1)
+```
+
+$\newline$
+
+* integer values ($\in \, \mathbb{Z}$): 
+
+```{R, echo=TRUE, comment=''}
+x2 <- 3L
+x2  
+typeof(x2)
+```
+
+$\newline$
+
+* double (precision) values:
+
+```{R, echo=TRUE, comment=""}
+x3 <- 3.14
+x3 
+typeof(x3)
+```
+
+$\newline$
+
+* character values/strings
+
+```{R, echo=TRUE, comment=''}
+x4 <- "Hello world"
+x4
+typeof(x4)
+```
+
+$\newline$
+
+* complex values ($\in \, \mathbb{C}$):
+
+```{R, echo=TRUE, comment=''}
+x5 <- 2.0 + 3i 
+x5  
+typeof(x5)
+```
+
+\newpage
+
+## Operations on atomic data types
+* $\textbf{logical}$ operators:  $\textcolor{blue}{\textbf{==}}$, $\textcolor{blue}{\textbf{!=}}$, $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$, $\textcolor{blue}{\textbf{!}}$
+* $\textbf{numerical}$ operators: $\textcolor{blue}{\textbf{+}}$, $\textcolor{blue}{\textbf{-}}$, $\textcolor{blue}{\textbf{*}}$, $\textcolor{blue}{\textbf{/}}$, $\textcolor{blue}{\textbf{\textasciicircum}}$, $\textcolor{blue}{\textbf{**}}$ (same as the caret), but also:
+  * integer division: $\textcolor{blue}{\textbf{\%/\%}}$
+  * modulo operation: $\textcolor{blue}{\textbf{\%\%}}$
+  * $\textcolor{orange}{\textbf{Note}}$: matrix multiplication will be performed using $\textcolor{blue}{\textbf{\%*\%}}$
+* $\textbf{character/string}$ manipulation: 
+  * $\textcolor{blue}{\textbf{nchar()}}$:
+  * $\textcolor{blue}{\textbf{paste()}}$:
+  * $\textcolor{blue}{\textbf{cat()}}$:
+  * $\textcolor{blue}{\textbf{sprintf()}}$:
+  * $\textcolor{blue}{\textbf{substr()}}$:
+  * $\textcolor{blue}{\textbf{strsplit()}}$:
+  * $\textcolor{orange}{\textbf{Note}}$: Specialized R libraries were developed to manipulate strings e.g. $\href{https://cran.r-project.org/web/packages/stringr/index.html}{stringr}$
+* explicit $\textbf{cast}$/conversion: https://data-flair.training/blogs/r-string-manipulation/
+  * $\textcolor{blue}{\textbf{as.\{logical, integer, double, complex, character\}()}}$
+* explicit $\textbf{test}$ of the type of a variable:
+  * $\textcolor{blue}{\textbf{is.\{logical, integer, double, complex, character\}()}}$
+  
+### Examples
+
+* Logical operators:
+```{R, echo=TRUE, comment=''}
+x <-3 
+y <-7
+(x<=3) &&(y==7)
+!(y<7)
+```
+ 
+$\newline$
+
+* Mathematical operations
+```{R, echo=TRUE, comment=''}
+2**4
+7%%4
+7/4
+7%/%4
+```
+ 
+$\newline$ 
+ 
+* String operations
+```{R, echo=TRUE, comment=''}
+s <- "Hello"
+nchar(s)
+news <- paste(s,"World")
+news
+sprintf("My new string:%20s\n", news)
+city <- "Witwatersrand"
+substr(city,4,8)
+```
+ 
+$\newline$ 
+
+* Conversion and testing of types
+```{R, echo=TRUE, comment=''}
+s <- "Hello World"
+is.character(s)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+s1 <- "-500"
+is.character(s1)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+s2 <- as.double(s1)
+is.character(s2)
+is.double(s2)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+s3 <- as.complex(s2)
+s3
+sqrt(s3)
+```
+
+## Exercises
+
+* - Calculate $\log_2(10)$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{log()}}$ function
+  - Perform the inverse operation and check that you get $10$ back
+  
+* Let $z\:= 3\,+\,4i$
+  - Use $\texttt{R}$'s $\textcolor{blue}{\textbf{Re()}}$, $\textcolor{blue}{\textbf{Im()}}$ functions to extract the real and imaginary parts of z.
+  - Calculate the modulus of $z$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{Mod()}}$ function and check$\newline$ whether you the same answer 
+    using $\sqrt{ \Re(z)^2 + \Im(z)^2 }$.
+  - Calculate the argument of $z$ using $\texttt{R}$'s $\textcolor{blue}{\textbf{Arg()}}$ function and check$\newline$ 
+    whether you have the same answer using $\arctan{\Big(\frac{\Im(z)}{\Re(z)}\Big)}$.
+
+ 
+\newpage
+
+# Atomic vectors
+
+* An $\textbf{atomic}$ vector is a data structure containing 
+elements of $\textbf{only one atomic}$ data type.\newline
+Therefore, an atomic vector is $\textbf{homogeneous}$.
+* Atomic vectors are stored in a $\textbf{linear}$ fashion.
+* R does $\textbf{NOT}$ have scalars:
+    * An atomic vector of $\textbf{length 1}$ plays the role of a scalar. 
+    * Vectors of $\textbf{length 0}$ also exist (and they have some use!).
+* A $\textbf{list}$ is a vector not necessarily of the atomic type.\newline A list is also
+known as a $\textbf{recursive/generic}$ vector ($\textit{vide infra}$).
+
+## Creation of atomic vectors
+Atomic vectors can be created in a multiple ways:
+
+* Use of the $\textcolor{blue}{\textbf{vector()}}$ function.
+* Use of the $\textcolor{blue}{\textbf{c()}}$ function (**c** stands for concatenate).
+* Use of the column operator $\textcolor{blue}{\textbf{:}}$
+* Use of the $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions.
+
+The length of a vector can be retrieved using the $\textcolor{blue}{\textbf{length()}}$ function.
+
+
+```{R, echo=FALSE, results='hide'}
+rm(list=ls())
+ls()
+``` 
+
+### Examples 
+
+* use of the $\textcolor{blue}{\textbf{vector()}}$ function:
+```{R, echo=TRUE, comment=''}
+x <- vector()  # Empty vector (Default:'logical')
+x
+length(x)
+typeof(x)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+x <- vector(mode="complex", length=4) 
+x
+length(x)
+x
+x[1] <- 4
+x
+```
+
+* use of the $\textcolor{blue}{\textbf{c()}}$ function:
+```{R, echo=TRUE, comment=''}
+x1 <- c(3, 2, 5.2, 7) 
+x1
+x2 <- c(8, 12, 13) 
+x2
+x3 <- c(x2, x1) 
+x3
+x4 <- c(FALSE,TRUE,FALSE) 
+x4
+x5 <- c("Hello", "Salt", "Lake", "City") 
+x5
+```
+
+$\newline$
+
+* use of the column operator:
+```{R, echo=TRUE, comment=''}
+y1 <- 1:10 
+y1
+y2 <- 5:-5 
+y2
+y3 <- 2.3:10 
+y3
+y4 <- 2.0*(7:1) 
+y4
+y5 <- (1:7) - 1 
+y5
+```
+
+* $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions
+```{R, echo=TRUE, comment=''}
+z1 <- seq(from=1, to=15, by=3)
+z1
+z2 <- seq(from=-2,to=5,length=4) 
+z2
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+z3 <- rep(c(3,2,4), time=2)
+z3
+z4 <- rep(c(3,2,4), each=3)
+z4
+z5 <- rep(c(1,7), each=2, time=3) 
+z5
+length(z5)
+```
+
+### Exercises
+
+* Use the $\textcolor{blue}{\textbf{seq()}}$ function to generate the following sequence: $\newline$
+  6 13 20 27 34 41 48
+
+* Create the following R vector using $\textbf{only}$ the $\textcolor{blue}{\textbf{seq()}}$ and $\textcolor{blue}{\textbf{rep()}}$ functions:$\newline$
+  -8 -8 -8 -8 0 8 8 8 16 16 16 16 16 
+
+
+## Operations on vectors: element-wise
+
+* All operations on vectors in R happen $\textbf{element by element}$ (cfr. $\textit{NumPy}$).
+* $\textcolor{blue}{\textbf{Vector Recycling}}$:
+
+  If 2 vectors of \textbf{different} lengths are involved in an operation, the \textbf{shortest vector} 
+  will be repeated until all elements of the longest vector are matched. \newline
+  A \textit{warning} message will be sent to the stdout.
+
+### Examples  
+```{R, echo=TRUE, comment=''}
+x <- -3:3
+x
+y <- 1:7
+y
+xy <- x*y
+xy
+xpy <- x^y
+xpy
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+x <- 0:10
+y <- 1:2
+length(x)
+length(y)
+x
+y
+x+y
+```
+
+### Exercises
+
+* Create the following vector (do $\textbf{not}$ use $\textcolor{blue}{\textbf{c()}}$!): $\newline$
+  -512  -216  -64  -8  0  8  64  216  512  1000
+
+## Retrieving elements of vectors
+
+* Indexing: starts at $\textbf{1}$ ($\textbf{not 0}$ like C/C++, Python, Java, ....)
+  see also: $\newline$
+  \href{https://www.cs.utexas.edu/users/EWD/ewd08xx/EWD831.PDF}{Edsger Dijkstra: Why numbering should start at zero}
+* Use of vector with indices to extract values.
+* Advanced features:
+  * use of boolean values to extract values.
+  * the membership operator: $\textcolor{blue}{\textbf{\%in\%}}$.
+  * the deselect/omit operator: $\textcolor{blue}{\textbf{-}}$ 
+  * $\textcolor{blue}{\textbf{which()}}$: returns the indices for which the condition is true.
+  * $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
+    * $\textcolor{blue}{\textbf{any()}}$ : $\textcolor{blue}{\textbf{TRUE}}$ if at least $1$ value is true
+    * $\textcolor{blue}{\textbf{all()}}$ : $\textcolor{blue}{\textbf{TRUE}}$ if all values are true
+
+### Examples
+
+* Use of a simple index:
+```{R, echo=TRUE, comment=''}
+x <- seq(2,100,by=15)
+x
+x[4]
+x[1]
+```
+
+$\newline$
+
+* Select several indices at once using vectors:
+```{R, echo=TRUE, comment=''}
+x
+x[3:5]
+x[c(1,3,5,7)]
+x[seq(1,7,by=2)]
+```
+
+$\newline$
+
+* Extraction via booleans (i.e. retain only those values that are equal to $\textcolor{blue}{\textbf{TRUE}}$):
+```{R, echo=TRUE, comment=''}
+x
+x>45
+x[x>45]
+```
+
+$\newline$
+
+* Use of the $\textcolor{blue}{\textbf{\%in\%}}$ operator:
+```{R, echo=TRUE, comment=''}
+x
+10 %in% x
+62 %in% x
+c(32,33,43) %in% x
+!(c(32,33,43) %in% x)
+```
+
+$\newline$
+
+* Negate/filter out the elements with $\textbf{negative}$ indices:
+```{R, echo=TRUE, comment=''}
+x <- c(1,13,17,27,49,91)
+x
+x[-c(2,4,6)]
+
+z <- x[-1] - x[-length(x)]
+z
+```
+
+$\newline$
+
+* The $\textcolor{blue}{\textbf{which()}}$ function returns 
+$\textbf{only those indices}$ of which the condition/expression is \textbf{true}.
+
+```{R, echo=TRUE, comment=''}
+# Sample 10 numbers from N(0,1)
+vecnum <- rnorm(n=10)
+vecnum
+which(vecnum>1.0)
+```
+
+$\newline$
+
+* Use of the $\textcolor{blue}{\textbf{any()}}$/$\textcolor{blue}{\textbf{all()}}$ functions.
+  
+```{R, echo=TRUE, comment=''}
+y <- seq(0,100,by=10)
+x
+y
+any(x<y)
+all(x[6:7]>y[2:3])
+```
+
+### Exercises
+
+* R has the its own inversion function, $\textcolor{blue}{\textbf{rev()}}$, e.g.:$\newline$
+  ```{R, echo=TRUE,comment=''}
+  x <- seq(from=2,to=33,by=3)
+  x
+  y <- rev(x)
+  y
+  ```
+  Invert the vector x without invoking the $\textcolor{blue}{\textbf{rev()}}$ function.
+
+* The $\texttt{Taylor series}$ for $\ln(1+x)$ is converging when $|x| <1$ and is given by:
+  \begin{equation}
+     \ln(1+x)  = x-\frac{x^2}{2}+\frac{x^3}{3}-\frac{x^4}{4}+\frac{x^5}{5}-\frac{x^6}{6} +\ldots \nonumber
+  \end{equation}
+
+  Calculate the sum of the first 5, 10, 15 terms in the above expression to
+  approximate $\ln(1.2)$.
+  Compare with $\texttt{R}$'s value i.e.: $\textcolor{blue}{\textbf{log(1.2)}}$.
+
+* The $\texttt{logarithmic}$ return in finance is defined as:
+  \begin{equation}
+      R_t = \ln \Big ( \frac{P_t}{P_{t-1}} \Big ) \nonumber
+  \end{equation}
+
+  - Generate a financial time series using the following $\texttt{R}$ code:
+  ```{R, echo=TRUE,comment='', results=FALSE }
+  price <- abs(rcauchy(1000))+1.E-6
+  ```
+  - Calculate the $\texttt{logarithmic return}$ for the financial time series $\texttt{price}$.$\newline$
+    The newly created time series will be $1$ element shorter in length than the original one.$\newline$
+    Compare your result with $\textcolor{blue}{\textbf{diff(log(price))}}$.
+
+* $\texttt{Monte-Carlo}$ approximation of $\pi$
+
+  Let $\texttt{S1}$ be the square spanned by the following $4$ vertices: $\{(0,0),(0,1),(1,0),(1,1)\}$.$\newline$
+  Let $\texttt{S2}$ be the first quadrant of the unit-circle $\mathcal{C}:\,x^2+y^2 =1$.$\newline$
+
+  The ratio $\rho$ defined as:
+  \begin{equation}
+     \rho:=\frac{\mathrm{Area\;S2}}{\mathrm{Area\;S1}}= \frac{\mathrm{\#Points\;in\;S2}}{\mathrm{\#Points\;in\;S1}} \nonumber
+  \end{equation}
+  allows us to estimate $\frac{\pi}{4}$ numerically.
+
+  Therefore:
+  - Sample $100000$ independent $x$-coordinates from $\texttt{Unif}$.
+  - Sample $100000$ independent $y$-coordinates from $\texttt{Unif}$.
+  - Calculate an approximate value for $\pi$ using the Monte-Carlo approach.
+
+  Note: The uniform distribution $[0,1)$ ($\texttt{Unif}$) can be sampled using $\textcolor{blue}{\textbf{runif()}}$.
+
+
+
+## Hash tables 
+ 
+A $\textbf{hash table}$ is a data structure which implements an associative array or dictionary.
+It is an abstract data which maps data to keys.
+
+* There are several ways to create one:
+  * Map names to an existing vector
+  * Add names when creating the vector
+* To remove the map, map the names to NULL
+
+
+### Examples
+
+* Creation of 2 independent vectors
+```{R, echo=TRUE, comment=''}
+capitals <- c("Albany", "Providence", "Hartford", "Boston", "Montpelier", "Concord", "Augusta")
+states <- c("NY", "RI", "CT", "MA", "VT", "NH", "ME")
+capitals
+states
+capitals[3]
+```
+$\newline$
+
+* Create the hashtable/dictionary
+```{R, echo=TRUE, comment=''}
+# Method 1
+names(capitals) <- states
+capitals
+capitals["MA"]
+names(capitals)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Method 2
+phonecode <- c("801"="SLC", "206"="Seattle", "307"="Wyoming")
+phonecode
+phonecode["801"]
+```
+
+$\newline$
+
+* Dissociate the 2 vectors
+```{R, echo=TRUE, comment=''}
+names(capitals) <- NULL
+capitals
+```
+
+
+## NA (Not Available values)
+
+* $\textcolor{blue}{\textbf{NA}}$: stands for 'Not Available'/Missing values and has a length of $1$.$\newline$
+  There are in essence $4$ versions depending on the type:
+  - $\textcolor{blue}{\textbf{NA}}$ (logical - $\textbf{default}$)
+  - $\textcolor{blue}{\textbf{NA\_integer}}$ (integer)
+  - $\textcolor{blue}{\textbf{NA\_real}}$ (double precision)
+  - $\textcolor{blue}{\textbf{NA\_character}}$ (string)
+  
+  Under the hood, the version of NA is subjectd to $\textbf{coercion}$:$\newline$
+  $\textit{logical}$  $\rightarrow$  $\textit{integer}$  $\rightarrow$  $\textit{double}$  $\rightarrow$  $\textit{character}$
+
+* some functions e.g. $\textcolor{blue}{\textbf{mean()}}$ return (by default) NA if$\newline$
+  1 or more instances NA are present in a vector.  
+  
+* $\textcolor{blue}{\textbf{is.na()}}$: test a vector (element-wise) for NA values.$\newline$
+  $\textcolor{red}{\textbf{Do NOT use:}}$  
+   ```{R, echo=TRUE, results='hide', comment=''}
+   x == NA 
+   ```
+  $\textcolor{orange}{\textbf{but use INSTEAD:}}$
+  ```{R, echo=TRUE, results='hide', comment=''}
+  is.na(x)
+  ```
+  
+### Examples
+
+* Types of NA
+```{R, echo=TRUE, comment=''}
+x <- NA
+typeof(x)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# logical NA coerced to double precision NA
+x <- c(3.0, 5.0, NA)
+typeof(x[3])
+```
+$\newline$
+* Functions on a vector containing NA
+```{R, echo=TRUE, comment=''}
+mean(x)
+mean(x, na.rm=TRUE)
+```
+$\newline$
+* Check of the NA availability
+```{R, echo=TRUE, comment=''}
+x <- c(NA, 1, 2, NA)
+is.na(x)
+```
+
+$\newline$
+* Functions on a vector containing NA
+```{R, echo=TRUE, comment=''}
+mean(x)
+mean(x, na.rm=TRUE)
+```
+
+### Exercises:
+
+* A family has installed a device to monitor their daily energy consumption (in kWh).$\newline$
+  When a measurement fails or is unavailable NA is recorded.
+
+  You can invoke the following code to generate the measurements generated by the device.
+  ```{R, echo=TRUE, comment=' ', results=FALSE}
+  dailyusage <- 30.0 + runif(365, min=0, max=5.0)
+  dailyusage[sample(1:365, sample(1:50,1), replace=FALSE)] <- NA
+  ```
+     - How many measurements failed?
+     - What is the average daily energy consumption (based on the non-failed) measurements?
+
+
+## NaN and infinities
+
+* $\textcolor{blue}{\textbf{NaN}}$ (only for numeric types!), and the infinties $\textcolor{blue}{\textbf{Inf}}$ and $\textcolor{blue}{\textbf{-Inf}}$ $\newline$
+  are part of the [IEEE 754 floating-point standard](https://ieeexplore.ieee.org/document/8766229).
+* To test whether you have:
+  - finite numbers: use $\textcolor{blue}{\textbf{is.finite()}}$
+  - infinite numbers: use $\textcolor{blue}{\textbf{is.infinite()}}$
+  - NaNs: use $\textcolor{blue}{\textbf{is.nan()}}$
+* Further:
+  - a $\textcolor{blue}{\textbf{NaN}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ when tested by either $\textcolor{blue}{\textbf{is.nan()}}$ or $\textcolor{blue}{\textbf{is.na()}}$
+  - a $\textcolor{blue}{\textbf{NA}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ only when tested by $\textcolor{blue}{\textbf{is.na()}}$
+  
+### Examples
+
+* Infinities:
+
+```{R, echo=TRUE, comment=''}
+x <- 5.0/0.0
+x
+is.finite(x)
+is.infinite(x)
+is.nan(x)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+y <- -5.0/0.0
+y
+is.finite(y)
+is.infinite(y)
+is.nan(y)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+z <- x + y
+z
+typeof(z)
+is.finite(z)
+is.infinite(z)
+is.nan(z)
+```
+$\newline$
+
+* $\textcolor{blue}{\textbf{is.na()}}$ vs. $\textcolor{blue}{\textbf{is.nan()}}$:
+
+```{R, echo=TRUE, comment=''}
+# is.nan
+v <- c(NA, z, 5.0, log(-1.0))
+is.nan(v)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# is.na(): also includes NaN!
+v <- c(NA, z, 5.0, log(-1.0))
+is.na(v)
+```
+
+
+## Note on logical operators
+
+* $\textcolor{blue}{\textbf{\&}}$, $\textcolor{blue}{\textbf{|}}$, $\textcolor{blue}{\textbf{!}}$, $\textcolor{blue}{\textbf{xor()}}$: $\textbf{element-wise}$ operators on vectors (cfr. arithmetic operators)
+* $\textcolor{blue}{\textbf{\&\&}}$, $\textcolor{blue}{\textbf{||}}$: evaluated from $\textbf{left}$ to $\textbf{right}$ until result is determined.
+  
+### Examples
+
+* Vector operators ($\textcolor{blue}{\textbf{\&}}$, $\textcolor{blue}{\textbf{|}}$, $\textcolor{blue}{\textbf{!}}$ and $\textcolor{blue}{\textbf{xor()}}$)
+```{R, echo=TRUE, comment=''}
+x <- sample(x=1:10, size=10, replace=TRUE)
+x
+y <- sample(x=1:10, size=10, replace=TRUE)
+y
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v1 <- (x<=3)
+v1
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v2 <- (y>=7)
+v2
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v1 & v2
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+v1 | v2
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+xor(v1, v2)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+!v1
+```
+$\newline$
+
+### Exercises
+
+* Generate a random vector of integers using the following code:
+  ```{R, echo=TRUE,comment='', results=FALSE }
+  x <- sample(x=0:1000,size=100, replace=TRUE)
+  ```
+  - Invoke the above code to generate the vector $\texttt{x}$
+  - Find if there are any integers in the vector $\texttt{x}$ which can be divided by 4 and 6
+  - Find those numbers and their corresponding indices in the vector $\texttt{x}$.
+
+\newpage
+
+
+$\texttt{"It is my experience that proofs involving matrices can be}\newline
+ \texttt{shortened by 50\% if one throws the matrices out" (Emil Artin)}$
+
+
+# Matrices & Arrays
+
+Matrices and arrays are $\textbf{homogeneous atomic vectors}$ with$\newline$
+an $\textbf{extra}$ attribute: dimension
+
+By default, the elements are stored in a $\textbf{column-major}$ fashion. (cfr. $\textbf{Fortran}$).$\newline$
+However, we can store the elements in $\textbf{row-major}$ order (cfr. $\textbf{C}$) as well.
+
+## Creation of matrices
+
+Matrices can be created in different ways:
+
+* use of the $\textcolor{blue}{\textbf{matrix()}}$ function
+* use of $\textcolor{blue}{\textbf{rbind()}}$/$\textcolor{blue}{\textbf{cbind()}}$
+* set the $\textcolor{blue}{\textbf{attributes()}}$ of a vector
+* special functions like e.g. $\textcolor{blue}{\textbf{diag()}}$
+
+### Examples
+
+* use of the $\textcolor{blue}{\textbf{matrix()}}$ function:
+
+The $\textcolor{blue}{\textbf{matrix()}}$ function creates a matrix based on a vector.$\newline$
+By default, the elements are stored in a $\textbf{column-major}$ fashion. 
+
+The use of the flag $\texttt{byrow=TRUE}$ will store the data in a $\textbf{row-major}$ fashion.
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(data=1:10, nrow=2)   # Column-major (like Fortran)
+A
+
+B <- matrix(data=c(2,3,893,0.17), nrow=2, ncol=2)
+B
+```
+
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+C <- matrix(data=1:10, nrow=2, byrow=TRUE)   # Row-major (like C, C++)
+C
+```
+
+$\newline$
+
+* use of the $\textcolor{blue}{\textbf{rbind()}}$/$\textcolor{blue}{\textbf{cbind()}}$ functions:
+  
+  - $\textcolor{blue}{\textbf{rbind()}}$: Bind several vectors (as rows) into a matrix.
+  - $\textcolor{blue}{\textbf{cbind()}}$: Bind several vectors (as columns) into a matrix.
+  
+```{R, echo=TRUE, comment=''}
+A <- rbind(1:10,11:20)  
+A
+typeof(A)
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+B <- cbind(1:5,6:10,11:15)
+B
+class(B)
+```
+
+* modifying the $\textcolor{blue}{\textbf{dim}}$ attribute.
+
+The $\textbf{fundamental}$ difference between an $\texttt{R}$ vector and matrix is
+the presence (in the case of matrices) of a non $\texttt{NULL}$ 
+$\textcolor{blue}{\textbf{dim}}$ attribute. 
+
+We can easily convert a vector into a matrix by setting the dimensions of the vector:
+
+\begin{itemize}
+\item through the $\textcolor{blue}{\textbf{dim()}}$ function.
+\item through the $\textcolor{blue}{\textbf{attr()}}$ function.
+\end{itemize}
+
+The inverse can be done as well by setting the $\textcolor{blue}{\textbf{dim}}$ attribute 
+of matrix to $\texttt{NULL}$.
+
+### Examples
+
+```{R, echo=TRUE, comment=''}
+A <- 1:10 
+typeof(A)
+class(A)
+dim(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Matrix
+B <- matrix(1:10,nrow=2,ncol=5,byrow=TRUE) 
+typeof(B)
+class(B)
+dim(B)
+```  
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Vector
+A <- 1:10
+A
+dim(A) 
+typeof(A)
+class(A)
+```
+
+$\newline \newline$
+
+```{R, echo=TRUE, comment=''}
+# OPTION I: Using the dim function transform a vector into a matrix
+dim(A) <- c(2,5)
+A
+dim(A)
+typeof(A)
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Converting the matrix back to a vector
+dim(A) <- NULL
+dim(A)
+typeof(A)
+class(A)
+```
+
+$\newline \newline$
+
+```{R, echo=TRUE, comment=''}
+# Option II: More general way 
+# Convert vector into a matrix
+A <- 1:8
+A
+class(A)
+
+attr(A,'dim') <- c(2,4)
+A
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Convert matrix into a vector.
+attr(A, 'dim') <- NULL
+A
+class(A)
+```
+
+## Retrieving elements/subsetting 
+
+Matrices (and arrays) can be subsetted in different ways:
+
+* use an $\textbf{index}$ for each dimension, where the dimensions are comma-separated
+  - If an $\textbf{index}$ for a dimension is $\textbf{omitted}$: $\newline$ 
+    consider all dimensions (may lead to reduction of the dimension)
+  - $\textbf{but}$ you can use $\textcolor{blue}{\textbf{drop=FALSE}}$ to prevent dimensionality reduction.
+* use another $\textbf{vector}$ (can be either linear or a vector for each dimension)
+* by using another $\textbf{matrix}$.
+
+### Examples
+
+* Use of $\textbf{indices}$:
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:30, nrow=6, ncol=5)
+A
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+A[3,4]
+A[6,2]
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+x1 <- A[2,]
+x1
+dim(x1)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+x2 <- A[,3]
+x2
+dim(x2)
+```
+
+$\newline$
+The flag $\textcolor{blue}{\textbf{drop=FALSE}}$ can be used to prevent dimensionality reduction
+
+```{R, echo=TRUE, comment=''}
+y1 <- A[2,,drop=FALSE]
+y1
+dim(y1)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+y2 <- A[,3,drop=FALSE]
+y2
+dim(y2)
+```
+
+* Use of $\textbf{vector(s)}$:
+
+```{R, echo=TRUE, comment=''}
+A
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+x1 <- A[2:4,]
+x1
+dim(x1)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+x2 <- A[,1:3]
+x2
+dim(x2)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Using a vector for EACH dimension
+A[c(1,3),c(2,4)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Using 1 vector => Linear index
+A[c(1,3,8,10)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE),c(2,3)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE),]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Use of a linear index
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE)]
+```
+
+* Use of a $\textbf{matrix}$:
+```{R, echo=TRUE, comment=''}
+A
+```
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+mysubset <- matrix(c( 2, 1,
+                      3, 5,
+                      4, 2,
+                      6, 5), ncol=2, byrow=TRUE )
+A[mysubset]
+```
+
+### Exercises
+
+* Create the following matrix A, given by:
+  ```{R, echo=FALSE,comment=''}
+  NUM <-6
+  r1 <- 3^(1:NUM)
+  r2 <- 5^(1:NUM)
+  r3 <- 7^(1:NUM)
+  r4 <- 11^(1:NUM)
+  r5 <- 13^(1:NUM)
+  r6 <- 17^(1:NUM)
+  A <- rbind(r1,r2,r3,r4,r5,r6)
+  rownames(A) <- NULL
+  A
+  ```
+  \begin{enumerate}
+  \item get element $343$
+  \item get the elements $25$, $625$, $2197$ and $4826809$ (all at once).
+  \item get the fourth row as a vector.
+  \item get the fourth row as a matrix.
+  \item get columns $2$ and $3$ (at the same time).
+  \item get everything except rows $2$ and $4$.
+  \item the diagonal of matrix A.
+  \end{enumerate}
+
+
+## Operations on matrices
+
+* Operations like $\textcolor{blue}{\textbf{*,/, +}}$ happpen element-wise.
+* There are also more specialized functions:
+  * the mean over rows and columns ($\textcolor{blue}{\textbf{rowMeans()}}$, $\textcolor{blue}{\textbf{colMeans()}})$
+  * linear algebra functions ($\textcolor{blue}{\textbf{\%*\%}}$, $\textcolor{blue}{\textbf{t()}}$, ...)
+    
+### Examples
+
+* Operations (by $\textbf{default: element-by-element}$):
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:10, nrow=2)
+B <- matrix( seq(10, 100, by=10), nrow=2)
+A
+B
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+A*B
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+C <- matrix(rep(2,10), nrow=2)
+C
+C**A
+```
+
+* Calculate $\textbf{row and column means}$ :
+
+```{R, echo=TRUE, comment=''}
+# Means of rows and columns
+A
+rowMeans(A)
+colMeans(A)
+```
+
+* $\textbf{Matrix multiplication}$ ($\textcolor{blue}{\textbf{\%*\%}}$) :
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:6, nrow=2)
+A
+B <- matrix(seq(10,120,by=10), nrow=3)
+B
+C <- A%*%B
+C
+dim(C)
+```
+
+* $\textbf{Linear algebra}$ routines
+
+Some of the more common ones in R:
+\begin{itemize}
+ \item $\textcolor{blue}{\textbf{solve()}}$ : $\textbf{invert}$ a square matrix
+ \item $\textcolor{blue}{\textbf{diag()}}$
+    \begin{itemize}
+       \item $\textbf{extracts}$ the diagonal of a matrix when a matrix is provided.
+       \item $\textbf{creates}$ a diagonal matrix when a vector is provided.
+    \end{itemize}
+ \item $\textcolor{blue}{\textbf{eigen()}}$ : calculates the $\textbf{eigenvalues}$ and $\textbf{eigenvectors}$ of a matrix
+ \item $\textcolor{blue}{\textbf{det()}}$ : calculates the $\textbf{determinant}$ of a matrix.
+ \item $\textcolor{blue}{\textbf{t()}}$: calculates the $\textbf{transpose}$$\footnote{Can also be used for dataframes (see later)}$ of a matrix.
+\end{itemize}
+  
+```{R, echo=TRUE, comment=''}
+# Invert matrix A
+A <- matrix(c(1, 3, 2, 4), ncol = 2, byrow = T)
+Ainv <- solve(A)
+Ainv %*% A
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Create a diagonal matrix
+C <- diag(c(1,4,7))
+C
+
+# Extract the diagonal elements
+D <- matrix(1:8,nrow=4)
+D
+diag(D)
+```
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Calculate eigenvalues and eigenvectors of A
+r <- eigen(A)
+r
+# Eigenvalues
+r$values
+# Matrix with eigenvectors
+r$vectors
+# Diagonal Matrix (Similarity Transformation)
+solve(r$vectors) %*% A %*% r$vectors
+```
+
+Note that under the hood $\texttt{R}$ calls [$\texttt{BLAS}$](https://netlib.org/blas/) and [$\texttt{LAPACK}$](https://netlib.org/lapack/).
+
+```{R, echo=TRUE, comment=''}
+# Find the version used of BLAS and LAPACK
+La_library()
+extSoftVersion()["BLAS"]
+```
+
+### Exercises
+
+* Linear regression: $\newline$
+
+  - $\textbf{Step 1}$: $\newline$
+    Create a $\textbf{synthetic}$ data set by executing the following $\texttt{R}$ code:
+    ```{R, echo=TRUE, results='hidden', comment=''}
+       x <- seq(from=0, to=20.0, by=0.25)
+       a <- 2.0
+       b <- 1.5
+       c <- 0.5
+       y <- a + b*x + c*x^2 + rnorm(length(x))
+    ```
+
+  - $\textbf{Step 2}$: $\newline$
+    Our goal is to use the following linear model, i.e.:
+    \begin{equation}
+       Y_i = \beta_0 \,+\, \beta_1 \, x_i \, + \, \beta_2\,x^2_i + \, \epsilon_i \nonumber
+    \end{equation} 
+    or in matrix form: 
+    \begin{equation}
+       Y = X\,\beta  \, + \, \mathcal{\epsilon} \label{Eq:LinearModel}
+    \end{equation}
+    to fit the previously generated data set.
+   
+    In Eq.(\ref{Eq:LinearModel}), we have:
+    \begin{itemize}
+       \item $Y$ : a $n \times 1$ column vector.
+       \item $X$ : a $n \times 3$ matrix.
+       \item $\beta$: a $3 \times 1$ column vector.
+       \item $\epsilon$ is : a $n\times 1$ column vector and $\sim \, N(0,\sigma^2)$
+    \end{itemize} 
+  
+    An estimate for $\beta$ ($\widehat{\mathbf{\beta}}$) can be found (using Least-Squares, MLE see e.g. [@SEBER:LR:2012a]) $\newline$
+    and has the following form:
+    \begin{equation}
+        \widehat{\mathbf{\beta}} = (\mathbf{X^T} \mathbf{X})^{-1} \mathbf{X^T} \mathbf{Y} \label{Eq:EstimateBeta}
+    \end{equation}
+    
+    where:$\newline$
+    
+    the column vector $\mathbf{Y}$ is given by:
+
+    \begin{equation}
+       \mathbf{Y} := \begin{bmatrix} y_1 \\ y_2 \\ .. \\ y_n \end{bmatrix} \nonumber
+    \end{equation}
+     and the matrix $\mathbf{X}\footnote{This is a known as a \href{https://en.wikipedia.org/wiki/Vandermonde_matrix}{Vandermonde} matrix.}$ takes the following form:
+    \begin{equation}
+    \mathbf{X} := \begin{bmatrix} 1 & x_1 & x^2_1 \\ 
+                                  1 & x_2 & x^2_2 \\
+                                  \vdots & \vdots & \vdots \\
+                                  1 & x_n & x^2_n
+                  \end{bmatrix} \nonumber
+    \end{equation}
+    $\textbf{Calculate}$ $\widehat{\beta}$ using Eq.(\ref{Eq:EstimateBeta}).
+    
+    An estimate for the residuals ($\widehat{\epsilon}$) is given by:
+    \begin{equation}
+             \widehat{\epsilon} =  \mathbf{Y} \,-\, \mathbf{X}\,\widehat{\mathbf{\beta}} \label{Eq:EstimateResiduals}
+    \end{equation}
+    $\textbf{Calculate}$ $\widehat{\epsilon}$ using Eq.(\ref{Eq:EstimateResiduals}).
+    
+  - $\textbf{Step 3}$: $\newline$  
+    You can check your results using the following $\texttt{R}$ code.
+    ```{R,echo=TRUE,results='hide',comment=''}
+       myquadfit <- lm(y ~ x + I(x^2))
+       cat(sprintf("The estimates for beta::\n"))
+       cat(myquadfit$coefficients)
+       cat(sprintf("The residuals::\n"))
+       cat(myquadfit$residuals)
+    ```
+    
+
+## Hash tables/dictionaries
+
+We can also use hashes for matrices. We can select one or both dimensions.
+To create hashes, for:
+- rows: use $\textcolor{blue}{\textbf{rownames}}$
+- columns: use $\textcolor{blue}{\textbf{colnames}}$
+
+To remove the hash, use the $\textcolor{blue}{\textbf{NULL}}$ (like for vectors).
+
+### Examples
+```{R, echo=TRUE, comment=''}
+A1 <- c(0      , 5471.52, 5091.57, 5392.82, 
+        5416.45, 4584.33, 4904.83, 3851.73)
+A2 <- c(5471.52,       0, 1315.28,  927.35, 
+        1505.11,  944.40, 1157.42, 1945.42)
+A3 <- c(5091.57, 1315.28,       0, 2166.00, 
+        2724.01, 1571.76,  293.52, 1240.77)
+A4 <- c(5392.82,  927.35, 2166.00,       0,        
+         577.85,  973.23, 1947.28, 2422.32)
+A5 <- c(5416.45, 1505.11, 2724.01,  577.85,             
+              0, 1366.63, 2490.97, 2838.62)
+A6 <- c(4584.33,  944.40, 1571.76,  973.23, 
+        1366.63,       0, 1290.15, 1474.26)
+A7 <- c(4904.83, 1157.42,  293.52, 1947.28, 
+        2490.97, 1290.15,       0, 1064.41)
+A8 <- c(3851.73, 1945.42, 1240.77, 2422.32, 
+        2838.62, 1474.26, 1064.41,       0)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist <- rbind(A1,A2,A3,A4,A5,A6,A7,A8)
+dist
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Adding hashes to both rows and columns 
+cities <- c("Anchorage","Atlanta","Austin","Baltimore","Boston", "Chicago", "Dallas","Denver")
+rownames(dist) <- cities
+colnames(dist) <- cities
+dist
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist["Chicago", "Denver"]
+dist["Austin", "Boston"]
+```
+
+## Arrays
+
+Say something about arrays.
+
+\newpage
+
+# Special Data Types (Factors and Date/Time types)
+
+Every $\texttt{R}$ object has attributes (i.e. properties or metadata). $\newline$
+They can be classified as:
+
+* $\textbf{intrinisic}$ properties e.g. $\textcolor{blue}{\textbf{length()}}$
+* $\textbf{external}$ properties (to be set by the user)
+
+## Attributes
+
+* can be get/retrieved using $\textcolor{blue}{\textbf{attributes()}}$.
+* can be set:
+  - individually using $\textcolor{blue}{\textbf{attr()}}$
+  - in generally using $\textcolor{blue}{\textbf{structure()}}$
+* some attributes can (also) be set/unset with $\textbf{special}$ functions: 
+  - names: $\textcolor{blue}{\textbf{names()}}$
+  - dimension: $\textcolor{blue}{\textbf{dim()}}$
+  - comment  : $\textcolor{blue}{\textbf{comment()}}$
+  - time series: $\textcolor{blue}{\textbf{tsp()}}$
+  - factor   : $\textcolor{blue}{\textbf{factor()}}$ (see next section)
+
+### Examples  
+
+* $1$ attribute:
+  ```{R, echo=TRUE, comment=''}
+  x <- 1:5 
+  x
+  attr(x, 'prop1') <- "hello"
+  attributes(x)
+  x
+  ```
+$\newline\newline$
+  ```{R, echo=TRUE, comment=''}
+  attr(x, 'prop1') <- NULL
+  attributes(x)
+  x
+  ```
+
+$\newline\newline\newline$
+
+* more than $1$ attribute:
+
+  ```{R, echo=TRUE, comment=''}
+  y <- 1:8
+  y
+  y <- structure(y, dim=c(2,4), tag="trial")
+  y
+  attributes(y)
+  typeof(y)
+  class(y)
+  ```
+  $\newline\newline$
+  ```{R, echo=TRUE, comment=''}
+  # Remove BOTH attributes
+  y <- structure(y, dim=NULL, tag=NULL)
+  y
+  attributes(y)
+  typeof(y)
+  class(y)
+  ```
+$\newline\newline$
+
+* $\textcolor{blue}{\textbf{names()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  # Set the names attribute
+  capitals <- c("Salt Lake City", "Carson City", "Boise", "Santa Fe")
+  names(capitals) <- c("UT", "NV", "ID", "NM")
+  capitals
+  attributes(capitals)
+  ```
+$\newline$
+  ```{R,echo=TRUE,comment=''}
+  # Remove the names attribute
+  names(capitals) <- NULL
+  capitals
+  ```
+$\newline\newline$
+
+* $\textcolor{blue}{\textbf{dim()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  x <- 1:12
+  x
+  typeof(x)
+  class(x)
+  ```
+$\newline\newline$
+  ```{R,echo=TRUE,comment=''}
+  # Set the dimension attribute
+  dim(x) <- c(3,4)
+  x
+  typeof(x)
+  class(x)
+  ```
+$\newline\newline$
+
+  ```{R,echo=TRUE,comment=''}
+  # Remove the dimension attribute
+  dim(x) <- NULL
+  x
+  typeof(x)
+  class(x)
+  ```
+* $\textcolor{blue}{\textbf{comment()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  x <- structure(1:6, comment="My vector")
+  typeof(x)
+  class(x)
+  comment(x)
+  ```
+  
+## Factor variables (Categorical variables)  
+
+* Factor variables (factors, categorical variables) are 
+  discrete variables (i.e not continuous). $\newline$
+  The factors bear labels ($\textbf{levels}$) which are 
+  mapped into $\textbf{integers}$.
+  
+* Therefore, factors are stored as integer vector with $2$ attributes:
+  - $\textcolor{blue}{\textbf{class}}$= "factor"
+  - $\textcolor{blue}{\textbf{levels}}$: a vector with the "labels".
+  
+* By default ($\textbf{unordered}$) the labels are mapped $\textbf{alphabetically}$ to the integers.
+  We can $\textbf{impose}$ our own $\textbf{ordering}$ between integers and labels (levels).
+  
+* Useful functions:
+  - $\textcolor{blue}{\textbf{levels()}}$ : provides the levels of a factor
+  - $\textcolor{blue}{\textbf{table()}}$: returns the counts of each level
+  - $\textcolor{blue}{\textbf{is.factor()}}$: tests whether a variable is a factor variable
+  - $\textcolor{blue}{\textbf{is.ordered()}}$: tests whether a variable is an ordered factor variable 
+
+
+### Examples
+
+* Creation of an $\textbf{unordered}$ factor
+
+  ```{R,echo=TRUE,comment=''}
+  # Creation of an unordered factor
+  temp.data <- c("High","Low","VeryHigh","Low","VeryLow","Medium",
+                 "VeryHigh","VeryHigh","Low","Low","Medium","VeryHigh",
+                 "VeryHigh","VeryHigh","Low","High","VeryLow")
+  myfac.temp.data <- factor(temp.data)
+  myfac.temp.data
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # by default: the levels are stored ALPHABETICALLY (i.e. unordered)
+  levels(myfac.temp.data)
+  table(myfac.temp.data)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  is.factor(myfac.temp.data)
+  is.ordered(myfac.temp.data)
+  ```
+  $\newline$
+
+* Creation of an $\textbf{ordered}$ factor
+
+  ```{R,echo=TRUE,comment=''}
+  # Creation of an unordered factor
+  temp.data <- c("High","Low","VeryHigh","Low","VeryLow","Medium",
+                 "VeryHigh","VeryHigh","Low","Low","Medium","VeryHigh",
+                 "VeryHigh","VeryHigh","Low","High","VeryLow")
+  myfac2.temp.data <- factor(temp.data, ordered=TRUE, 
+                             levels=c("VeryLow","Low","Medium","High","VeryHigh")) 
+  myfac2.temp.data
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # The ordering is NOW imposed
+  levels(myfac2.temp.data)
+  table(myfac2.temp.data)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  is.factor(myfac2.temp.data)
+  is.ordered(myfac2.temp.data)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Stripping a factor to the essentials: integer vector
+  attributes(myfac2.temp.data)
+  class(myfac2.temp.data) <- NULL
+  levels(myfac2.temp.data) <- NULL
+  myfac2.temp.data
+  ```
+
+
+
+## Dates and times in $\texttt{R}$.
+
+* $\textcolor{blue}{\textbf{Date}}$ class : 
+  - represents calendar dates
+  - built on top of doubles with class attribute 'Date'
+  - 0 : Jan 1. 1970 ($\href{https://en.wikipedia.org/wiki/Unix_time}{\textbf{Unix Epoch time}}$)
+  - $\textcolor{blue}{\textbf{as.Date()}}$: method to cast string to a Date
+* $\textcolor{blue}{\textbf{POSIXct}}$ and $\textcolor{blue}{\textbf{POSIXlt}}$ : date and time
+  - $\textcolor{blue}{\textbf{POSIXct}}$: stores date/time values as the #seconds since Jan. 1, 1970
+  - $\textcolor{blue}{\textbf{POSIXlt}}$: stored as $\textbf{blue}{\textbf{list}}$ with elements 
+    for seconds, minutes, hours, day, month, year, etc.
+* $\href{https://lubridate.tidyverse.org/}{\textbf{lubridate}}$: a very useful package for dates and times: $\newline$
+   
+
+### Examples
+
+* $\textbf{Date}$ 
+
+  ```{R,echo=TRUE,comment=''}
+  today <- Sys.Date()
+  today
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Attributes of Date 
+  class(today)
+  attributes(today)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  unclass(today)
+  ```
+  
+  $\newline \newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  d0 <- structure(0, class='Date')
+  d0
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  class(d0)
+  typeof(d0)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Convert a string into a Date
+  d1  <- as.Date("2022-01-01")
+  d1
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  class(d1)
+  typeof(d1)
+  ```
+  $\newline \newline$
+  
+* $\textbf{POSIXct}$
+
+  ```{R,echo=TRUE,comment=''}
+  # Convert a string into a POSIXct object
+  now_ct <- as.POSIXct("2018-08-01 22:00", tzone="MST")
+  now_ct
+  ```  
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  attributes(now_ct)
+  typeof(now_ct)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Removal of the attributes
+  attr(now_ct,"tzone") <- NULL
+  unclass(now_ct)
+  ```
+  
+# Bibliography
+
+
+  
+

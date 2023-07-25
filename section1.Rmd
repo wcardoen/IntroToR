@@ -1,0 +1,217 @@
+---
+title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Part 1: Overview of R'
+author: 'Wim R.M. Cardoen'
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+urlcolor: violet
+---
+
+\newpage
+
+# R: What's in the name?
+* Scripting language (vs. compiled language)
+* Data Analysis Environment
+
+# Why R?
+* Open Source => Free
+* Scripting language => rapid prototyping
+* The same R-code can run on different OS (MS, MacOs, Linux)
+* Most diverse set of statistical tools
+* A lot of pre-canned [packages/libraries](https://cran.r-project.org/web/packages/)
+* Large community (and very active development)
+* Job "security" (due to its [popularity](https://spectrum.ieee.org/top-programming-languages-2021))
+
+# From S to R
+
+$\texttt{People are trapped in history and history is trapped in them. (James Baldwin)}$
+
+* **S** programming language: created at Bell Labs (1975-1976). \newline Before, statistical computing was mainly done by calling Fortran routines. 
+  * Richard A. Becker
+  * *[John M. Chambers](https://statweb.stanford.edu/~jmc4/) *
+  * Allan R. Wilks
+* 1988: ["New S" (aka "Blue Book" by Becker, Chambers & Wilks)](https://www.amazon.com/New-S-Language-R-Becker/dp/0534091938)  introduced a lot of new features:
+  * functions (instead of macros)
+  * double precision arithmetic
+  * interface to Fortan, C[^1]
+  * etc.
+  * became *similar* to the modern versions of S-PLUS and R.
+* 1991: *Statistical Models in S* (Chambers & [Hastie](https://hastie.su.domains/))
+  * formula-notation (~ operator)
+  * data frames
+  * methods and classes (S3)
+* 1998: S4 (latest version of S)
+  * more advanced object-oriented features ([S4](http://adv-r.had.co.nz/S4.html) - quite different from [S3](http://adv-r.had.co.nz/S3.html))
+    (inheritance & multiple dispatch)
+* 1991: [**R**oss Ihaka](https://www.stat.auckland.ac.nz/~ihaka/) and 
+        [**R**obert Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)) (Auckland, New Zealand) 
+  * started their own implementation of S and named it ... **R**.
+    (*"a free implementation of something 'close to' version 3 of the S language"*)
+  * borrowed features from [Scheme](https://groups.csail.mit.edu/mac/projects/scheme/) (static/lexical scoping). 
+* 1995: R becomes open-source. 
+* 2000: Release of R v.1.0.
+* 2003: Start of the R Foundation.
+* **S** still exists as a commercial product (**S-PLUS**). It is currently owned by TIBCO Software Inc.
+
+## Links
+
+  * [Becker, Richard A (1994). A Brief History of S.](https://web.archive.org/web/20150723044213/http://www2.research.att.com/areas/stat/doc/94.11.ps)
+  * [Chambers, John M. (2009). Software for Data Analysis: Programming with R (Statistics and Computing)](https://www.amazon.com/Software-Data-Analysis-Programming-Statistics/dp/0387759352)
+  * [Chambers, John M. (2020). S, R, and data science.](https://dl.acm.org/doi/pdf/10.1145/3386334)
+  * [The R Project for Statistical Computing](https://www.r-project.org/)
+  * [https://www.r-bloggers.com/](https://www.r-bloggers.com/)
+  
+# Using R 
+  * interactively: **R** CLI or in an IDE. 
+  * run as a script containing R code.
+  * the cloud: e.g. [https://rstudio.cloud/](https://rstudio.cloud/)
+  
+## Links
+  * [Pre-compiled R Binaries (CRAN)](https://cran.r-project.org/)
+  * [Microsoft R Open Binaries](https://mran.microsoft.com/open)
+  * [RStudio IDE](https://www.rstudio.com/)
+  * [Latest R Source Code](https://cran.r-project.org/src/base/R-latest.tar.gz)
+
+# Getting help on R
+* Within R itself:
+  * $\textcolor{blue}{\textbf{help(cmd)}}$
+  * $\textcolor{blue}{\textbf{help(?cmd)}}$
+  * $\textcolor{blue}{\textbf{help(??cmd)}}$
+  * some keywords require quotes e.g. $\textcolor{blue}{\textbf{?'if'}}$, $\textcolor{blue}{\textbf{?'for'}}$
+  
+```{R, eval=FALSE}
+help(mean)
+?mean()
+??mean()
+?'if'
+```
+* External to the R package:
+  * [The Comprehensive R Archive Network](https://cran.r-project.org/)
+    * [An Introduction to R](https://cran.r-project.org/doc/manuals/R-intro.pdf)
+    * [R Language Definition](https://cran.r-project.org/doc/manuals/R-lang.pdf)
+  * [The Art of R Programming 
+    (Normam Matloff)](https://heather.cs.ucdavis.edu/~matloff/132/NSPpart.pdf)
+  * [Hadley Wickham's Website](https://hadley.nz/)
+  * [R-Bloggers](https://www.r-bloggers.com/)
+  * [R Mailing List](https://www.r-project.org/mail.html)
+  * [Stack Overflow (R)](https://stackoverflow.com/questions/tagged/r)
+
+# General statements on R 
+
+* R is **case-sensitive** (cfr. C, C++, Python) => 'a' is different from 'A'.
+* Symbol names/variables: alpha-numeric characters are allowed.
+  * **MUST** start with a **.** (dot) or a **letter**.
+  * if symbol starts with **.** (dot), then second character **MUST** be a letter.
+* R commands are separated by:
+  * either $\textcolor{blue}{\textbf{;}}$ (semi colon).
+  * or newline.
+* R commands can be grouped together using $\textcolor{blue}{\textbf{\{\}}}$ (curly braces).   
+* R comments: start with $\textcolor{blue}{\textbf{\#}}$ (pound sign) (limited to the same line)
+* History: use **arrow up** & **arrow down** to retrieve previous cmds.
+  * <font color="blue"><b>.Rhistory</b></font>: contains the recently used R commands
+  * <font color="blue"><b>.RData</b></font>: contains the objects stored in the Global Environment
+
+\newpage
+
+$\texttt{Oefening baart kunst! ("Exercise gives birth to art!" - Dutch proverb)}$
+$\newline$
+
+# Exercises: A taste of R
+* Start R or RStudio
+* Try out the following commands in R.
+
+## Check R's version, system time and Working Directory
+```{R, eval=FALSE}
+print(R.version.string)
+Sys.time()
+getwd()
+```
+
+## Creation of variables
+```{R,eval=FALSE,results='asis'}
+x1 <- 5
+x1
+typeof(x1)
+ls()
+```
+
+```{R,eval=FALSE}
+x2 <- 5L
+x2
+typeof(x2)
+ls()
+```
+
+```{R,eval=FALSE}
+x3 <- FALSE
+x3
+typeof(x3)
+```
+
+```{R,eval=FALSE}
+x4 <- "Programming is cool"
+x4
+typeof(x4)
+```
+
+```{R,eval=FALSE}
+x5 <- -15
+typeof(x5)
+sqrt(x5)
+```
+
+```{R,eval=FALSE}
+x6 <- -15+0i
+typeof(x6)
+sqrt(x6)
+```
+
+## Tinkering with vectors
+```{R,eval=FALSE}
+y1 <- 1:5
+y1
+length(y1)
+```
+
+```{R,eval=FALSE}
+y2 <- seq(10.,50,by=10)
+y2
+length(y2)
+y2^y1
+```
+
+```{R,eval=FALSE}
+y3 <- c("Hello", "world", "!")
+y3
+s <- paste(y3)
+s
+```
+
+```{R,eval=FALSE}
+y4 <- c(TRUE,FALSE,TRUE)
+sum(y4)
+```
+
+## Removing objects from your environment
+```{R,eval=FALSE}
+ls()
+rm(c("y1","y2","y3","y4"))
+ls()
+```
+
+[^1]:
+'Function <font color="blue"><b>mode</b></font> gives information about the mode of an object  in the sense of Becker, Chambers & Wilks (1988), and is  more compatible with other implementations of the S language. Finally, the function <font color="blue"><b>storage.mode</b></font> returns the storage mode of its argument in the sense of Becker et al. (1988). It is generally used when calling functions written in another language, such as C or FORTRAN, to ensure that R objects have the data type expected by the routine being called. (In the S language, vectors with integer or real values are both of mode "numeric",
+so their storage modes need to be distinguished.)' [R Language Definition, v.4.1.2 (2021-11-01) p. 2](https://cran.r-project.org/doc/manuals/r-release/R-lang.pdf)
+
+
