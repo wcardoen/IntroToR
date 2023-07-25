@@ -47,6 +47,35 @@ castdie2 <- function(n, p=c(1/10,1/10,3/10,3/10,1/10,1/10)){
 } 
 
 ## Exercise 3::
+genAR1Series <- function(n, x0=0.0, phi=0.7){
+
+   eps <- rnorm(n)
+   x <- vector(mode="double", length=n+1)
+   x[1] <- x0
+   for(i in 1:n){
+       x[i+1] <- x[i]*phi + eps[i]
+   }
+   return(x[-1])
+}
+
+x <- genAR1Series(n=1000)
+
+myacf <- function(x){
+
+  n <- length(x)
+  res <- vector(mode="double", n)
+  xav <- mean(x)
+
+  for(h in 0:(n-1)){
+      res[h+1] <- 1/n*sum((x[(1+h):n] - xav)*(x[1:(n-h)] -xav))
+  }
+  return(res/res[1])
+}
+
+x <- genAR1Series(n=1000)
+v1 <- myacf(x)
+v2 <- acf(x)
+cat(sprintf("Sum of diff. (first 20 terms):%16.12f\n", sum(abs(v1[1:20] -v2$acf[1:20]))))
 
 
 ## Exercise 4::
