@@ -1,8 +1,7 @@
 # Solutions:
 
-# Slicing of the matrix:
-#----------------------
-
+# Section 4.2.2:
+#--------------
 # Creation of the matrix:
 NUM <-6
 r1 <- 3^(1:NUM)
@@ -18,6 +17,13 @@ rownames(A) <- NULL
 print(A)
 
 # Method 2:
+# --------
+x <- c(3,5,7,11,13,17)
+A <- cbind(x, x**2, x**3, x**4,x*5,x**6)
+colnames(A) <- NULL
+print(A)
+
+# Method 3:
 A <- matrix(c(r1,r2,r3,r4,r5,r6), ncol=6, byrow=TRUE)
 
 # Part 1:
@@ -69,7 +75,9 @@ A[-c(2,4),]
 diag(A)
 
 
-# LINEAR REGRESSION:
+
+# Section 4.3.2:
+# -------------
 # I. Create a synthetic dataset
 x <- seq(from=0.0, to=20.0, by=0.25)
 a <- 2.0
@@ -93,7 +101,7 @@ residuals <- y - Xmat%*%beta
 print(residuals)
 
 # Estimate Beta and residuals using LM
-myquadfit <- lm(y ~ x + I(x^2))
+myquadfit <- lm(y ~ x + I(x**2))
 cat(sprintf("The estimates for beta::\n"))
 cat(myquadfit$coefficients)
 cat(sprintf("The residuals::\n"))

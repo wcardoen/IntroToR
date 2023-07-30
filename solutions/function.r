@@ -1,4 +1,5 @@
-# Lecture 3: Functions
+# Section 2.1.2:
+# -------------
 
 # Exercise 1::
 # Solution 1
@@ -58,6 +59,7 @@ genAR1Series <- function(n, x0=0.0, phi=0.7){
    return(x[-1])
 }
 
+
 x <- genAR1Series(n=1000)
 
 myacf <- function(x){
@@ -78,7 +80,9 @@ v2 <- acf(x)
 cat(sprintf("Sum of diff. (first 20 terms):%16.12f\n", sum(abs(v1[1:20] -v2$acf[1:20]))))
 
 
-## Exercise 4::
+
+## Section 2.2.2:
+## Exercise 1:
 `%+%` <- function(x,y){
      return((x+y)%% 4)
 }

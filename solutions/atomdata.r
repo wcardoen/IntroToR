@@ -1,4 +1,5 @@
-# Atomic Data:: Solutions
+# Atomic Data
+# Section 2.3: Exercises 
 
 # Exercise 1:
 x<- log(10,base=2)

@@ -1,12 +1,13 @@
-# Solutions to control structures (Lecture 3)
-
-# Exercise 1::
+# Solutions to control structures 
+# Section 1.1.2:
+# Exercise 1:
+# ----------
 num1 <- 21
 num2 <- 12
 num3 <- 17
 
 # Solution A:
-cat(sprintf("### Exercise 1 ###\n"))
+cat(sprintf("### Section 1.1.2: Exercise 1 ###\n"))
 cat(sprintf("Solution A:\n"))
 if(num1<=num2){
    if(num1<=num3){
@@ -31,8 +32,13 @@ if((num1<=num2) && (num1<=num3)){
    cat(sprintf("%d is the smallest number\n", num3))
 }  
 
-# Exercise 2:
-cat(sprintf("\n\n### Exercise 2 ###\n"))
+
+
+# Section 1.2.2:
+# Exercise 1:
+# ----------
+# Solution 1
+cat(sprintf("\n\n### Section 1.2.2: Exercise 1 ###\n"))
 first <- 1
 second <- 1
 for(i in 2:15){
@@ -42,8 +48,19 @@ for(i in 2:15){
   second <- f
 }
 
-# Exercise 3:
-cat(sprintf("\n\n### Exercise 3 ###\n"))
+# Solution 2:
+x <- vector(mode='integer', length=15)
+x[1] <- 1
+x[2] <- 1
+for(i in 3:15){
+    x[i] <- x[i-1] + x[i-2]
+}
+x
+
+
+# Exercise 2:
+# ----------
+cat(sprintf("\n\n### Section 1.2.2: Exercise 2 ###\n"))
 num <- 751
 CONV_LIMIT <- 1.0E-8
 isConverged <- FALSE
