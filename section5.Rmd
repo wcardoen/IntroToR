@@ -248,7 +248,7 @@ Therefore,
 where t stands for $\texttt{Student's t}$ distribution, $s^2$ is the sample variance, $n$ the number of measurements.
 
 \begin{itemize}
-\item Read the lab results from the file $\texttt{data/beer.csv}$.
+\item Read the lab results from the file $\texttt{data/beer.csv}$. (Hint: use $\textcolor{blue}{\textbf{read.csv()}}$ to read the file).
 \item Calculate the numerical value ($\tau$) of the test-statistic T, given by:
 \begin{equation}
    T = \frac{\overline{X}-\mu_0}{s/\sqrt{n}} \;\; \sim \, t(\nu=n-1) \nonumber
@@ -258,7 +258,7 @@ where t stands for $\texttt{Student's t}$ distribution, $s^2$ is the sample vari
 \item What is the probability of the area under the curve for $t \in [\tau,+\infty)$?
 \end{itemize}
 
-\item Check this \href{https://www.guinness-storehouse.com/content/pdf/archive-factsheets/general-history/wsgosset-and-students-t-test.pdf}{link} 
+\item Check out the following \href{https://www.guinness-storehouse.com/content/pdf/archive-factsheets/general-history/wsgosset-and-students-t-test.pdf}{link} 
       if you are interested in the origin of $\texttt{Student's t}$ distribution.
 \end{enumerate}
 # Bibliography

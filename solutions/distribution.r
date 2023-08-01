@@ -1,6 +1,6 @@
 # Exercises
 # Exercise 1: Chisq
-iter <- c(10000, 100000, 1000000,10000000)
+iter <- 10**seq(4,7)
 nu <- 5
 for(niter in iter){
     x <- rchisq(n=niter,df=nu)
