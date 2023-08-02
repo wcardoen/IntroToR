@@ -258,7 +258,7 @@ where t stands for $\texttt{Student's t}$ distribution, $s^2$ is the sample vari
 \item What is the probability of the area under the curve for $t \in [\tau,+\infty)$?
 \end{itemize}
 
-\item Check out the following \href{https://www.guinness-storehouse.com/content/pdf/archive-factsheets/general-history/wsgosset-and-students-t-test.pdf}{link} 
+\item Check out the following \href{https://higherlogicdownload.s3.amazonaws.com/AMSTAT/1484431b-3202-461e-b7e6-ebce10ca8bcd/UploadedImages/Classroom_Activities/HS_7__t-ditribution_and_GOSSET.pdf}{link} 
       if you are interested in the origin of $\texttt{Student's t}$ distribution.
 \end{enumerate}
 # Bibliography
