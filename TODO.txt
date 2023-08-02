@@ -1,0 +1,15 @@
+Further plan to work out: 08/02/2023
+# 1.Add exercises to Dataframe part
+# 2.Elaborate on IO
+
+# 3.Environments in R
+# 4.Plotting in R (plot vs ggplot)
+#   a.Why ggplot2
+
+# 5.How to install packages in R:
+#   install.packages()
+#   what if install.packages does not work?
+# 6.Running scripts  Rscript, Rbatch, argv, 
+#    options: argparse, optparse, getopt
+
+# 7.Performance in R
