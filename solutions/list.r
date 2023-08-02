@@ -1,5 +1,7 @@
-# Exercise 1:
-# ==========
+# SECTION 4: Lists & Dataframes
+# 1.2.4:
+#   Exercise 1:
+# ------------
 lstex1 <- list(
                list(
                     seq(from=4,to=40,by=5),
@@ -32,8 +34,9 @@ res[!is.na(res)]
 
 
 
-# Exercise 2:
-# ==========
+# 1.3.1: Modifying lists
+#   Exercise 1:
+# ------------
 lstex2 <- list(1:10,
                matrix(seq(from=1,to=20), nrow=4),
                5+3i,
@@ -41,18 +44,23 @@ lstex2 <- list(1:10,
                "UoU",
                c(T,F,T,T,T),
                "Hello"
-	      ) 
+)
+str(lstex2)
+
+# Modifying list
 lstex2[[7]] <- NULL
-lstex2[[5]] <- "Hello UoU"
-lstex2[[4]] <- list('a','b','c','d')
-lstex2[[3]] <- NULL
+lstex2[[5]] <- NULL
+lstex2[[4]] <- list('a', 'b', 'c', 'd')
+lstex2[[3]] <- "Hello UoU"
 lstex2[[1]] <- NULL
-lstex2
+str(lstex2)
 
 
 
-# Exercise 3:
-# ==========
+# 1.4.2: Functions returning multiple objects
+#   Exercise 1:
+# ------------
+
 # Auxiliary function to count the occurrence of each character in the vec
 countAux <- function(vec){
 
