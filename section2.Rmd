@@ -696,8 +696,8 @@ mean(x, na.rm=TRUE)
   - infinite numbers: use $\textcolor{blue}{\textbf{is.infinite()}}$
   - NaNs: use $\textcolor{blue}{\textbf{is.nan()}}$
 * Further:
-  - a $\textcolor{blue}{\textbf{NaN}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ when tested by either $\textcolor{blue}{\textbf{is.nan()}}$ or $\textcolor{blue}{\textbf{is.na()}}$
-  - a $\textcolor{blue}{\textbf{NA}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ only when tested by $\textcolor{blue}{\textbf{is.na()}}$
+  - a $\textcolor{blue}{\textbf{NaN}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ only when tested by $\textcolor{blue}{\textbf{is.nan()}}$
+  - a $\textcolor{blue}{\textbf{NA}}$ will return $\textcolor{blue}{\textbf{TRUE}}$ when tested by either $\textcolor{blue}{\textbf{is.nan()}}$ or $\textcolor{blue}{\textbf{is.na()}}$
   
 ### Examples
 

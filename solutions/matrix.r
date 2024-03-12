@@ -72,6 +72,10 @@ A[-c(2,4),]
 # Part 7:
 # ------
 # Retrieve diagonal
+# Without the use of diag function
+mysub <- matrix(rep(1:6,each=2), ncol=2,byrow=T)
+A[mysub]
+# Use of the diagonal function
 diag(A)
 
 
