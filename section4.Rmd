@@ -764,12 +764,13 @@ The $\texttt{R}$ package contains a lot of data sets. We will use
 the $\textcolor{blue}{\textbf{airquality}}$ data set in the subsequent exercise.
 $\newline$
 
-* Return the $5$ first and the $10$ last entries of the data frame. $\newline$
+* Return the first $5$ and the last $2$ entries of the data frame. $\newline$
   You can load the data frame by invoking $\textcolor{blue}{\textbf{airquality}}$ on the 
   command line.$\newline$
 * How many Ozone entries are missing in the data frame? $\newline$
-* Find the day and month when the max. temperature occurred $\newline$
-* What is the average Ozone level for the days when the temperature >= 80?$\newline$
+* Find the day and month when the max. temperature occurred.$\newline$
+* What is the mean & standard deviation of the Ozone level 
+  for the days when the temperature >= 80?$\newline$
 * How many days have a Solar.R between 150 and 250? 
 
 \newpage
