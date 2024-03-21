@@ -25,14 +25,17 @@ urlcolor: violet
 * Data Analysis Environment
 
 # Why R?
-* Open Source => Free
+* Open Source
 * Scripting language => rapid prototyping
 * The same R-code can run on different OS (MS, MacOs, Linux)
 * Most diverse set of statistical tools
 * A lot of pre-canned [packages/libraries](https://cran.r-project.org/web/packages/)
 * Large community (and very active development)
-* Job "security" (due to its [popularity](https://spectrum.ieee.org/top-programming-languages-2021))
-
+* Job "security" (due to its popularity) 
+  - [IEEE Top Programming Languages 2023](https://spectrum.ieee.org/the-top-programming-languages-2023)
+  - [IEEE Top Programming Languages 2022](https://spectrum.ieee.org/top-programming-languages-2022)
+  - [IEEE Top Programming Languages 2021](https://spectrum.ieee.org/top-programming-languages-2021)
+  
 # From S to R
 
 $\texttt{People are trapped in history and history is trapped in them. (James Baldwin)}$
@@ -79,8 +82,7 @@ $\texttt{People are trapped in history and history is trapped in them. (James Ba
   
 ## Links
   * [Pre-compiled R Binaries (CRAN)](https://cran.r-project.org/)
-  * [Microsoft R Open Binaries](https://mran.microsoft.com/open)
-  * [RStudio IDE](https://www.rstudio.com/)
+  * [RStudio IDE](https://posit.co/downloads/)
   * [Latest R Source Code](https://cran.r-project.org/src/base/R-latest.tar.gz)
 
 # Getting help on R
@@ -110,9 +112,16 @@ help(mean)
 # General statements on R 
 
 * R is **case-sensitive** (cfr. C, C++, Python) => 'a' is different from 'A'.
-* Symbol names/variables: alpha-numeric characters are allowed.
-  * **MUST** start with a **.** (dot) or a **letter**.
-  * if symbol starts with **.** (dot), then second character **MUST** be a letter.
+* Symbol names/variables: letters, digits, ., _ are allowed.
+  * **must** start with a **.** (dot) or a **letter**.
+  * if symbol starts with **.** (dot), then second character **must** be a letter.
+  * can't use **reserved** keywords ( $\textcolor{blue}{\textbf{?Reserved}}$), i.e.:
+    - $\textcolor{blue}{\textbf{if, else, repeat, while, function, for, in, next, break}}$
+    - $\textcolor{blue}{\textbf{TRUE, FALSE, NULL, Inf, NaN, NA}}$ 
+    - $\textcolor{blue}{\textbf{NA\_integer\_,NA\_real\_,NA\_complex\_,NA\_character\_}}$
+  * the aforementioned rules can be overriden by the use of **backticks**, e.g.:
+    - $\textcolor{blue}{\textbf{`if`}}$
+    - $\textcolor{blue}{\textbf{`\_myvar`}}$
 * R commands are separated by:
   * either $\textcolor{blue}{\textbf{;}}$ (semi colon).
   * or newline.
@@ -131,7 +140,7 @@ $\newline$
 * Start R or RStudio
 * Try out the following commands in R.
 
-## Check R's version, system time and Working Directory
+## Check R's version, system time and working directory
 ```{R, eval=FALSE}
 print(R.version.string)
 Sys.time()
@@ -201,6 +210,37 @@ s
 ```{R,eval=FALSE}
 y4 <- c(TRUE,FALSE,TRUE)
 sum(y4)
+```
+
+## Install the $\texttt{lobstr}$ package within R
+
+```{R,eval=FALSE}
+install.packages(pkgs=c("lobstr"), repos=c("http://cran.us.r-project.org"), verbose= TRUE)
+packageVersion("lobstr")                        # Check version of the package installed
+installed.packages()[which("lobstr" == s[,1]),] # Info on the lobstr package
+```
+Info on the $\texttt{lobstr}$ package can be found at:
+
+- [cran.r-project.org website](https://cran.r-project.org/web/packages/lobstr/index.html)
+- [lobstr website](https://lobstr.r-lib.org/)
+
+## Use the newly installated package 
+* approach 1:
+```{R,eval=FALSE}
+x <- 1:10
+lobstr::obj_addr(x)
+lobstr::ref(x, character=TRUE)
+cat(sprintf("Size of the object (Bytes):%s\n", lobstr::obj_size(x)))
+
+```
+
+* approach 2 (more common):
+```{R,eval=FALSE}
+x <- 1:10
+library(lobstr)
+obj_addr(x)
+ref(x, character=TRUE)
+cat(sprintf("Size of the object (Bytes):%s\n", obj_size(x)))
 ```
 
 ## Removing objects from your environment
