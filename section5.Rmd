@@ -1,6 +1,6 @@
 ---
-title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
-subtitle: 'Section 5: Environments, Running R , Libraries and some probability distributions'
+title: 'Hands-on Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Section 5: Heterogeneous vectors (Lists & Dataframes) and IO'
 author: "Wim R.M. Cardoen"
 date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
@@ -15,256 +15,780 @@ output:
     - amsmath
     - xcolor
     - hyperref
-bibliography: [latex/intro.bib]
-csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
 urlcolor: violet
 ---
 
-\newpage
-
-# R Environments
-\texttt{under construction}
-
-# Running R
-\texttt{under construction}
-
-# R Packages
-\texttt{under construction}
-
-## Installation of R packages
-
-## Using R packages
-
-# Probability distributions
-
-R comes with the most important probability distributions installed.$\newline$
-For the theoretical underpinnings, see e.g. [@CASELLA:2002a].$\newline$
-
-Probability distributions can be grosso modo classified into:
-\begin{itemize}
-\item discrete distributions
-\item continuous distributions
-\end{itemize}
-
-## Discrete distributions
-
-Let $\mathbb{P}(X=k;\{\xi\})$) be a discrete probability mass function when the random variable $X=k$ $\newline$
-and which depends on the parameter set $\{\xi\}$.$\newline$
-Let $\texttt{keyword}$ be the (variable) name of the corresponding distribution. Then,
-
-\begin{itemize}
-   \item $\textbf{d}\texttt{keyword}(k, \ldots)$ : calculates the probability $\mathbb{P}(X=k)$  
-   \item $\textbf{p}\texttt{keyword}(k, \ldots)$ : calculates the cumulative probability function (CDF) at $k$:$\newline$
-           $\displaystyle F(X=k;\{\xi\}) := \sum_{j=0}^k \mathbb{P}(X=j)$
-   \item $\textbf{q}\texttt{keyword}(p, \ldots)$: calculates the value of $k$ where $p=F(k;\{\xi\})$ or $\newline$
-          $\displaystyle k = \lceil F^{-1}(p;\{\xi\}) \rceil$
-   \item $\textbf{r}\texttt{keyword}(n, \ldots)$: generates a vector of $n$ random values sampled from the distribution $\texttt{keyword}$.         
-\end{itemize}
 
 \newpage
 
-Some common discrete probability distributions (implemented in $\texttt{R}$) are displayed in Table \ref{TABLE:DISCRETE}.
+In the first part of this section, two kinds$\footnote{\texttt{R} also has the pairlist. This topic will not be discussed in this section. People interested in this subject, should have a look at \href{https://cran.r-project.org/doc/manuals/r-release/R-ints.pdf}{R-internals}.}$ of $\textbf{heterogeneous}$ vectors will be discussed:
+\begin{itemize}
+\item lists
+\item data frames (\& tibbles)
+\end{itemize}
 
-\begin{table}[ht]
-   \begin{center}
-    \begin{tabular}{c|ccc}
-  \texttt{keyword} & Name     &  $\mathbb{P}(X=k;\{\xi\})$                                           & Parameter set ($\{\xi\}$) \\
-  \hline
-  \texttt{binom}  & Binomial &  $\displaystyle \binom{n}{k}p^k(1-p)^{n-k}$         & $0 \le p \le 1$  \\
-  \texttt{nbinom} & Negative Binomial & $\displaystyle  \binom{k+r-1}{k}(1-p)^kp^r$    & $0 \le p \le 1$ ; $r>0$ \\
-  \texttt{hyper}  & Hypergeometric & $\displaystyle \frac{ \binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}$ &  $N\in \{0,1,2,\dots\}$; $K,n\in\{0,1,\ldots,N\}$ \\ 
-  \texttt{pois}   & Poisson  &  $\displaystyle \frac{\lambda^k\,e^{-\lambda}}{k!}$ & $0 < \lambda < \infty$ \\  
-  \hline
-  \end{tabular}
-  \end{center}
-  \caption{A few common discrete probability distributions.}
-  \label{TABLE:DISCRETE}
-\end{table}  
+$\textbf{Input-output (IO)}$ in $\texttt{R}$ forms the subject of the latter part.
+
+# R Lists
+
+A $\texttt{list}$ is a vector that $\textbf{may}$ contain one or more $\textbf{components}$.$\newline$
+The components can be $\textbf{heterogeneous}$ objects (atomic types, functions, lists\footnote{Due to this feature, they are also called $\texttt{recursive}$ vectors.}, $\ldots$).
+
+Under the hood, the list is implemented as a vector of pointers to its top-level components.$\newline$
+The list's length equals the number of top-level components.
+
+## Creation of a list
+
+An $\texttt{R}$ list can be created in several ways:
+
+* using the $\textcolor{blue}{\textbf{list()}}$ function (most common)
+* via the $\textcolor{blue}{\textbf{vector()}}$ function
+* via a cast using the $\textcolor{blue}{\textbf{as.list()}}$ function
 
 ### Examples
 
-- Let's consider the following distribution: $\texttt{binom}(p=0.3,n=5)$.$\newline$
-  
-  ```{R echo=TRUE, comment=''}
-  n <- 5
-  p <- 0.3
-  # Alternative code for the binom distribution
-  mybinom <- function(n,p){
-      v <- vector(mode="double", length=(n+1))
-      for(k in 0:n){
-        v[k+1] <- choose(n,k)*p^k*(1-p)^(n-k)  
-      }
-      return(v)
-  }
-  pvec <- mybinom(n,p)
+* use of the $\textcolor{blue}{\textbf{list()}}$ function
+
+  ```{R, echo=TRUE, comment=''}
+  # Creating an empty list
+  x1 <- list()
+  str(x1)
+  ```
+
+  ```{R, echo=FALSE, comment=''}
+  cat(sprintf("typeof(x1):%s   class(x1):%s   length(x1):%d\n", 
+                 typeof(x1), class(x1), length(x1)))
   ```
   $\newline$
-
-  * Value of the PMF at $k=\{0,1,\ldots,5\}$:
-    ```{R echo=TRUE, comment=''}
-    for(k in 0:n){
-        cat(sprintf("  P(X=%d):%8.6f and should be %8.6f\n", 
-                    k, dbinom(k, size=n, p), pvec[k+1]))
-    }  
-    ```
-
-  * Value of the CDF at $k=\{0,1,\ldots,5\}$:
-    ```{R echo=TRUE, comment=''}
-    for(k in 0:n){
-        cat(sprintf("  F(X=%d):%8.6f and should be %8.6f\n", 
-        k, pbinom(k,size=n,p), sum(pvec[1:(k+1)]) ))
-    }  
-    ```
   
-  * The quantile function:  
-    ```{R echo=TRUE, comment=''}
-    pvec <- c(0.0, 0.25, 0.50, 0.75, 1.00)
-    for(item in pvec){
-        cat(sprintf("  P:%4.2f => k=%d\n", 
-        item, qbinom(item,size=n, prob=p)))
-    }
-    ```  
-    
-  * Sampling random numbers from the distribution:
-    ```{R echo=TRUE, comment=''}
-    tot <- 15
-    vec <- rbinom(tot,size=n, prob=p)
-    print(vec)
-    ```
-     
-     
- 
-## Continuous distributions
+  ```{R, echo=TRUE, comment=''}
+  # A more realistic list
+  x2 <- list(1:10, c("hello","world"), 
+             3+4i, matrix(data=1:6,nrow=2,ncol=3,byrow=TRUE))
+  str(x2)
+  ```
 
-Let $f(x; \{\xi\})$ be a continuous probability density function (pdf), which depends on the variable $x$ and $\newline$ 
-the parameter set $\{\xi\}$. $\newline$
-Let $\texttt{keyword}$ be the (variable) name of the corresponding distribution. Then,
+  ```{R, echo=FALSE, comment=''}
+  cat(sprintf("typeof(x2):%s   class(x2):%s   length(x2):%d\n", 
+                 typeof(x2), class(x2), length(x2)))
+  ```
 
-\begin{itemize}
-   \item $\textbf{d}\texttt{keyword}(x, \ldots)$ : calculates the value of the pdf at $x$, i.e.  $\newline$
-         $f(x;\{\xi\})$
-   \item $\textbf{p}\texttt{keyword}(x, \ldots)$ : calculates the cumulative probability function (cdf) at $x$:$\newline$
-           $\displaystyle F(x;\{\xi\}) := \int_{-\infty}^{x} f(t;\{\xi\})\, dt$
-   \item $\textbf{q}\texttt{keyword}(p, \ldots)$: calculates the value of $x$ where $p=F(x;\{\xi\})$ or $\newline$
-          $\displaystyle x = F^{-1}(p;\{\xi\})$
-   \item $\textbf{r}\texttt{keyword}(n, \ldots)$: generates a vector of $n$ random values sampled from the distribution $\texttt{keyword}$.         
-\end{itemize}
+  $\newline$
+  
+  ```{R, echo=TRUE, comment=''}
+  # Using existing names
+  x3 <- list(x=1, y=2, str1="hello", str2="world", vec=1:5)
+  str(x3)
+  ```
 
-\newpage
+  $\newline$
+  
+  ```{R, echo=TRUE, comment=''}
+  # Applying names to a list
+  x4 <- list(matrix(data=1:4,nrow=2,ncol=2), c(T,F,T,T), "hello")
+  names(x4) <- c("mymat","mybool","mystr")
+  str(x4)
+  ```
+  
+  $\newline$
 
-Some common continuous probability distributions (implemented in $\texttt{R}$) are displayed in Table \ref{TABLE:CONTINUOUS}.
+* use $\textcolor{blue}{\textbf{vector()}}$ function:
 
-\begin{table}[ht]
-   \begin{center}
-    \begin{tabular}{c|cccc}
-  \texttt{keyword} & Name & $f(x;\{ \xi \})$      &      \texttt{Dom}($x$)   & Parameter set ($\{\xi\}$)\\
-  \hline
-  \texttt{unif}   &  Uniform      &  $\displaystyle \frac{1}{(b-a)}$    &   $a \le x \le b$ &  $a,b$  \\
-  \texttt{norm}   &  Normal       &  $\displaystyle \frac{1}{\sqrt{2\pi\sigma^2}}\,\exp\Big (-\frac{(x-\mu)^2}{2\sigma^2} \Big )$ & $-\infty < x < \infty$  & $-\infty < \mu <  \infty$ , $\sigma >0$  \\
-  \texttt{cauchy} &  Cauchy       &  $\displaystyle \frac{1}{\pi\sigma} \frac{1}{1+\Big(\frac{x-\theta}{\sigma}  \Big)^2}$    &  $-\infty < x < \infty$  &  $-\infty < \theta <  \infty$ , $\sigma >0$ \\
-  \texttt{t}      &  Student's t  &  $\displaystyle \frac{\Gamma(\frac{\nu+1}{2})}{\Gamma(\frac{\nu}{2})}\frac{1}{\nu \pi} \frac{1}{\Big(1+\frac{x^2}{\nu}\Big)^{(\nu+1)/2}}$ &  $-\infty < x < \infty$  & $\nu=1,2, \ldots$ \\
-  \texttt{chisq}  &  Chi-squared  &  $\displaystyle \frac{1}{\Gamma(\nu/2)2^{(\nu/2)}} x^{(\nu/2)-1}e^{-\frac{x}{2}}$ & $0 \le x < \infty$  & $\nu=1,2, \ldots$ \\
-  \texttt{f}      &  F            &  $\displaystyle \frac{\Gamma \Big(\frac{\nu_1+\nu_2}{2}\Big)}{ \Gamma \Big(\frac{\nu_1}{2}\Big) \Gamma \Big(\frac{\nu_2}{2}\Big)} \frac{x^{(\nu_1-2)/2}}
-                            {\Bigg(1+  \Big( \frac{\nu_1}{\nu_2}   \Big)x \Bigg)^{(\nu_1+\nu_2)/2}}$ &  $ 0 \le x < \infty$  &   $\nu_1, \nu_2=1,2, \ldots$\\
-  \texttt{exp}    &  Exponential  &  $\displaystyle \lambda e^{-\lambda x}$ & $0 \le x < \infty$&   $\lambda >0$\\
-     \hline
-    \end{tabular}
-  \end{center}
-  \caption{A few common continuous probability distributions.}
-  \label{TABLE:CONTINUOUS}
-\end{table}   
+  Allows to create/allocate an empty vector of a certain length.
+  
+  ```{R, echo=TRUE, comment=''}
+  # Allocate a vector of length 5
+  x5 <- vector(mode="list", length=5)
+  str(x5)
+  ```
+  
+  $\newline$
+  
+* using the $\textcolor{blue}{\textbf{as.list()}}$ function
+  
+  ```{R, echo=TRUE, comment=''}
+  x6 <- as.list(matrix(5:10,nrow=2))
+  str(x6)
+  ```
+  
+  $\newline$
+  
+  Note: The 'inverse' operation is $\textcolor{blue}{\textbf{unlist()}}$
+  
+  ```{R, echo=TRUE, comment=''}
+  x7 <- unlist(x6)
+  str(x7)
+  ```
+
+## Accessor operators $[\;\;]$, $[[\;\;]]$, $\$$ in $\texttt{R}$.
+
+### General statements
+
+The operator $[[i]]$ selects $\textbf{only one component}$ (in cases of lists) or $\newline$
+$\textbf{only one element}$ in case of homogeneous vectors.
+
+The operator $[\;]$ allows to select $\textbf{one or more components}$ (in the case of lists) $\newline$
+or $\textbf{one or more elements}$ in the case of homogeneous vectors.
+
+The $\textbf{\$}$ operator can $\textbf{only}$ be used for $\textbf{generic/recursive vectors}$.$\newline$
+If you use the $\textbf{\$}$ operator to other objects you will obtain an $\textcolor{red}{\textbf{error}}$.$\newline$
+The $\textbf{\$}$ operator can $\textbf{only}$ be followed by a string or a non-computable index.
+
+### Homogenous vectors
+
+In praxi, for homogeneous vectors there is hardly any difference between $[[\;]]$ and $[\;]$ $\newline$
+$\textbf{except}$ that $[[\;]]$ does $\textbf{NOT}$ allow to select more than $\textbf{one}$ element.
+
+$\textcolor{orange}{\textbf{Note: The operator [[\;]] can be used as a tool of defensive programming.}}$
+  
+  
+#### Examples 
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+a <- seq(from=1,to=30,by=3)
+a
+```
+  
+$\newline$
+  
+```{R, echo=TRUE, comment=''}
+# Extraction of ONE element
+cat(sprintf(" a[[2]] : %d\n", a[[2]]))
+cat(sprintf(" a[2]   : %d\n", a[2]))
+```
+  
+$\newline$
+  
+```{R, echo=TRUE, error=TRUE, comment=''}
+# Extraction of MORE than 1 element using [[]] => ERROR
+a[[c(2,3)]]
+```
+  
+$\newline$
+  
+$\textbf{but:}$
+```{R, echo=TRUE, error=FALSE, comment=''}
+# Extraction of MORE than 1 element using [] => OK
+a[c(2,3)]
+```
+  
+### Heterogeneous vectors (i.e. lists and derived classes)
+
+We stated earlier that the operator $[[\;]]$ allows to select $\textbf{only one}$ component.$\newline$ 
+It also means that this operator selects $\textbf{the component as is}$ (matrix, list, function,$\ldots$).
+
+The operator $[\;]$ allows to select more than $\textbf{one}$ component.$\newline$
+Therefore, in order to return potentially heterogeneous components it $\textbf{always}$ $\newline$ returns a $\texttt{list}$
+even if only one component were to be returned.
+
+#### Examples
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+str(x2)
+```
+
+$\newline$
+
+```{R, echo=TRUE, error=FALSE, comment=''}
+# Selection using [[]]
+x24 <- x2[[4]]
+x24
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+class(x24)
+typeof(x24)
+length(x24)
+```
+
+$\newline$
+
+```{R, echo=TRUE, error=FALSE, comment=''}
+# Selection using []
+x24 <- x2[4]
+x24
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+class(x24)
+typeof(x24)
+length(x24)
+```
+
+$\newline\newline$
+
+```{R, echo=TRUE, comment=''}
+# Select third el. of the FIRST component
+x13 <- x2[[1]][3] 
+x13
+```
+
+which is the same as:
+
+```{R, echo=TRUE, comment=''}
+v1 <- x2[[1]] 
+v1[3]
+```
+
+$\newline\newline$
+
+$\textbf{Heterogeneous}$ vectors are also known as $\textbf{recursive/generic}$ vectors, $\newline$ as can be seen in the following example:
+
+```{R, echo=TRUE, comment=''}
+# A more advanced 'recursive' example
+v <- list(v1=1:4, 
+          lst1=list(a=3, b=2, c=list(x=5,y=7, v2=seq(from=7,to=12))))
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extracting the component as a homogeneous vector
+v[[2]][[3]][[3]]
+class(v[[2]][[3]][[3]])
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extracting as a list
+v[[2]][[3]][3]
+class(v[[2]][[3]][3])
+```
+
+$\newline$
+
+We can extract the same data using names if available:
+
+```{R, echo=TRUE, comment=''}
+v$lst1$c$v2
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# List of function objects
+lstfunc <- list(cube=function(x){x**3},
+                quartic=function(x){x**4})
+lstfunc$cube(5)
+lstfunc$quartic(5)
+```
+
+### Exercises
+
+* Let's consider the following list:
+  ```{R, echo=TRUE, comment=''}
+  lstex1 <- list(
+                 list(
+                      seq(from=4,to=40,by=5),
+                      "hello world",
+                      list(
+                           matrix(100:119,nrow=5),
+                           "bye",
+                           c(7,13,17),
+                           list(451,-1,-17) 
+                          )
+                     )
+                )
+  ```
+  
+  Extract the following data from $\texttt{mylistex1}$:
+  
+  * the elements $7\,13$ as a vector.
+  * the second column of $\texttt{matrix(100:119,nrow=5)}$ as a matrix.
+  * $-1$ as a scalar.
+  * $-1$ as a list.
+  * $\textbf{all}$ numerical values into a vector. (Hint:$\textcolor{blue}{\textbf{unlist()}}$)
+  
+
+## Modifying lists
+
+* $\textbf{Removal/deletion}$ of components: 
+
+  Set the list element which refers to the component to $\textcolor{blue}{\textbf{NULL}}$.$\newline$
+  The list will be $\textbf{automatically}$ re-indexed and its length adjusted.
+  
+  ```{R, echo=TRUE, comment=''}
+  mylst1 <- list(a=1:10, b=seq(1,5), matrix(1:10, nrow=2), 
+                "hello", "world", 1:5 )
+  str(mylst1)              
+  ```
+  
+  $\newline$
+  
+  ```{R, echo=TRUE, comment=''}
+  # Removal of the 5th component
+  mylst1[[5]] <- NULL
+  str(mylst1)
+  ```
+  $\newline\newline$
+  
+* $\textbf{Appending}$ an object: 
+
+  Assign the object ($\texttt{obj}$) to the list element with index $\texttt{length(lst)+1}$
+  
+  ```{R, echo=TRUE, comment=''}
+  # Creation of a list mylst2
+  mylst2 <- list( 1:5, 'a' , 'b')
+  str(mylst2)
+  ```
+  $\newline$
+  
+  ```{R, echo=TRUE, eval=TRUE, comment=''}
+  # Appending a Boolean vector to the existing list mylst2
+  mylst2[[length(mylst2)+1]] <- c(T,F,T)
+  str(mylst2)
+  ```
+  
+  $\newline$
+  If you set the index to a number which is $\textbf{larger}$ than $\texttt{length(lst) +1}$ $\newline$
+  all the new intermittent list elements will be set to $\texttt{NULL}$. $\newline$ 
+  You can get rid of these additional $\texttt{NULL}$ values by $\textbf{subsequently}$ deleting them.
+  
+  ```{R, echo=TRUE, eval=TRUE, comment=''}
+  # Insert a component at an index > length(mylst2)+1
+  # -> we will get some intermittent NULL values.
+  mylst2[[7]] <- "value"
+  str(mylst2)
+  ```
+  
+  $\newline$
+  
+  ```{R, echo=TRUE, eval=TRUE, comment=''}
+  # Delete the NULL values! Start from the end!
+  mylst2[[6]] <- NULL
+  mylst2[[5]] <- NULL
+  str(mylst2)
+  ```
+  
+  $\newline$
+  
+* $\textbf{Insertion}$ of new components $\newline$
+
+  Create a new vector containing three parts:
+  * the 'left' sublist
+  * the new components 
+  * the 'right' sublist
+  
+  ```{R, echo=TRUE, eval=TRUE, comment=''}
+  str(mylst2) 
+  ```
+  
+  $\newline$
+  
+  ```{R, echo=TRUE, eval=TRUE, comment=''}
+  # Add new component at index 4
+  newlst2 <- c(mylst2[1:3], "NEW", mylst2[4:length(mylst2)])
+  str(newlst2)
+  ```
+  
+### Exercises
+
+* Create the following list:
+  ```{R, echo=TRUE, comment=''}
+  lstex2 <- list(1:10,
+                 matrix(seq(from=1,to=20), nrow=4),
+                 5+3i,
+                 list('a','d','b'),
+                 "UoU",
+                 c(T,F,T,T,T),
+                 "Hello"
+                )
+  ```
+  
+  Perform some operations (deletions, insertions, modifications) on $\texttt{lstex2}$ $\newline$
+  such that $\texttt{lstex2}$ takes on the following form:
+  
+  ```{R, echo=TRUE, comment=''}
+  lstex2 <- list( matrix(seq(from=1,to=20), nrow=4),
+                 "Hello UoU",
+                 list('a','b','c','d'),
+                 c(T,F,T,T,T)
+                )
+  ```      
+  
+
+## Functions: return multiple objects 
+
+If a function needs to return $\textbf{multiple objects}$ a list $\textbf{must}$ be used.
+
+### Example
+
+```{R, echo=TRUE, comment=''}
+func01 <- function(n)
+{
+   x <- n*(n+1)/2
+   y <- cbind(1:n,(1:n)^2)
+   return(list('x'=x,'y'=y))
+} 
+n <- 8
+res <- func01(n)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+res$x
+res$y
+```
+
+### Exercises
+
+* Write the function $\texttt{countOcc(content)}$ which returns
+
+  * the occurrence of each letter in the string $\texttt{content}$.
+  * the occurrence of each non-letter character in the string $\texttt{content}$.
+  
+  
+  ```{R, echo=FALSE}
+  # Auxiliary function to count the occurrence of each character in the vec
+  countAux <- function(vec){
+
+     uniq_el <- unique(vec) 
    
-where $\Gamma(x)$ stands for the gamma function which has the following mathematical form:
-\begin{equation}
-   \Gamma(x) := \int_0^{\infty} t^{x-1} e^{-x} dt \nonumber
-\end{equation}
+     if (length(uniq_el)>0) {
+         count <- vector(mode="integer", length=length(uniq_el)) 
+         for(i in seq_along(uniq_el)){
+             count[i] <- sum(uniq_el[i] == vec)
+         }
+         names(count) <- uniq_el
+         return(count)
+     }
+     return(NULL)
+  }   
+
+  # Count the occurrence  of 
+  #   a.the letters in content
+  #   b.the non-letters in content
+  countOccurrence <- function(content){
+  
+     vec <- strsplit(content, split='')
+     vec <- tolower(vec[[1]])
+     vecLetters <- sort(vec[vec %in% letters])
+     cvecLetters <- vec[!(vec %in% letters)]
+   
+     return(list(  countAlpha=countAux(vecLetters),
+                 countNonAlpha=countAux(cvecLetters)))
+  }   
+  ```
+  $\newline$
+  If we use the text of the First Amendment of the Bill of Rights\footnote{The text was obtained from $\href{https://www.law.cornell.edu/constitution/first_amendment}{https://www.law.cornell.edu/constitution/first\_amendment}$} as argument for $\texttt{countOcc}$,
+  
+  ```{R,echo=TRUE,comment=''}
+    # Split the text to make it readable
+    l1 <- "Congress shall make no law respecting an establishment of religion,"
+    l2 <- "or prohibiting the free exercise thereof;"
+    l3 <- "or abridging the freedom of speech, or of the press;"
+    l4 <- "or the right of the people peaceably to assemble,"
+    l5 <- "and to petition the government for a redress of grievances."
+    # Glue the chunks {l1,l2,l3,l4,l5} together
+    firstamend <- paste(l1, l2, l3, l4, l5, sep=" ")
+  ```
+  
+  we obtain the following output:
+  
+  ```{R,echo=TRUE,comment=''}
+  res <- countOccurrence(firstamend)
+  res
+  ```
+  
+  $\newline$
+  
+  Note/hints:
+  
+  * We don't distinguish lowercase letters from uppercase letters.
+  * $\textcolor{blue}{\textbf{strsplit()}}$ : splits a string into its characters.
+  * $\textcolor{blue}{\textbf{tolower()}}$ : converts letters to their lower case counterparts.
+  * $\textcolor{blue}{\textbf{unique()}}$  : extracts the unique elements of a vector.
+  * $\texttt{R}$ has a built-in vector $\textcolor{blue}{\textbf{letters}}$.
+  
+
+\newpage
+
+# R Dataframes
+
+A $\texttt{date frame}$ is a $\texttt{list}$ with three $\texttt{attributes}$:
+\begin{itemize}
+\item $\textcolor{blue}{\textbf{names}}$ : component names
+\item $\textcolor{blue}{\textbf{row.names}}$ : row names
+\item $\textcolor{blue}{\textbf{class}}$: $\textcolor{blue}{\textbf{data.frame}}$
+\end{itemize}
+
+From the above, we can infer that a data frame has the the $\textbf{same}$ row names for each component (columns). 
+The components of a data frame can be vectors, factors, numerical matrices, lists or other data frames. 
+
+In praxi, a $\textbf{data frame}$ can be conceptualized as a $\textbf{generalized (i.e. heterogeneous) matrix/table}$
+$\newline$ $\textbf{where each column has its own type but where each column has the same number of rows}$.
+
+## Creating a data frame
+
+* use of the $\textcolor{blue}{\textbf{data.frame}}$ function.
+
+* some IO functions generate a data frame when they read a file.
+  e.g. $\textcolor{blue}{\textbf{read.table()}}$, $\textcolor{blue}{\textbf{read.csv()}}$.
+  
+### Examples
+
+```{R, echo=TRUE, comment=''}
+# Creation of a data frame using the data.frame function:
+vec1 <- c("Smith", "Jensen", "McFall", "Johnson", 
+          "Brown", "Williams", "Wilson", "Roberts")
+vec2 <- c(4, 3, 0 , 6, 2, 0, 5, 1)
+vec3 <- c(100000, 80000, 140000, 120000, 60000, 30000, 170000, 100000)
+vec4 <- c("Salt Lake", "Provo", "Park City", "Provo", 
+          "Logan", "Ogden", "Provo", "Salt Lake")
+df1  <- data.frame(family=vec1, nchildren=vec2, income=vec3, location=vec4)
+df1
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Creation of a data frame after reading a data file
+df2 <- read.table(file="./data/seaice.txt", header=TRUE)
+cat(sprintf("Length(df2) :%d\n", length(df2)))
+cat(sprintf("Dim. of df2 :\n"))
+dim(df2)
+```
+
+$\textbf{Note}$:
+
+* Since $\texttt{R\,4.0.0}$, the default value for the argument $\texttt{stringsAsFactors}$ in the function $\newline$ $\textcolor{blue}{\textbf{data.frame()}}$
+  has been set to $\texttt{FALSE}$.
+
+* The functions $\textcolor{blue}{\textbf{head()}}$ and $\textcolor{blue}{\textbf{tail()}}$ display the first $n$, respectively last $n$ lines$\newline$ 
+  (default: $6$) of a data frame.
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Head of data frame df2 with the first 6 lines (default)
+head(df2)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Tail of data frame df2 with the last 4 line
+tail(df2, n=4)
+```
+
+## Accessing elements of a data frame
+
+As we discussed previously, a data frame is a list with some extra attributes.$\newline$ 
+But, it has also features of a (heterogeneous) matrix. 
+
+Therefore, the elements of a data frame can be accessed in $\textbf{two}$ different ways:
+\begin{itemize}
+\item using the list syntax
+\item using the matrix syntax
+\end{itemize}
 
 ### Examples
 
-- Let's consider the following distribution: $N(\mu=5.0,\sigma^2=4.0)$.$\newline$
-  Therefore, $\texttt{distro}$:$\texttt{norm}$
-  
-  \begin{figure}[h]
-     \centering
-        \includegraphics[width=0.60\textwidth]{img/norm.pdf}
-        \caption{Plot of the normal distribution (red). The area under the curve (blue) represents$\newline$the cumulative probability at $x=8.0$.}
-  \end{figure}
- 
-  ```{R echo=TRUE, comment=''}
-  x <- 8.0
-  mu <- 5.0
-  sigma <- 2.0
-  ```
-  $\newline$
+* Using the $\texttt{list}$ syntax:
 
-  * Value of the PDF at $x$:
-    ```{R echo=TRUE, comment=''}  
-    cat(sprintf("The density at %f is %12.10f\n", x, dnorm(x,mean=mu, sd=sigma)))
-    ```
-    
-  * Value of the CDF at $x$:  
-    ```{R echo=TRUE, comment=''}
-    prob <- pnorm(x,mean=mu,sd=sigma)
-    cat(sprintf("The Cumulative Probability at %f is %12.10f", x, prob))
-    ```
-    
-  * The quantile function:  
-    ```{R echo=TRUE, comment=''}
-    cat(sprintf("The point where the Cumulative Probability is %12.10f: %8.4f", 
-                 prob, qnorm(prob, mean=mu, sd=sigma)))
-    ```
-    
-  * Sampling random numbers from the distribution:
-    ```{R echo=TRUE, comment=''}
-    vec <- rnorm(n=10, mean=mu, sd=sigma)
-    print(vec)
-    ```
+```{R, echo=TRUE, comment=''}
+# Extract the names of the components (columns)
+names(df1)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract the list's second component as a vector
+str(df1[[2]])
+cat(sprintf("df1[[2]]:%s\n", typeof(df1[[2]])))
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract the list's second component as a list (dataframe)
+df1[2]
+str(df1[2])
+cat(sprintf("df1[2]:%s\n", typeof(df1[2])))
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract a list's component using its name
+df1$location
+str(df1$location)
+```
+
+$\newline$
+
+* Using the $\texttt{matrix}$ syntax
+
+```{R, echo=TRUE, comment=''}
+colnames(df1)
+rownames(df1)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract a few elements
+df1[3,3]
+df1[8,4]
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract a column => vector
+df1[, 3]
+df1[,'income']
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract a column but preserve a dataframe
+df1[,'income',drop=FALSE]
+typeof(df1[,'income',drop=FALSE])
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Extract everythng except fourth column
+df1[c(1,4,5),-4]
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Find all the family with an income >=100,000
+ind <- which(df1$income >= 100000)
+df1[ind,'family']
+```
+
+## Modifying the data frame
+
+* Adding columns and rows: $\newline$
+  use the $\textbf{cbind()}$ and $\textbf{rbind()}$ functions (as in the case of matrices)
+
+```{R,echo=TRUE,comment=''}
+# Create a new data frame
+v1 <- 1:10
+v2 <- 11:20
+v3 <- 21:30
+mydf1 <- data.frame(x=v1, y=v2, z=v3)
+mydf1
+```
+
+$\newline$
+```{R,echo=TRUE,comment=''}
+# Add a new column
+mydf2 <- cbind(mydf1, w=31:40)
+mydf2
+```
+
+$\newline$
+```{R,echo=TRUE,comment=''}
+# Add a new row
+mydf3 <- rbind(mydf2, c(11,21,31,41))
+mydf3
+```
+
+* Remove columns and rows:
+
+```{R,echo=TRUE,comment=''}
+# Remove columns 
+mydf3$z <- NULL      # Syntax 1
+mydf3[,2] <- NULL    # Syntax 2
+mydf3
+```
+
+```{R,echo=TRUE,comment=''}
+# Remove row
+mydf3 <- mydf3[-c(4,7,8),]
+mydf3
+```
+
+
+## Attach and detach operations
+
+* $\textcolor{blue}{\textbf{attach()}}$: allows to use a data frame's variables without invoking the name of the data frame, i.e.
+  inserts the data frame on the $\textbf{search path}$.
+  
+* $\textcolor{blue}{\textbf{detach()}}$: undo the $\textcolor{blue}{\textbf{attach()}}$ operation but can also unload a library.  
+
+* $\textcolor{blue}{\textbf{search()}}$: gives an array of the $\textbf{attached}$ packages and R objects (usually data frames).
+
+This topic will be discussed in more detail in a future section i.e. ($\texttt{Environments}$).
+  
+### Examples
+
+* Use of the $\textcolor{blue}{\textbf{attach()}}$ and $\textcolor{blue}{\textbf{search()}}$ functions:
+  
+```{R,echo=TRUE,error=TRUE, comment=''}
+# Prior to attaching mydf1
+mydf1
+search()
+x
+```
+
+$\newline$
+
+```{R,echo=TRUE, error=TRUE, comment=''}
+# attach the data frame
+attach(mydf1)
+search()
+x
+```
+  
+$\newline$  
+
+* Use of the $\textcolor{blue}{\textbf{detach()}}$ function:
+
+```{R,echo=TRUE, error=TRUE, comment=''}
+# attach the data frame
+detach(mydf1)
+search()
+x
+```
 
 ## Exercises
 
-\begin{enumerate}
-\item Generate vectors with $10^4$, $10^5$, $10^6$, $10^7$ random numbers from the $\chi^2(\nu=5)$ distribution.$\newline$
-      Calculate the mean, as well as the variance for each of those vectors. ($\textcolor{blue}{\textbf{mean()}}$, $\textcolor{blue}{\textbf{var()}}$) $\newline$
-      Note: If $X \sim \chi^2(\nu)$ $\Rightarrow$ $\mathbb{E}[X]=\nu$ and $\mathbb{V}[X]=2\nu$
-\item A brewer from the far-away lands of Hatu wants to follow the land's alcohol ordinance (i.e. a maximum of $5\%$ ethanol per volume). In order to comply with the law he sent a batch of independent samples to a certified lab. The lab results are to be found in the file \texttt{data/beer.csv}.
+The $\texttt{R}$ package contains a lot of data sets. We will use 
+the $\textcolor{blue}{\textbf{airquality}}$ data set in the subsequent exercise.
+$\newline$
 
-His plan is to perform a simple one-sided hypothesis test:
-\begin{align}
-  H_0 :& \;\mu_0=5.0 \;\;\;\nonumber \\ 
-  H_1 :& \;\mu \neq \mu_0 \nonumber
-\end{align}
+* Return the first $5$ and the last $2$ entries of the data frame. $\newline$
+  You can load the data frame by invoking $\textcolor{blue}{\textbf{airquality}}$ on the 
+  command line.$\newline$
+* How many Ozone entries are missing in the data frame? $\newline$
+* Find the day and month when the max. temperature occurred.$\newline$
+* What is the mean & standard deviation of the Ozone level 
+  for the days when the temperature >= 80?$\newline$
+* How many days have a Solar.R between 150 and 250? 
 
-He assumes that the alcohol $\%$ per volume is normally distributed (over the different samples/batches of beer) i.e. $N(\mu, \sigma^2)$ 
-where $\mu$ is supposed to be $5.0$ but where $\sigma^2$ is unknown.
+\newpage
 
-Let $c_{1- \alpha}$ be the (critical) point that separates the acceptance region ($\mathcal{A}$) with $\mathbb{P}(\mathcal{A})=1-\alpha$ from $\newline$
-the rejection region ($\mathcal{R}$) with $\mathbb{P}(\mathcal{R})=\alpha$.
-Therefore,
-\begin{align}
-  \alpha = & \; \mathbb{P}(\overline{X} > c_{1-\alpha}| \mu=\mu_0)   \nonumber \\
-         = & \; \mathbb{P}\Big(\frac{ \overline{X} - \mu_0  }{s/\sqrt{n}} > \frac{ c_{1-\alpha} - \mu_0} {s/\sqrt{n}} \Big )  \nonumber \\
-         = & \; \mathbb{P}\Big ( \frac{ \overline{X} -  \mu_0 }{s/\sqrt{n}} > t_{1-\alpha}(\nu=n-1) \Big ) \nonumber 
-\end{align}
-where t stands for $\texttt{Student's t}$ distribution, $s^2$ is the sample variance, $n$ the number of measurements.
+# Input-Output (IO)
 
-\begin{itemize}
-\item Read the lab results from the file $\texttt{data/beer.csv}$. (Hint: use $\textcolor{blue}{\textbf{read.csv()}}$ to read the file).
-\item Calculate the numerical value ($\tau$) of the test-statistic T, given by:
-\begin{equation}
-   T = \frac{\overline{X}-\mu_0}{s/\sqrt{n}} \;\; \sim \, t(\nu=n-1) \nonumber
-\end{equation}
-\item Determine $t_{0.95}(\nu=n-1)$, i.e. the critical point such that $\mathbb{P}(\mathcal{R})=0.05$.
-\item Decide whether the brewer should reject $H_0$ (i.e. reject if $\tau >t_{0.95}(\nu=n-1)$).
-\item What is the probability of the area under the curve for $t \in [\tau,+\infty)$?
-\end{itemize}
+## Functionality in $\texttt{Base R}$
 
-\item Check out the following \href{https://higherlogicdownload.s3.amazonaws.com/AMSTAT/1484431b-3202-461e-b7e6-ebce10ca8bcd/UploadedImages/Classroom_Activities/HS_7__t-ditribution_and_GOSSET.pdf}{link} 
-      if you are interested in the origin of $\texttt{Student's t}$ distribution.
-\end{enumerate}
-# Bibliography
+## Other options:
 
-
+* library \href{https://readr.tidyverse.org/}{$\texttt{readr}$}
+  - supports a lot of formats (csv, tcsv, delim, $\ldots$)
+  - allows column specification 
+  - faster than $\texttt{Base R}$'s read/write operations
+  - uses a $\texttt{tibble}$ instead of a $\texttt{data frame}$.
+  - for more info: \href{https://r4ds.had.co.nz/data-import.html}{$\texttt{R for Data Science}$ - Chapter 11.Data import}
   
-
-
-
+* library \href{https://github.com/Rdatatable/data.table}{$\texttt{data.table}$}
+  - very fast IO: optimal for large read ($\textcolor{blue}{\textbf{fread()}}$) and write ($\textcolor{blue}{\textbf{fwrite()}}$) operations
+  - memory efficient
+  - low-level parallelism (use of multiple CPU threads)

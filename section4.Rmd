@@ -1,6 +1,6 @@
 ---
-title: 'Hands-on Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
-subtitle: 'Section 4: Heterogeneous vectors (Lists & Dataframes) and IO'
+title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Section 4: Control-flow and functions'
 author: "Wim R.M. Cardoen"
 date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
@@ -15,780 +15,555 @@ output:
     - amsmath
     - xcolor
     - hyperref
+bibliography: [latex/intro.bib]
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
 urlcolor: violet
 ---
 
-
 \newpage
 
-In the first part of this section, two kinds$\footnote{\texttt{R} also has the pairlist. This topic will not be discussed in this section. People interested in this subject, should have a look at \href{https://cran.r-project.org/doc/manuals/r-release/R-ints.pdf}{R-internals}.}$ of $\textbf{heterogeneous}$ vectors will be discussed:
-\begin{itemize}
-\item lists
-\item data frames (\& tibbles)
-\end{itemize}
+# R Control flow
 
-$\textbf{Input-output (IO)}$ in $\texttt{R}$ forms the subject of the latter part.
+$\texttt{Stay out of the loop, the club, the inner circle. (Michael Leunig)}$
 
-# R Lists
+## Conditional constructs
 
-A $\texttt{list}$ is a vector that $\textbf{may}$ contain one or more $\textbf{components}$.$\newline$
-The components can be $\textbf{heterogeneous}$ objects (atomic types, functions, lists\footnote{Due to this feature, they are also called $\texttt{recursive}$ vectors.}, $\ldots$).
+* $\textcolor{blue}{\textbf{if}}$,  $\textcolor{blue}{\textbf{else if}}$, $\textcolor{blue}{\textbf{else}}$
 
-Under the hood, the list is implemented as a vector of pointers to its top-level components.$\newline$
-The list's length equals the number of top-level components.
+  $\texttt{Syntax}$:
+  ```{R, echo=TRUE, eval=FALSE}
+  if(condition1){
+      ...
+  }[else if(condition2){
+      ...
+  }else{
+      ...
+  }]
+  ```
 
-## Creation of a list
+* $\textcolor{blue}{\textbf{ifelse()}}$
+  
+  The $\texttt{R}$ language provides a $\textbf{vectorized}$ version: $\textcolor{blue}{\textbf{ifelse()}}$ .  
 
-An $\texttt{R}$ list can be created in several ways:
+  $\textbf{Syntax}$:$\newline$
+  ```{R, echo=TRUE, eval=FALSE}
+  ifelse(condition, vecy, vecn)
+  ```
+  where:
+  - $\textit{condition}$ : test condition
+  - $\textit{vecy}$ : values in case of $\textcolor{blue}{\textbf{TRUE}}$ values
+  - $\textit{vecn}$ : values in case of $\textcolor{blue}{\textbf{FALSE}}$ values
+  
+  There exists a more general version of $\textcolor{blue}{\textbf{ifelse()}}$ i.e.
+  [dplyr::case_when()](https://dplyr.tidyverse.org/reference/case_when.html)
+  
+  
+### Examples
+```{R, echo=TRUE, comment=''}
+score <- 75.0
 
-* using the $\textcolor{blue}{\textbf{list()}}$ function (most common)
-* via the $\textcolor{blue}{\textbf{vector()}}$ function
-* via a cast using the $\textcolor{blue}{\textbf{as.list()}}$ function
+if(score>=90.0){
+  grade <- 'A'
+} else if((score<90.0) && (score>=80.0)){
+  grade <- 'B'
+} else if((score<80.0) && (score>=70.0)){
+  grade <- 'C'
+} else{
+  grade <- 'D'
+}
+cat(sprintf("Score:%4.2f -> Grade:%s\n", score, grade))
+```
+
+
+```{R, echo=TRUE, comment=''}
+x <- c(-1,2,1,-5,-7)
+c
+res <- ifelse(x>=0, x,-x)
+res
+
+
+```
+
+### Exercises
+
+* Write code to find the smallest of three numbers, e.g. 21, 12, 17 using 
+  an $\textcolor{blue}{\textbf{if}}$, ($\textcolor{blue}{\textbf{else if}}$, $\textcolor{blue}{\textbf{else}}$) construct.
+
+## Loop constructs
+
+There are several loop constructs:
+
+* $\textcolor{blue}{\textbf{while}}$
+
+  ```{R, echo=TRUE, eval=FALSE}
+  while(condition){
+    body of the loop 
+  }
+  ```
+  
+* $\textcolor{blue}{\textbf{for}}$
+
+  ```{R, echo=TRUE, eval=FALSE}
+  for(item in sequence){
+    body of the loop 
+  }
+  ```
+
+* $\textcolor{blue}{\textbf{repeat}}$
+ 
+  ```{R, echo=TRUE, eval=FALSE}
+  repeat{
+    body of the loop 
+  }
+  ```
+  The $\textcolor{blue}{\textbf{repeat}}$ loop has no condition to leave the loop:
+  insert a $\textcolor{blue}{\textbf{break}}$.
+
+  $\newline$
+  
+The $\textcolor{blue}{\textbf{break}}$ statement allows one to break out of the 
+$\textcolor{blue}{\textbf{while}}$, $\textcolor{blue}{\textbf{for}}$ and 
+$\textcolor{blue}{\textbf{repeat}}$ constructs.$\newline$
+The $\textcolor{blue}{\textbf{next}}$ statement allows one to go to the next iteration.
 
 ### Examples
 
-* use of the $\textcolor{blue}{\textbf{list()}}$ function
+* for loop construct
 
-  ```{R, echo=TRUE, comment=''}
-  # Creating an empty list
-  x1 <- list()
-  str(x1)
-  ```
-
-  ```{R, echo=FALSE, comment=''}
-  cat(sprintf("typeof(x1):%s   class(x1):%s   length(x1):%d\n", 
-                 typeof(x1), class(x1), length(x1)))
-  ```
-  $\newline$
-  
-  ```{R, echo=TRUE, comment=''}
-  # A more realistic list
-  x2 <- list(1:10, c("hello","world"), 
-             3+4i, matrix(data=1:6,nrow=2,ncol=3,byrow=TRUE))
-  str(x2)
-  ```
-
-  ```{R, echo=FALSE, comment=''}
-  cat(sprintf("typeof(x2):%s   class(x2):%s   length(x2):%d\n", 
-                 typeof(x2), class(x2), length(x2)))
-  ```
-
-  $\newline$
-  
-  ```{R, echo=TRUE, comment=''}
-  # Using existing names
-  x3 <- list(x=1, y=2, str1="hello", str2="world", vec=1:5)
-  str(x3)
-  ```
-
-  $\newline$
-  
-  ```{R, echo=TRUE, comment=''}
-  # Applying names to a list
-  x4 <- list(matrix(data=1:4,nrow=2,ncol=2), c(T,F,T,T), "hello")
-  names(x4) <- c("mymat","mybool","mystr")
-  str(x4)
-  ```
-  
-  $\newline$
-
-* use $\textcolor{blue}{\textbf{vector()}}$ function:
-
-  Allows to create/allocate an empty vector of a certain length.
-  
-  ```{R, echo=TRUE, comment=''}
-  # Allocate a vector of length 5
-  x5 <- vector(mode="list", length=5)
-  str(x5)
-  ```
-  
-  $\newline$
-  
-* using the $\textcolor{blue}{\textbf{as.list()}}$ function
-  
-  ```{R, echo=TRUE, comment=''}
-  x6 <- as.list(matrix(5:10,nrow=2))
-  str(x6)
-  ```
-  
-  $\newline$
-  
-  Note: The 'inverse' operation is $\textcolor{blue}{\textbf{unlist()}}$
-  
-  ```{R, echo=TRUE, comment=''}
-  x7 <- unlist(x6)
-  str(x7)
-  ```
-
-## Accessor operators $[\;\;]$, $[[\;\;]]$, $\$$ in $\texttt{R}$.
-
-### General statements
-
-The operator $[[i]]$ selects $\textbf{only one component}$ (in cases of lists) or $\newline$
-$\textbf{only one element}$ in case of homogeneous vectors.
-
-The operator $[\;]$ allows to select $\textbf{one or more components}$ (in the case of lists) $\newline$
-or $\textbf{one or more elements}$ in the case of homogeneous vectors.
-
-The $\textbf{\$}$ operator can $\textbf{only}$ be used for $\textbf{generic/recursive vectors}$.$\newline$
-If you use the $\textbf{\$}$ operator to other objects you will obtain an $\textcolor{red}{\textbf{error}}$.$\newline$
-The $\textbf{\$}$ operator can $\textbf{only}$ be followed by a string or a non-computable index.
-
-### Homogenous vectors
-
-In praxi, for homogeneous vectors there is hardly any difference between $[[\;]]$ and $[\;]$ $\newline$
-$\textbf{except}$ that $[[\;]]$ does $\textbf{NOT}$ allow to select more than $\textbf{one}$ element.
-
-$\textcolor{orange}{\textbf{Note: The operator [[\;]] can be used as a tool of defensive programming.}}$
-  
-  
-#### Examples 
-
+```{R, echo=TRUE, comment=''}
+# Loop over all items
+fruit <- c("apple", "pear", "banana", "grape")
+for(item in fruit){
+  cat(sprintf(" Fruit:%s\n", item))
+}
+```
 $\newline$
 
 ```{R, echo=TRUE, comment=''}
-a <- seq(from=1,to=30,by=3)
-a
-```
-  
-$\newline$
-  
-```{R, echo=TRUE, comment=''}
-# Extraction of ONE element
-cat(sprintf(" a[[2]] : %d\n", a[[2]]))
-cat(sprintf(" a[2]   : %d\n", a[2]))
-```
-  
-$\newline$
-  
-```{R, echo=TRUE, error=TRUE, comment=''}
-# Extraction of MORE than 1 element using [[]] => ERROR
-a[[c(2,3)]]
-```
-  
-$\newline$
-  
-$\textbf{but:}$
-```{R, echo=TRUE, error=FALSE, comment=''}
-# Extraction of MORE than 1 element using [] => OK
-a[c(2,3)]
-```
-  
-### Heterogeneous vectors (i.e. lists and derived classes)
-
-We stated earlier that the operator $[[\;]]$ allows to select $\textbf{only one}$ component.$\newline$ 
-It also means that this operator selects $\textbf{the component as is}$ (matrix, list, function,$\ldots$).
-
-The operator $[\;]$ allows to select more than $\textbf{one}$ component.$\newline$
-Therefore, in order to return potentially heterogeneous components it $\textbf{always}$ $\newline$ returns a $\texttt{list}$
-even if only one component were to be returned.
-
-#### Examples
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-str(x2)
-```
-
-$\newline$
-
-```{R, echo=TRUE, error=FALSE, comment=''}
-# Selection using [[]]
-x24 <- x2[[4]]
-x24
-```
-
-$\newline$
-```{R, echo=TRUE, comment=''}
-class(x24)
-typeof(x24)
-length(x24)
-```
-
-$\newline$
-
-```{R, echo=TRUE, error=FALSE, comment=''}
-# Selection using []
-x24 <- x2[4]
-x24
-```
-
-$\newline$
-```{R, echo=TRUE, comment=''}
-class(x24)
-typeof(x24)
-length(x24)
-```
-
-$\newline\newline$
-
-```{R, echo=TRUE, comment=''}
-# Select third el. of the FIRST component
-x13 <- x2[[1]][3] 
-x13
-```
-
-which is the same as:
-
-```{R, echo=TRUE, comment=''}
-v1 <- x2[[1]] 
-v1[3]
-```
-
-$\newline\newline$
-
-$\textbf{Heterogeneous}$ vectors are also known as $\textbf{recursive/generic}$ vectors, $\newline$ as can be seen in the following example:
-
-```{R, echo=TRUE, comment=''}
-# A more advanced 'recursive' example
-v <- list(v1=1:4, 
-          lst1=list(a=3, b=2, c=list(x=5,y=7, v2=seq(from=7,to=12))))
+# Skip all numbers which are multiples of 3
+x <- sample(1:100, size=10, replace=FALSE)
+x
 ```
 
 $\newline$
 
 ```{R, echo=TRUE, comment=''}
-# Extracting the component as a homogeneous vector
-v[[2]][[3]][[3]]
-class(v[[2]][[3]][[3]])
+for(item in x){
+  if(item%%3==0)
+     next
+  cat(sprintf(" %3d is NOT a multiple of 3\n", item))
+}
 ```
 
 $\newline$
 
+* while loop
+
 ```{R, echo=TRUE, comment=''}
-# Extracting as a list
-v[[2]][[3]][3]
-class(v[[2]][[3]][3])
+x <- sample(1:1000, size=100, replace= FALSE)
+isFound <- FALSE
+i <- 1
+while(!isFound){
+  if(x[i]%%7==0){
+      cat(sprintf(" %3d is divisible by 7\n", x[i]))
+      isFound <- TRUE
+  }
+  else{
+      cat(sprintf(" %3d is NOT divisible by 7\n", x[i]))
+      i <- i + 1
+  }
+}
 ```
 
 $\newline$
 
-We can extract the same data using names if available:
+* repeat loop
 
 ```{R, echo=TRUE, comment=''}
-v$lst1$c$v2
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# List of function objects
-lstfunc <- list(cube=function(x){x**3},
-                quartic=function(x){x**4})
-lstfunc$cube(5)
-lstfunc$quartic(5)
+i <- 1
+repeat{
+  # Stop the loop as soon as you find a multiple of 7.
+  if(x[i]%%7==0){
+      cat(sprintf(" %3d is divisible by 7\n", x[i]))
+      break
+  }
+  else{
+      cat(sprintf(" %3d is NOT divisible by 7\n", x[i]))
+      i <- i + 1
+  }
+}
 ```
 
 ### Exercises
 
-* Let's consider the following list:
-  ```{R, echo=TRUE, comment=''}
-  lstex1 <- list(
-                 list(
-                      seq(from=4,to=40,by=5),
-                      "hello world",
-                      list(
-                           matrix(100:119,nrow=5),
-                           "bye",
-                           c(7,13,17),
-                           list(451,-1,-17) 
-                          )
-                     )
-                )
+* The [$\textbf{Fibonacci}$ sequence](https://en.wikipedia.org/wiki/Fibonacci_number) is defined by the following recurrence relation:
+  \begin{equation}
+       F_n =  F_{n-1} + F_{n-2} \;\;\; ,\;\; \forall \; n \in \mathbb{N} \nonumber
+  \end{equation}
+  where $F_1=F_2=1$.$\newline$
+  Calculate all Fibonacci numbers up to $F_{15}$, i.e.:
+  
+  ```{R, echo=FALSE, eval=TRUE, comment=''}
+  x <- vector(mode="integer", length=15)
+  x[1] <- 1
+  x[2] <- 1
+  for(i in 3:15){
+      x[i] <- x[i-1] + x[i-2]
+  }
+  x
   ```
+
+* The square root of a number $n$ is equivalent to solving the following equation:
+  \begin{equation}
+    x^2 - n = 0 \nonumber
+  \end{equation}
+  The solution to this equation can be found iteratively by using e.g. the [Newton-Raphson method](https://en.wikipedia.org/wiki/Newton%27s_method).
+
+  Iteration $i+1$ for $x$ is then given by: 
+  \begin{equation}
+     x_{i+1} = \frac{1}{2}(x_i + \frac{n}{x_i}) \nonumber
+  \end{equation}
+
+  Find the square root of $751$ to a precision of at least 8 decimals. You can set $x_0$ to $n$ itself.
+
+\newpage
+
+# R Functions
+
+## General statements:
+* The $\textbf{most common way}$ to create a function is:
+  \begin{itemize}
+     \item to assign a function name $\textbf{and}$
+     \item use the $\textcolor{blue}{\textbf{function()}}$ statement 
+  \end{itemize}
+
+  $\texttt{\textbf{Syntax}}$:
+
+  ```{R, echo=TRUE, eval=FALSE}
+  function_name <- function(arg_list){
+      # body of the function
+  }
+  ```
+  An $\textbf{anonymous}$ function does $\textbf{not}$ bear a name. It can be useful for short expressions.
+
+* A function in $\texttt{R}$ has 3 important components:
+  \begin{itemize}
+  \item arguments of the function: $\textcolor{blue}{\textbf{formals()}}$ $\newline$
+        $\texttt{R}$ allows default arguments. The default values are assigned using the $\textcolor{blue}{\textbf{=}}$ sign.
+  \item body of the function: $\textcolor{blue}{\textbf{body()}}$
+  \item environment in which the function runs: $\textcolor{blue}{\textbf{environment()}}$
+  \end{itemize}
   
-  Extract the following data from $\texttt{mylistex1}$:
+  Primitive functions (e.g. $\textcolor{blue}{\textbf{prod()}}$) call directly $\texttt{C}$ code with $\texttt{.Primitive()}$ (no $\texttt{R}$ code involved).$\newline$
+  These primitive functions can be found in $\texttt{package:base}$.$\newline$
+  If the functions $\textcolor{blue}{\textbf{formals()}}$, $\textcolor{blue}{\textbf{body()}}$ and $\textcolor{blue}{\textbf{environment()}}$
+  are applied to primitive functions $\textcolor{blue}{\textbf{NULL}}$ will be returned.
+
+* A function can exit in 2 ways:
+  \begin{itemize}
+     \item by returning a value
+        \begin{itemize}
+           \item implicit return: last expression evaluated in the body
+           \item explicit return: by invoking the $\textcolor{blue}{\textbf{return()}}$ function
+        \end{itemize}
+     \item through error e.g. by invoking the $\textcolor{blue}{\textbf{stop()}}$ function   
+  \end{itemize}
+
+  An $\texttt{R}$ function returns $\textbf{only}$ $1$ object. $\newline$ 
+  If you want to return more than $1$ object, put the objects in an $\texttt{R}$ $\textcolor{blue}{\textbf{list()}}$
+  and return the list\footnote{The $\texttt{R}$ concept of a list will be discussed in a later section}. 
   
-  * the elements $7\,13$ as a vector.
-  * the second column of $\texttt{matrix(100:119,nrow=5)}$ as a matrix.
-  * $-1$ as a scalar.
-  * $-1$ as a list.
-  * $\textbf{all}$ numerical values into a vector. (Hint:$\textcolor{blue}{\textbf{unlist()}}$)
+* Assigment of variables in functions:
+
+  Ordinary assignments performed with the function are local and temporary to the function.
+  After the function has been exited the values of these assignments are lost.
+  
+  If global and permanent assignment are needed within a function, you can use the 
+  superassignment operator $\textcolor{blue}{\textbf{<<-}}$ or the $\textcolor{blue}{\textbf{assign()}}$ function.
+  
+* Pass by value or pass by reference
+
+  By default $\texttt{R}$ does a $\textbf{pass by value}$. The $\textbf{pass by reference}$ is possible in $\texttt{R}$ but 
+  requires the use/understanding of the concept of an $\texttt{R}$ environment\footnote{The $\texttt{R}$ concept of an environment will be discussed in a later section}.
   
 
-## Modifying lists
+### Examples
 
-* $\textbf{Removal/deletion}$ of components: 
+* Implicit return
+```{R, echo=TRUE, comment=''}
+a <- 2.0
+b <- 8.0
+myprod1 <- function(x,y){
+  x*y
+}
+cat(sprintf(" Prod of %.1f and %.1f is %.1f\n", a, b, myprod1(a,b)))
+```
+$\newline$
 
-  Set the list element which refers to the component to $\textcolor{blue}{\textbf{NULL}}$.$\newline$
-  The list will be $\textbf{automatically}$ re-indexed and its length adjusted.
-  
-  ```{R, echo=TRUE, comment=''}
-  mylst1 <- list(a=1:10, b=seq(1,5), matrix(1:10, nrow=2), 
-                "hello", "world", 1:5 )
-  str(mylst1)              
-  ```
-  
-  $\newline$
-  
-  ```{R, echo=TRUE, comment=''}
-  # Removal of the 5th component
-  mylst1[[5]] <- NULL
-  str(mylst1)
-  ```
-  $\newline\newline$
-  
-* $\textbf{Appending}$ an object: 
+* Use of an explicit return statement
+```{R, echo=TRUE, comment=''}
+myprod2 <- function(x,y){
+  return(x*y)
+}
+cat(sprintf(" Prod of %.1f and %.1f is %.1f\n", a, b, myprod2(a,b)))
+```
 
-  Assign the object ($\texttt{obj}$) to the list element with index $\texttt{length(lst)+1}$
-  
-  ```{R, echo=TRUE, comment=''}
-  # Creation of a list mylst2
-  mylst2 <- list( 1:5, 'a' , 'b')
-  str(mylst2)
-  ```
-  $\newline$
-  
-  ```{R, echo=TRUE, eval=TRUE, comment=''}
-  # Appending a Boolean vector to the existing list mylst2
-  mylst2[[length(mylst2)+1]] <- c(T,F,T)
-  str(mylst2)
-  ```
-  
-  $\newline$
-  If you set the index to a number which is $\textbf{larger}$ than $\texttt{length(lst) +1}$ $\newline$
-  all the new intermittent list elements will be set to $\texttt{NULL}$. $\newline$ 
-  You can get rid of these additional $\texttt{NULL}$ values by $\textbf{subsequently}$ deleting them.
-  
-  ```{R, echo=TRUE, eval=TRUE, comment=''}
-  # Insert a component at an index > length(mylst2)+1
-  # -> we will get some intermittent NULL values.
-  mylst2[[7]] <- "value"
-  str(mylst2)
-  ```
-  
-  $\newline$
-  
-  ```{R, echo=TRUE, eval=TRUE, comment=''}
-  # Delete the NULL values! Start from the end!
-  mylst2[[6]] <- NULL
-  mylst2[[5]] <- NULL
-  str(mylst2)
-  ```
-  
-  $\newline$
-  
-* $\textbf{Insertion}$ of new components $\newline$
+$\newline$
 
-  Create a new vector containing three parts:
-  * the 'left' sublist
-  * the new components 
-  * the 'right' sublist
-  
-  ```{R, echo=TRUE, eval=TRUE, comment=''}
-  str(mylst2) 
-  ```
-  
-  $\newline$
-  
-  ```{R, echo=TRUE, eval=TRUE, comment=''}
-  # Add new component at index 4
-  newlst2 <- c(mylst2[1:3], "NEW", mylst2[4:length(mylst2)])
-  str(newlst2)
-  ```
-  
-### Exercises
+* Default argument
+```{R, echo=TRUE, comment=''}
+myshift <- function(x, shift=1){
+  return(x+shift)
+}
+x <- seq(from=2, to=100, length=5)
+x
+y1 <- myshift(x)
+y1
 
-* Create the following list:
-  ```{R, echo=TRUE, comment=''}
-  lstex2 <- list(1:10,
-                 matrix(seq(from=1,to=20), nrow=4),
-                 5+3i,
-                 list('a','d','b'),
-                 "UoU",
-                 c(T,F,T,T,T),
-                 "Hello"
-                )
-  ```
-  
-  Perform some operations (deletions, insertions, modifications) on $\texttt{lstex2}$ $\newline$
-  such that $\texttt{lstex2}$ takes on the following form:
-  
-  ```{R, echo=TRUE, comment=''}
-  lstex2 <- list( matrix(seq(from=1,to=20), nrow=4),
-                 "Hello UoU",
-                 list('a','b','c','d'),
-                 c(T,F,T,T,T)
-                )
-  ```      
-  
+y3 <- myshift(x,3)
+y3
+```
 
-## Functions: return multiple objects 
+$\newline$
 
-If a function needs to return $\textbf{multiple objects}$ a list $\textbf{must}$ be used.
+* Anonymous functions (i.e. function without a name)
+```{R, echo=TRUE, comment=''}
+# sapply: apply a function on a vector.
+inp <- 1:10
+inp
+out <- sapply(inp, function(x){return(x%%2==0)})
+out
+```
 
-### Example
+$\newline$
+
+  Numerical integration of $\displaystyle \int_{0}^{1} \frac{4}{1+x^2} \, dx$ 
+  
+```{R, echo=TRUE, comment=''}
+res <- integrate(function(x){4.0/(1.0+x^2)}, 0.0, 1.0)
+res
+```
+
+$\newline$
+
+* Retrieve the formal arguments of a function
+```{R, echo=TRUE, comment=''}
+formals(myprod2)
+```
+
+$\newline$
+
+* Retrieve the body of a function
+```{R, echo=TRUE, comment=''}
+body(myprod2)
+```
+
+$\newline$
+
+* Retrieve the environment of a function
+```{R, echo=TRUE, comment=''}
+environment(myprod2)
+```
+
+$\newline$
+
+* Local vs. global variables
 
 ```{R, echo=TRUE, comment=''}
-func01 <- function(n)
+x <- 1     # x: in Global Environment 
+myfunc1 <- function(){
+  x <-5
+}
+res <- myfunc1()
+cat(sprintf(" Value of x:%d\n",x))
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+myfunc2 <- function(){
+  x <<-5
+}
+res <- myfunc2()
+cat(sprintf(" Value of x:%d\n",x))
+```
+
+$\newline$
+
+* Pass by value
+```{R, echo=TRUE, comment=''}
+x <- 1:5
+cat(sprintf("BEFORE call:\n"))
+x
+
+mychange <- function(x)
 {
-   x <- n*(n+1)/2
-   y <- cbind(1:n,(1:n)^2)
-   return(list('x'=x,'y'=y))
-} 
-n <- 8
-res <- func01(n)
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-res$x
-res$y
+   x <- 5:1
+}
+res <- mychange()
+cat(sprintf("AFTER call:\n"))
+x
 ```
 
 ### Exercises
 
-* Write the function $\texttt{countOcc(content)}$ which returns
+* Write your own factorial function named $\texttt{myfactorial(n)}$.$\newline$
+  The factorial function, $n!$ is defined as:
+  \begin{equation}
+     n! = n\,(n-1)! \nonumber
+  \end{equation}
+  where $0!:=1$.
+* Write your own function named $\texttt{castdie(n)}$ which simulates casting a die $n$ times.
+  - Assume you have a fair die.
+  - Adjust the function $\texttt{castdie(n)}$ for the general case i.e. a non-fair die, $\newline$
+    e.g. $p=(\frac{1}{10},\frac{1}{10},\frac{3}{10},\frac{3}{10},\frac{1}{10},\frac{1}{10})$
+  - Hint: use $\texttt{R}$'s $\textcolor{blue}{\textbf{sample()}}$ function.
+* An auto-regressive time series of type AR($1$) is defined as follows (see e.g. [@BROCKWELL:2009a]):
+  \begin{equation}
+     x_i = \varphi \, x_{i-1}\, + \, \varepsilon_i \nonumber
+  \end{equation}
+  where $\varepsilon_i \, \sim \, N(0,\sigma^2)$ and are iid\footnote{iid:identically and independently distributed}.
+  
+  - Write the function $\texttt{genAR1Series(n=1000, x0=0.0, phi=0.7)}$ $\newline$
+    which returns the AR($1$) time series $\{x_i\}$ for $i \in \{1, \ldots,n\}$, $\newline$ where:
+    \begin{eqnarray}
+          x_0  & = & 0.0   \nonumber \\
+       \varphi & = & 0.7 \nonumber \\
+       \varepsilon_i & \sim & N(0,1) \;\;,\, \forall \, i \, \in \, \{1, \ldots,n\}\nonumber 
+    \end{eqnarray}
+  - Write the sample autocorrelation function ($\texttt{myacf(x)}$) ($\texttt{ACF}$)
+    which calculates $\newline$ a vector of $\rho(h)$'s 
+    where the $\texttt{lag}$ $h\,\in \, \{0,1,2,\ldots,n-1\}$.
+    
+    The autocorrelation with lag $h$, i.e. $\rho(h)$ is defined as follows:
+    \begin{equation}
+       \rho(h)    :=  \frac{\gamma(h)}{\gamma(0)} \nonumber
+    \end{equation}
+    where:
+    \begin{eqnarray}
+       \gamma(h)   & := & \frac{1}{n} \sum_{i=1}^{n-h} \Big( x_{i+h} \,-\,\overline{x} \Big)\Big ( x_i \,-\,\overline{x} \Big) \nonumber \\
+      \overline{x} &:=& \frac{1}{n} \sum_{i=1}^n x_i \nonumber
+    \end{eqnarray}
+  - Calculate the autocorrelation vector for the time series you generated previously.$\newline$
+    You can check your results with $\texttt{R}$'s $\textcolor{blue}{\textbf{acf()}}$ 
+    function\footnote{For the AR($1$) model, the theoretical value of $\rho(h)$ is given by $\varphi^h$.}
+    
+## Prefix vs. infix functions:
 
-  * the occurrence of each letter in the string $\texttt{content}$.
-  * the occurrence of each non-letter character in the string $\texttt{content}$.
-  
-  
-  ```{R, echo=FALSE}
-  # Auxiliary function to count the occurrence of each character in the vec
-  countAux <- function(vec){
-
-     uniq_el <- unique(vec) 
-   
-     if (length(uniq_el)>0) {
-         count <- vector(mode="integer", length=length(uniq_el)) 
-         for(i in seq_along(uniq_el)){
-             count[i] <- sum(uniq_el[i] == vec)
-         }
-         names(count) <- uniq_el
-         return(count)
-     }
-     return(NULL)
-  }   
-
-  # Count the occurrence  of 
-  #   a.the letters in content
-  #   b.the non-letters in content
-  countOccurrence <- function(content){
-  
-     vec <- strsplit(content, split='')
-     vec <- tolower(vec[[1]])
-     vecLetters <- sort(vec[vec %in% letters])
-     cvecLetters <- vec[!(vec %in% letters)]
-   
-     return(list(  countAlpha=countAux(vecLetters),
-                 countNonAlpha=countAux(cvecLetters)))
-  }   
-  ```
-  $\newline$
-  If we use the text of the First Amendment of the Bill of Rights\footnote{The text was obtained from $\href{https://www.law.cornell.edu/constitution/first_amendment}{https://www.law.cornell.edu/constitution/first\_amendment}$} as argument for $\texttt{countOcc}$,
-  
-  ```{R,echo=TRUE,comment=''}
-    # Split the text to make it readable
-    l1 <- "Congress shall make no law respecting an establishment of religion,"
-    l2 <- "or prohibiting the free exercise thereof;"
-    l3 <- "or abridging the freedom of speech, or of the press;"
-    l4 <- "or the right of the people peaceably to assemble,"
-    l5 <- "and to petition the government for a redress of grievances."
-    # Glue the chunks {l1,l2,l3,l4,l5} together
-    firstamend <- paste(l1, l2, l3, l4, l5, sep=" ")
-  ```
-  
-  we obtain the following output:
-  
-  ```{R,echo=TRUE,comment=''}
-  res <- countOccurrence(firstamend)
+* most functions are prefix: the name of the functions $\textbf{precedes}$ the arguments.
+  ```{R, echo=TRUE, comment=''}
+  res <- sum(1,2)
   res
   ```
   
+* infix: the function name/operator is found between the arguments
+  ```{R, echo=TRUE, comment=''}
+  res <- 1 + 2
+  res
+  ```
+  
+  In $\texttt{R}$ you can create your infix operator by defining a function as follows:
+  ```{R, echo=TRUE, eval=FALSE}
+  '%op%' <- function(x,y){
+      # Body of the function
+  }
+  ```
+
+  The infix function is then invoked as follows :
+  ```{R, echo=TRUE, eval=FALSE}
+  x %op% y
+  ```
+  
+* $\texttt{R}$ contains some $\textbf{predefined}$ infix operators:
+  \begin{itemize}
+     \item $\texttt{\%\%}$   : modulo operator
+     \item $\texttt{\%/\%}$  : integer division
+     \item $\texttt{\%*\%}$  : matrix multiplication
+     \item $\texttt{\%o\%}$  : outer product
+     \item $\texttt{\%x\%}$  : Kronecker product
+     \item $\texttt{\%in\%}$ : Matching operator 
+  \end{itemize}
+  
+  
+### Example
+
+* Let $\mathbf{x}, \mathbf{y} \, \in \, \mathbb{R}^n$. The angle $\theta$ between $\mathbf{x}$ and $\mathbf{y}$ is given by:
+  \begin{equation}
+     \theta =  \arccos{\Bigg (  \frac{\mathbf{x} \cdot \mathbf{y} }{\|\mathbf{x}\|\,\|\mathbf{y}\|}   \Bigg )} \nonumber
+  \end{equation}
+  
+  ```{r, echo=TRUE, comment=''}
+  '%theta%' <- function(x,y){
+      nom <- sum(x*y)
+      denom <- sqrt(sum(x^2)) *sqrt(sum(y^2))
+      return(acos(nom/denom))
+  }
+  ```
+  
   $\newline$
   
-  Note/hints:
+  ```{r, echo=TRUE, comment=''}
+  x <- c(1,0,3)
+  x
+  y <- c(3,2,-1)
+  y
+  cat(sprintf("The angle (radians) between x and y is:%8.4f\n", x %theta% y))
+  ```  
   
-  * We don't distinguish lowercase letters from uppercase letters.
-  * $\textcolor{blue}{\textbf{strsplit()}}$ : splits a string into its characters.
-  * $\textcolor{blue}{\textbf{tolower()}}$ : converts letters to their lower case counterparts.
-  * $\textcolor{blue}{\textbf{unique()}}$  : extracts the unique elements of a vector.
-  * $\texttt{R}$ has a built-in vector $\textcolor{blue}{\textbf{letters}}$.
+### Exercises
+
+* In the cyclic group $\mathbb{Z}_4$, we only have the (integer) elements: $\{0,1,2,3\}$. $\newline$ 
+  The addition ($\forall\,x,y \, \in \,\mathbb{Z}_4$) is defined as follows:
+  \begin{equation}
+   x+y \, \equiv \, x+y \mod 4 \nonumber
+  \end{equation}
+   
+  ```{R, echo=FALSE}
+  '%+%' <- function(x,y){
+     return((x+y)%% 4)
+  }
+  ```
+  ```{R, echo=TRUE, comment=''}
+  x <- sample(0:3, size=10, replace=TRUE)
+  x
+  y <- sample(0:3, size=12, replace=TRUE)
+  y
+  ```
+  Invoking the infix addition $\texttt{\%+\%}$ results into:
+  ```{R, echo=TRUE, comment=''}
+  res <- x %+% y
+  res
+  ```
+  Write the infix function ($\texttt{\%+\%}$) to perform addition in the cyclic group $\mathbb{Z}_4$.$\newline$
+
+## Function composition/piping
+
+Often the output of a function is used as the input for another function.$\newline$
+There are several options beyond the explicit creation of intermediate variables:
+
+* Function composition (e.g. $\texttt{h(g(f(x)))}$).
+
+  ```{R, echo=TRUE, comment=''}
+  x <- runif(1000)
+  xav <- mean(x)
+  res <- sqrt(sum((x-xav)^2))  
+  res
+  ```
+
+* Use of piping (cfr. the following $\texttt{Linux}$ code: $\texttt{cat *.r | grep function}$).$\newline$ 
+  The [magrittr library](https://magrittr.tidyverse.org/) was developed to 
+  provide this feature\footnote{The infix function $\texttt{\%>\%}$ is known as the "$\textit{and then}$" operator.} among others.$\newline$
+  
+  ```{R, echo=TRUE, comment=''}
+  library(magrittr)
+  (x-xav)^2 %>% 
+      sum() %>% 
+      sqrt()
+  ```
+  
+# Bibliography  
+
   
 
-\newpage
 
-# R Dataframes
 
-A $\texttt{date frame}$ is a $\texttt{list}$ with three $\texttt{attributes}$:
-\begin{itemize}
-\item $\textcolor{blue}{\textbf{names}}$ : component names
-\item $\textcolor{blue}{\textbf{row.names}}$ : row names
-\item $\textcolor{blue}{\textbf{class}}$: $\textcolor{blue}{\textbf{data.frame}}$
-\end{itemize}
-
-From the above, we can infer that a data frame has the the $\textbf{same}$ row names for each component (columns). 
-The components of a data frame can be vectors, factors, numerical matrices, lists or other data frames. 
-
-In praxi, a $\textbf{data frame}$ can be conceptualized as a $\textbf{generalized (i.e. heterogeneous) matrix/table}$
-$\newline$ $\textbf{where each column has its own type but where each column has the same number of rows}$.
-
-## Creating a data frame
-
-* use of the $\textcolor{blue}{\textbf{data.frame}}$ function.
-
-* some IO functions generate a data frame when they read a file.
-  e.g. $\textcolor{blue}{\textbf{read.table()}}$, $\textcolor{blue}{\textbf{read.csv()}}$.
-  
-### Examples
-
-```{R, echo=TRUE, comment=''}
-# Creation of a data frame using the data.frame function:
-vec1 <- c("Smith", "Jensen", "McFall", "Johnson", 
-          "Brown", "Williams", "Wilson", "Roberts")
-vec2 <- c(4, 3, 0 , 6, 2, 0, 5, 1)
-vec3 <- c(100000, 80000, 140000, 120000, 60000, 30000, 170000, 100000)
-vec4 <- c("Salt Lake", "Provo", "Park City", "Provo", 
-          "Logan", "Ogden", "Provo", "Salt Lake")
-df1  <- data.frame(family=vec1, nchildren=vec2, income=vec3, location=vec4)
-df1
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Creation of a data frame after reading a data file
-df2 <- read.table(file="./data/seaice.txt", header=TRUE)
-cat(sprintf("Length(df2) :%d\n", length(df2)))
-cat(sprintf("Dim. of df2 :\n"))
-dim(df2)
-```
-
-$\textbf{Note}$:
-
-* Since $\texttt{R\,4.0.0}$, the default value for the argument $\texttt{stringsAsFactors}$ in the function $\newline$ $\textcolor{blue}{\textbf{data.frame()}}$
-  has been set to $\texttt{FALSE}$.
-
-* The functions $\textcolor{blue}{\textbf{head()}}$ and $\textcolor{blue}{\textbf{tail()}}$ display the first $n$, respectively last $n$ lines$\newline$ 
-  (default: $6$) of a data frame.
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Head of data frame df2 with the first 6 lines (default)
-head(df2)
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Tail of data frame df2 with the last 4 line
-tail(df2, n=4)
-```
-
-## Accessing elements of a data frame
-
-As we discussed previously, a data frame is a list with some extra attributes.$\newline$ 
-But, it has also features of a (heterogeneous) matrix. 
-
-Therefore, the elements of a data frame can be accessed in $\textbf{two}$ different ways:
-\begin{itemize}
-\item using the list syntax
-\item using the matrix syntax
-\end{itemize}
-
-### Examples
-
-* Using the $\texttt{list}$ syntax:
-
-```{R, echo=TRUE, comment=''}
-# Extract the names of the components (columns)
-names(df1)
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract the list's second component as a vector
-str(df1[[2]])
-cat(sprintf("df1[[2]]:%s\n", typeof(df1[[2]])))
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract the list's second component as a list (dataframe)
-df1[2]
-str(df1[2])
-cat(sprintf("df1[2]:%s\n", typeof(df1[2])))
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract a list's component using its name
-df1$location
-str(df1$location)
-```
-
-$\newline$
-
-* Using the $\texttt{matrix}$ syntax
-
-```{R, echo=TRUE, comment=''}
-colnames(df1)
-rownames(df1)
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract a few elements
-df1[3,3]
-df1[8,4]
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract a column => vector
-df1[, 3]
-df1[,'income']
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract a column but preserve a dataframe
-df1[,'income',drop=FALSE]
-typeof(df1[,'income',drop=FALSE])
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Extract everythng except fourth column
-df1[c(1,4,5),-4]
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Find all the family with an income >=100,000
-ind <- which(df1$income >= 100000)
-df1[ind,'family']
-```
-
-## Modifying the data frame
-
-* Adding columns and rows: $\newline$
-  use the $\textbf{cbind()}$ and $\textbf{rbind()}$ functions (as in the case of matrices)
-
-```{R,echo=TRUE,comment=''}
-# Create a new data frame
-v1 <- 1:10
-v2 <- 11:20
-v3 <- 21:30
-mydf1 <- data.frame(x=v1, y=v2, z=v3)
-mydf1
-```
-
-$\newline$
-```{R,echo=TRUE,comment=''}
-# Add a new column
-mydf2 <- cbind(mydf1, w=31:40)
-mydf2
-```
-
-$\newline$
-```{R,echo=TRUE,comment=''}
-# Add a new row
-mydf3 <- rbind(mydf2, c(11,21,31,41))
-mydf3
-```
-
-* Remove columns and rows:
-
-```{R,echo=TRUE,comment=''}
-# Remove columns 
-mydf3$z <- NULL      # Syntax 1
-mydf3[,2] <- NULL    # Syntax 2
-mydf3
-```
-
-```{R,echo=TRUE,comment=''}
-# Remove row
-mydf3 <- mydf3[-c(4,7,8),]
-mydf3
-```
-
-
-## Attach and detach operations
-
-* $\textcolor{blue}{\textbf{attach()}}$: allows to use a data frame's variables without invoking the name of the data frame, i.e.
-  inserts the data frame on the $\textbf{search path}$.
-  
-* $\textcolor{blue}{\textbf{detach()}}$: undo the $\textcolor{blue}{\textbf{attach()}}$ operation but can also unload a library.  
-
-* $\textcolor{blue}{\textbf{search()}}$: gives an array of the $\textbf{attached}$ packages and R objects (usually data frames).
-
-This topic will be discussed in more detail in a future section i.e. ($\texttt{Environments}$).
-  
-### Examples
-
-* Use of the $\textcolor{blue}{\textbf{attach()}}$ and $\textcolor{blue}{\textbf{search()}}$ functions:
-  
-```{R,echo=TRUE,error=TRUE, comment=''}
-# Prior to attaching mydf1
-mydf1
-search()
-x
-```
-
-$\newline$
-
-```{R,echo=TRUE, error=TRUE, comment=''}
-# attach the data frame
-attach(mydf1)
-search()
-x
-```
-  
-$\newline$  
-
-* Use of the $\textcolor{blue}{\textbf{detach()}}$ function:
-
-```{R,echo=TRUE, error=TRUE, comment=''}
-# attach the data frame
-detach(mydf1)
-search()
-x
-```
-
-## Exercises
-
-The $\texttt{R}$ package contains a lot of data sets. We will use 
-the $\textcolor{blue}{\textbf{airquality}}$ data set in the subsequent exercise.
-$\newline$
-
-* Return the first $5$ and the last $2$ entries of the data frame. $\newline$
-  You can load the data frame by invoking $\textcolor{blue}{\textbf{airquality}}$ on the 
-  command line.$\newline$
-* How many Ozone entries are missing in the data frame? $\newline$
-* Find the day and month when the max. temperature occurred.$\newline$
-* What is the mean & standard deviation of the Ozone level 
-  for the days when the temperature >= 80?$\newline$
-* How many days have a Solar.R between 150 and 250? 
-
-\newpage
-
-# Input-Output (IO)
-
-## Functionality in $\texttt{Base R}$
-
-## Other options:
-
-* library \href{https://readr.tidyverse.org/}{$\texttt{readr}$}
-  - supports a lot of formats (csv, tcsv, delim, $\ldots$)
-  - allows column specification 
-  - faster than $\texttt{Base R}$'s read/write operations
-  - uses a $\texttt{tibble}$ instead of a $\texttt{data frame}$.
-  - for more info: \href{https://r4ds.had.co.nz/data-import.html}{$\texttt{R for Data Science}$ - Chapter 11.Data import}
-  
-* library \href{https://github.com/Rdatatable/data.table}{$\texttt{data.table}$}
-  - very fast IO: optimal for large read ($\textcolor{blue}{\textbf{fread()}}$) and write ($\textcolor{blue}{\textbf{fwrite()}}$) operations
-  - memory efficient
-  - low-level parallelism (use of multiple CPU threads)

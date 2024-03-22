@@ -1,6 +1,6 @@
 ---
 title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
-subtitle: 'Section 3: Control-flow and functions'
+subtitle: 'Part 3: Matrices/Arrays & Special Data Types'
 author: "Wim R.M. Cardoen"
 date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
@@ -15,555 +15,843 @@ output:
     - amsmath
     - xcolor
     - hyperref
-bibliography: [latex/intro.bib]
+bibliography: [latex/intro.bib]  
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
 urlcolor: violet
 ---
 
-\newpage
-
-# R Control flow
-
-$\texttt{Stay out of the loop, the club, the inner circle. (Michael Leunig)}$
-
-## Conditional constructs
-
-* $\textcolor{blue}{\textbf{if}}$,  $\textcolor{blue}{\textbf{else if}}$, $\textcolor{blue}{\textbf{else}}$
-
-  $\texttt{Syntax}$:
-  ```{R, echo=TRUE, eval=FALSE}
-  if(condition1){
-      ...
-  }[else if(condition2){
-      ...
-  }else{
-      ...
-  }]
-  ```
-
-* $\textcolor{blue}{\textbf{ifelse()}}$
-  
-  The $\texttt{R}$ language provides a $\textbf{vectorized}$ version: $\textcolor{blue}{\textbf{ifelse()}}$ .  
-
-  $\textbf{Syntax}$:$\newline$
-  ```{R, echo=TRUE, eval=FALSE}
-  ifelse(condition, vecy, vecn)
-  ```
-  where:
-  - $\textit{condition}$ : test condition
-  - $\textit{vecy}$ : values in case of $\textcolor{blue}{\textbf{TRUE}}$ values
-  - $\textit{vecn}$ : values in case of $\textcolor{blue}{\textbf{FALSE}}$ values
-  
-  There exists a more general version of $\textcolor{blue}{\textbf{ifelse()}}$ i.e.
-  [dplyr::case_when()](https://dplyr.tidyverse.org/reference/case_when.html)
-  
-  
-### Examples
-```{R, echo=TRUE, comment=''}
-score <- 75.0
-
-if(score>=90.0){
-  grade <- 'A'
-} else if((score<90.0) && (score>=80.0)){
-  grade <- 'B'
-} else if((score<80.0) && (score>=70.0)){
-  grade <- 'C'
-} else{
-  grade <- 'D'
-}
-cat(sprintf("Score:%4.2f -> Grade:%s\n", score, grade))
-```
-
-
-```{R, echo=TRUE, comment=''}
-x <- c(-1,2,1,-5,-7)
-c
-res <- ifelse(x>=0, x,-x)
-res
-
-
-```
-
-### Exercises
-
-* Write code to find the smallest of three numbers, e.g. 21, 12, 17 using 
-  an $\textcolor{blue}{\textbf{if}}$, ($\textcolor{blue}{\textbf{else if}}$, $\textcolor{blue}{\textbf{else}}$) construct.
-
-## Loop constructs
-
-There are several loop constructs:
-
-* $\textcolor{blue}{\textbf{while}}$
-
-  ```{R, echo=TRUE, eval=FALSE}
-  while(condition){
-    body of the loop 
-  }
-  ```
-  
-* $\textcolor{blue}{\textbf{for}}$
-
-  ```{R, echo=TRUE, eval=FALSE}
-  for(item in sequence){
-    body of the loop 
-  }
-  ```
-
-* $\textcolor{blue}{\textbf{repeat}}$
- 
-  ```{R, echo=TRUE, eval=FALSE}
-  repeat{
-    body of the loop 
-  }
-  ```
-  The $\textcolor{blue}{\textbf{repeat}}$ loop has no condition to leave the loop:
-  insert a $\textcolor{blue}{\textbf{break}}$.
-
-  $\newline$
-  
-The $\textcolor{blue}{\textbf{break}}$ statement allows one to break out of the 
-$\textcolor{blue}{\textbf{while}}$, $\textcolor{blue}{\textbf{for}}$ and 
-$\textcolor{blue}{\textbf{repeat}}$ constructs.$\newline$
-The $\textcolor{blue}{\textbf{next}}$ statement allows one to go to the next iteration.
-
-### Examples
-
-* for loop construct
-
-```{R, echo=TRUE, comment=''}
-# Loop over all items
-fruit <- c("apple", "pear", "banana", "grape")
-for(item in fruit){
-  cat(sprintf(" Fruit:%s\n", item))
-}
-```
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-# Skip all numbers which are multiples of 3
-x <- sample(1:100, size=10, replace=FALSE)
-x
-```
-
-$\newline$
-
-```{R, echo=TRUE, comment=''}
-for(item in x){
-  if(item%%3==0)
-     next
-  cat(sprintf(" %3d is NOT a multiple of 3\n", item))
-}
-```
-
-$\newline$
-
-* while loop
-
-```{R, echo=TRUE, comment=''}
-x <- sample(1:1000, size=100, replace= FALSE)
-isFound <- FALSE
-i <- 1
-while(!isFound){
-  if(x[i]%%7==0){
-      cat(sprintf(" %3d is divisible by 7\n", x[i]))
-      isFound <- TRUE
-  }
-  else{
-      cat(sprintf(" %3d is NOT divisible by 7\n", x[i]))
-      i <- i + 1
-  }
-}
-```
-
-$\newline$
-
-* repeat loop
-
-```{R, echo=TRUE, comment=''}
-i <- 1
-repeat{
-  # Stop the loop as soon as you find a multiple of 7.
-  if(x[i]%%7==0){
-      cat(sprintf(" %3d is divisible by 7\n", x[i]))
-      break
-  }
-  else{
-      cat(sprintf(" %3d is NOT divisible by 7\n", x[i]))
-      i <- i + 1
-  }
-}
-```
-
-### Exercises
-
-* The [$\textbf{Fibonacci}$ sequence](https://en.wikipedia.org/wiki/Fibonacci_number) is defined by the following recurrence relation:
-  \begin{equation}
-       F_n =  F_{n-1} + F_{n-2} \;\;\; ,\;\; \forall \; n \in \mathbb{N} \nonumber
-  \end{equation}
-  where $F_1=F_2=1$.$\newline$
-  Calculate all Fibonacci numbers up to $F_{15}$, i.e.:
-  
-  ```{R, echo=FALSE, eval=TRUE, comment=''}
-  x <- vector(mode="integer", length=15)
-  x[1] <- 1
-  x[2] <- 1
-  for(i in 3:15){
-      x[i] <- x[i-1] + x[i-2]
-  }
-  x
-  ```
-
-* The square root of a number $n$ is equivalent to solving the following equation:
-  \begin{equation}
-    x^2 - n = 0 \nonumber
-  \end{equation}
-  The solution to this equation can be found iteratively by using e.g. the [Newton-Raphson method](https://en.wikipedia.org/wiki/Newton%27s_method).
-
-  Iteration $i+1$ for $x$ is then given by: 
-  \begin{equation}
-     x_{i+1} = \frac{1}{2}(x_i + \frac{n}{x_i}) \nonumber
-  \end{equation}
-
-  Find the square root of $751$ to a precision of at least 8 decimals. You can set $x_0$ to $n$ itself.
 
 \newpage
 
-# R Functions
 
-## General statements:
-* The $\textbf{most common way}$ to create a function is:
-  \begin{itemize}
-     \item to assign a function name $\textbf{and}$
-     \item use the $\textcolor{blue}{\textbf{function()}}$ statement 
-  \end{itemize}
+$\texttt{"It is my experience that proofs involving matrices can be}\newline
+ \texttt{shortened by 50\% if one throws the matrices out" (Emil Artin)}$
 
-  $\texttt{\textbf{Syntax}}$:
 
-  ```{R, echo=TRUE, eval=FALSE}
-  function_name <- function(arg_list){
-      # body of the function
-  }
-  ```
-  An $\textbf{anonymous}$ function does $\textbf{not}$ bear a name. It can be useful for short expressions.
+# Matrices & Arrays
 
-* A function in $\texttt{R}$ has 3 important components:
-  \begin{itemize}
-  \item arguments of the function: $\textcolor{blue}{\textbf{formals()}}$ $\newline$
-        $\texttt{R}$ allows default arguments. The default values are assigned using the $\textcolor{blue}{\textbf{=}}$ sign.
-  \item body of the function: $\textcolor{blue}{\textbf{body()}}$
-  \item environment in which the function runs: $\textcolor{blue}{\textbf{environment()}}$
-  \end{itemize}
-  
-  Primitive functions (e.g. $\textcolor{blue}{\textbf{prod()}}$) call directly $\texttt{C}$ code with $\texttt{.Primitive()}$ (no $\texttt{R}$ code involved).$\newline$
-  These primitive functions can be found in $\texttt{package:base}$.$\newline$
-  If the functions $\textcolor{blue}{\textbf{formals()}}$, $\textcolor{blue}{\textbf{body()}}$ and $\textcolor{blue}{\textbf{environment()}}$
-  are applied to primitive functions $\textcolor{blue}{\textbf{NULL}}$ will be returned.
+Matrices and arrays are $\textbf{homogeneous atomic vectors}$ with$\newline$
+an $\textbf{extra}$ attribute: dimension
 
-* A function can exit in 2 ways:
-  \begin{itemize}
-     \item by returning a value
-        \begin{itemize}
-           \item implicit return: last expression evaluated in the body
-           \item explicit return: by invoking the $\textcolor{blue}{\textbf{return()}}$ function
-        \end{itemize}
-     \item through error e.g. by invoking the $\textcolor{blue}{\textbf{stop()}}$ function   
-  \end{itemize}
+By default, the elements are stored in a $\textbf{column-major}$ fashion. (cfr. $\textbf{Fortran}$).$\newline$
+However, we can store the elements in $\textbf{row-major}$ order (cfr. $\textbf{C}$) as well.
 
-  An $\texttt{R}$ function returns $\textbf{only}$ $1$ object. $\newline$ 
-  If you want to return more than $1$ object, put the objects in an $\texttt{R}$ $\textcolor{blue}{\textbf{list()}}$
-  and return the list\footnote{The $\texttt{R}$ concept of a list will be discussed in a later section}. 
-  
-* Assigment of variables in functions:
+## Creation of matrices
 
-  Ordinary assignments performed with the function are local and temporary to the function.
-  After the function has been exited the values of these assignments are lost.
-  
-  If global and permanent assignment are needed within a function, you can use the 
-  superassignment operator $\textcolor{blue}{\textbf{<<-}}$ or the $\textcolor{blue}{\textbf{assign()}}$ function.
-  
-* Pass by value or pass by reference
+Matrices can be created in different ways:
 
-  By default $\texttt{R}$ does a $\textbf{pass by value}$. The $\textbf{pass by reference}$ is possible in $\texttt{R}$ but 
-  requires the use/understanding of the concept of an $\texttt{R}$ environment\footnote{The $\texttt{R}$ concept of an environment will be discussed in a later section}.
-  
+* use of the $\textcolor{blue}{\textbf{matrix()}}$ function
+* use of $\textcolor{blue}{\textbf{rbind()}}$/$\textcolor{blue}{\textbf{cbind()}}$
+* set the $\textcolor{blue}{\textbf{attributes()}}$ of a vector
+* special functions like e.g. $\textcolor{blue}{\textbf{diag()}}$
 
 ### Examples
 
-* Implicit return
-```{R, echo=TRUE, comment=''}
-a <- 2.0
-b <- 8.0
-myprod1 <- function(x,y){
-  x*y
-}
-cat(sprintf(" Prod of %.1f and %.1f is %.1f\n", a, b, myprod1(a,b)))
-```
-$\newline$
+* use of the $\textcolor{blue}{\textbf{matrix()}}$ function:
 
-* Use of an explicit return statement
+The $\textcolor{blue}{\textbf{matrix()}}$ function creates a matrix based on a vector.$\newline$
+By default, the elements are stored in a $\textbf{column-major}$ fashion. 
+
+The use of the flag $\texttt{byrow=TRUE}$ will store the data in a $\textbf{row-major}$ fashion.
+
 ```{R, echo=TRUE, comment=''}
-myprod2 <- function(x,y){
-  return(x*y)
-}
-cat(sprintf(" Prod of %.1f and %.1f is %.1f\n", a, b, myprod2(a,b)))
+A <- matrix(data=1:10, nrow=2)   # Column-major (like Fortran)
+A
+
+B <- matrix(data=c(2,3,893,0.17), nrow=2, ncol=2)
+B
 ```
 
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+C <- matrix(data=1:10, nrow=2, byrow=TRUE)   # Row-major (like C, C++)
+C
+```
+
 $\newline$
 
-* Default argument
+* use of the $\textcolor{blue}{\textbf{rbind()}}$/$\textcolor{blue}{\textbf{cbind()}}$ functions:
+  
+  - $\textcolor{blue}{\textbf{rbind()}}$: Bind several vectors (as rows) into a matrix.
+  - $\textcolor{blue}{\textbf{cbind()}}$: Bind several vectors (as columns) into a matrix.
+  
 ```{R, echo=TRUE, comment=''}
-myshift <- function(x, shift=1){
-  return(x+shift)
-}
-x <- seq(from=2, to=100, length=5)
-x
-y1 <- myshift(x)
+A <- rbind(1:10,11:20)  
+A
+typeof(A)
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+B <- cbind(1:5,6:10,11:15)
+B
+class(B)
+```
+
+
+
+### Matrices: vectors with a non-NULL dim attribute
+
+The $\textbf{fundamental}$ difference between an $\texttt{R}$ vector and matrix is
+the presence (in the case of matrices) of a non $\texttt{NULL}$ 
+$\textcolor{blue}{\textbf{dim}}$ attribute. 
+
+We can easily convert a vector into a matrix by setting the dimensions of the vector:
+
+\begin{itemize}
+\item through the $\textcolor{blue}{\textbf{dim()}}$ function.
+\item through the $\textcolor{blue}{\textbf{attr()}}$ function.
+\end{itemize}
+
+The inverse can be done as well by setting the $\textcolor{blue}{\textbf{dim}}$ attribute 
+of matrix to $\texttt{NULL}$.
+
+
+```{R, echo=TRUE, comment=''}
+A <- 1:10 
+typeof(A)
+class(A)
+dim(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Matrix
+B <- matrix(1:10,nrow=2,ncol=5,byrow=TRUE) 
+typeof(B)
+class(B)
+dim(B)
+```  
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Vector
+A <- 1:10
+A
+dim(A) 
+typeof(A)
+class(A)
+```
+
+$\newline \newline$
+
+```{R, echo=TRUE, comment=''}
+# OPTION I: Using the dim function transform a vector into a matrix
+dim(A) <- c(2,5)
+A
+dim(A)
+typeof(A)
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Converting the matrix back to a vector
+dim(A) <- NULL
+dim(A)
+typeof(A)
+class(A)
+```
+
+$\newline \newline$
+
+```{R, echo=TRUE, comment=''}
+# Option II: More general way 
+# Convert vector into a matrix
+A <- 1:8
+A
+class(A)
+
+attr(A,'dim') <- c(2,4)
+A
+class(A)
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Convert matrix into a vector.
+attr(A, 'dim') <- NULL
+A
+class(A)
+```
+
+## Retrieving elements/subsetting 
+
+Matrices (and arrays) can be subsetted in different ways:
+
+* use an $\textbf{index}$ for each dimension, where the dimensions are comma-separated
+  - If an $\textbf{index}$ for a dimension is $\textbf{omitted}$: $\newline$ 
+    consider all dimensions (may lead to reduction of the dimension)
+  - $\textbf{but}$ you can use $\textcolor{blue}{\textbf{drop=FALSE}}$ to prevent dimensionality reduction.
+* use another $\textbf{vector}$ (can be either linear or a vector for each dimension)
+* by using another $\textbf{matrix}$.
+
+### Examples
+
+* Use of $\textbf{indices}$:
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:30, nrow=6, ncol=5)
+A
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+A[3,4]
+A[6,2]
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+x1 <- A[2,]
+x1
+dim(x1)
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+x2 <- A[,3]
+x2
+dim(x2)
+```
+
+$\newline$
+The flag $\textcolor{blue}{\textbf{drop=FALSE}}$ can be used to prevent dimensionality reduction
+
+```{R, echo=TRUE, comment=''}
+y1 <- A[2,,drop=FALSE]
 y1
-
-y3 <- myshift(x,3)
-y3
-```
-
-$\newline$
-
-* Anonymous functions (i.e. function without a name)
-```{R, echo=TRUE, comment=''}
-# sapply: apply a function on a vector.
-inp <- 1:10
-inp
-out <- sapply(inp, function(x){return(x%%2==0)})
-out
-```
-
-$\newline$
-
-  Numerical integration of $\displaystyle \int_{0}^{1} \frac{4}{1+x^2} \, dx$ 
-  
-```{R, echo=TRUE, comment=''}
-res <- integrate(function(x){4.0/(1.0+x^2)}, 0.0, 1.0)
-res
-```
-
-$\newline$
-
-* Retrieve the formal arguments of a function
-```{R, echo=TRUE, comment=''}
-formals(myprod2)
-```
-
-$\newline$
-
-* Retrieve the body of a function
-```{R, echo=TRUE, comment=''}
-body(myprod2)
-```
-
-$\newline$
-
-* Retrieve the environment of a function
-```{R, echo=TRUE, comment=''}
-environment(myprod2)
-```
-
-$\newline$
-
-* Local vs. global variables
-
-```{R, echo=TRUE, comment=''}
-x <- 1     # x: in Global Environment 
-myfunc1 <- function(){
-  x <-5
-}
-res <- myfunc1()
-cat(sprintf(" Value of x:%d\n",x))
+dim(y1)
 ```
 
 $\newline$
 
 ```{R, echo=TRUE, comment=''}
-myfunc2 <- function(){
-  x <<-5
-}
-res <- myfunc2()
-cat(sprintf(" Value of x:%d\n",x))
+y2 <- A[,3,drop=FALSE]
+y2
+dim(y2)
+```
+
+* Use of $\textbf{vector(s)}$:
+
+```{R, echo=TRUE, comment=''}
+A
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+x1 <- A[2:4,]
+x1
+dim(x1)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+x2 <- A[,1:3]
+x2
+dim(x2)
 ```
 
 $\newline$
 
-* Pass by value
 ```{R, echo=TRUE, comment=''}
-x <- 1:5
-cat(sprintf("BEFORE call:\n"))
-x
+# Using a vector for EACH dimension
+A[c(1,3),c(2,4)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Using 1 vector => Linear index
+A[c(1,3,8,10)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE),c(2,3)]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE),]
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Use of a linear index
+A[c(TRUE,FALSE,TRUE,TRUE,FALSE,TRUE)]
+```
 
-mychange <- function(x)
-{
-   x <- 5:1
-}
-res <- mychange()
-cat(sprintf("AFTER call:\n"))
-x
+* Use of a $\textbf{matrix}$:
+```{R, echo=TRUE, comment=''}
+A
+```
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+mysubset <- matrix(c( 2, 1,
+                      3, 5,
+                      4, 2,
+                      6, 5), ncol=2, byrow=TRUE )
+A[mysubset]
 ```
 
 ### Exercises
 
-* Write your own factorial function named $\texttt{myfactorial(n)}$.$\newline$
-  The factorial function, $n!$ is defined as:
-  \begin{equation}
-     n! = n\,(n-1)! \nonumber
-  \end{equation}
-  where $0!:=1$.
-* Write your own function named $\texttt{castdie(n)}$ which simulates casting a die $n$ times.
-  - Assume you have a fair die.
-  - Adjust the function $\texttt{castdie(n)}$ for the general case i.e. a non-fair die, $\newline$
-    e.g. $p=(\frac{1}{10},\frac{1}{10},\frac{3}{10},\frac{3}{10},\frac{1}{10},\frac{1}{10})$
-  - Hint: use $\texttt{R}$'s $\textcolor{blue}{\textbf{sample()}}$ function.
-* An auto-regressive time series of type AR($1$) is defined as follows (see e.g. [@BROCKWELL:2009a]):
-  \begin{equation}
-     x_i = \varphi \, x_{i-1}\, + \, \varepsilon_i \nonumber
-  \end{equation}
-  where $\varepsilon_i \, \sim \, N(0,\sigma^2)$ and are iid\footnote{iid:identically and independently distributed}.
-  
-  - Write the function $\texttt{genAR1Series(n=1000, x0=0.0, phi=0.7)}$ $\newline$
-    which returns the AR($1$) time series $\{x_i\}$ for $i \in \{1, \ldots,n\}$, $\newline$ where:
-    \begin{eqnarray}
-          x_0  & = & 0.0   \nonumber \\
-       \varphi & = & 0.7 \nonumber \\
-       \varepsilon_i & \sim & N(0,1) \;\;,\, \forall \, i \, \in \, \{1, \ldots,n\}\nonumber 
-    \end{eqnarray}
-  - Write the sample autocorrelation function ($\texttt{myacf(x)}$) ($\texttt{ACF}$)
-    which calculates $\newline$ a vector of $\rho(h)$'s 
-    where the $\texttt{lag}$ $h\,\in \, \{0,1,2,\ldots,n-1\}$.
+* Create the following matrix A, given by:
+  ```{R, echo=FALSE,comment=''}
+  NUM <-6
+  r1 <- 3^(1:NUM)
+  r2 <- 5^(1:NUM)
+  r3 <- 7^(1:NUM)
+  r4 <- 11^(1:NUM)
+  r5 <- 13^(1:NUM)
+  r6 <- 17^(1:NUM)
+  A <- rbind(r1,r2,r3,r4,r5,r6)
+  rownames(A) <- NULL
+  A
+  ```
+  \begin{enumerate}
+  \item get element $343$
+  \item get the elements $25$, $625$, $2197$ and $4826809$ (all at once).
+  \item get the fourth row as a vector.
+  \item get the fourth row as a matrix.
+  \item get columns $2$ and $3$ (at the same time).
+  \item get everything except rows $2$ and $4$.
+  \item the diagonal of matrix A.
+  \end{enumerate}
+
+
+## Operations on matrices
+
+* Operations like $\textcolor{blue}{\textbf{*,/, +}}$ happpen element-wise.
+* There are also more specialized functions:
+  * the mean over rows and columns ($\textcolor{blue}{\textbf{rowMeans()}}$, $\textcolor{blue}{\textbf{colMeans()}})$
+  * linear algebra functions ($\textcolor{blue}{\textbf{\%*\%}}$, $\textcolor{blue}{\textbf{t()}}$, ...)
     
-    The autocorrelation with lag $h$, i.e. $\rho(h)$ is defined as follows:
+### Examples
+
+* Operations (by $\textbf{default: element-by-element}$):
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:10, nrow=2)
+B <- matrix( seq(10, 100, by=10), nrow=2)
+A
+B
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+A*B
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+C <- matrix(rep(2,10), nrow=2)
+C
+C**A
+```
+
+* Calculate $\textbf{row and column means}$ :
+
+```{R, echo=TRUE, comment=''}
+# Means of rows and columns
+A
+rowMeans(A)
+colMeans(A)
+```
+
+* $\textbf{Matrix multiplication}$ ($\textcolor{blue}{\textbf{\%*\%}}$) :
+
+```{R, echo=TRUE, comment=''}
+A <- matrix(1:6, nrow=2)
+A
+B <- matrix(seq(10,120,by=10), nrow=3)
+B
+C <- A%*%B
+C
+dim(C)
+```
+
+* $\textbf{Linear algebra}$ routines
+
+Some of the more common ones in R:
+\begin{itemize}
+ \item $\textcolor{blue}{\textbf{solve()}}$ : $\textbf{invert}$ a square matrix
+ \item $\textcolor{blue}{\textbf{diag()}}$
+    \begin{itemize}
+       \item $\textbf{extracts}$ the diagonal of a matrix when a matrix is provided.
+       \item $\textbf{creates}$ a diagonal matrix when a vector is provided.
+    \end{itemize}
+ \item $\textcolor{blue}{\textbf{eigen()}}$ : calculates the $\textbf{eigenvalues}$ and $\textbf{eigenvectors}$ of a matrix
+ \item $\textcolor{blue}{\textbf{det()}}$ : calculates the $\textbf{determinant}$ of a matrix.
+ \item $\textcolor{blue}{\textbf{t()}}$: calculates the $\textbf{transpose}$$\footnote{Can also be used for dataframes (see later)}$ of a matrix.
+\end{itemize}
+  
+```{R, echo=TRUE, comment=''}
+# Invert matrix A
+A <- matrix(c(1, 3, 2, 4), ncol = 2, byrow = T)
+Ainv <- solve(A)
+Ainv %*% A
+```
+
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Create a diagonal matrix
+C <- diag(c(1,4,7))
+C
+
+# Extract the diagonal elements
+D <- matrix(1:8,nrow=4)
+D
+diag(D)
+```
+$\newline$
+
+```{R, echo=TRUE, comment=''}
+# Calculate eigenvalues and eigenvectors of A
+r <- eigen(A)
+r
+# Eigenvalues
+r$values
+# Matrix with eigenvectors
+r$vectors
+# Diagonal Matrix (Similarity Transformation)
+solve(r$vectors) %*% A %*% r$vectors
+```
+
+Note that under the hood $\texttt{R}$ calls [$\texttt{BLAS}$](https://netlib.org/blas/) and [$\texttt{LAPACK}$](https://netlib.org/lapack/).
+
+```{R, echo=TRUE, comment=''}
+# Find the version used of BLAS and LAPACK
+La_library()
+extSoftVersion()["BLAS"]
+```
+
+### Exercises
+
+* Linear regression: $\newline$
+
+  - $\textbf{Step 1}$: $\newline$
+    Create a $\textbf{synthetic}$ data set by executing the following $\texttt{R}$ code:
+    ```{R, echo=TRUE, results='hidden', comment=''}
+       x <- seq(from=0, to=20.0, by=0.25)
+       a <- 2.0
+       b <- 1.5
+       c <- 0.5
+       y <- a + b*x + c*x^2 + rnorm(length(x))
+    ```
+
+  - $\textbf{Step 2}$: $\newline$
+    Our goal is to use the following linear model, i.e.:
     \begin{equation}
-       \rho(h)    :=  \frac{\gamma(h)}{\gamma(0)} \nonumber
+       Y_i = \beta_0 \,+\, \beta_1 \, x_i \, + \, \beta_2\,x^2_i + \, \epsilon_i \nonumber
+    \end{equation} 
+    or in matrix form: 
+    \begin{equation}
+       Y = X\,\beta  \, + \, \mathcal{\epsilon} \label{Eq:LinearModel}
     \end{equation}
-    where:
-    \begin{eqnarray}
-       \gamma(h)   & := & \frac{1}{n} \sum_{i=1}^{n-h} \Big( x_{i+h} \,-\,\overline{x} \Big)\Big ( x_i \,-\,\overline{x} \Big) \nonumber \\
-      \overline{x} &:=& \frac{1}{n} \sum_{i=1}^n x_i \nonumber
-    \end{eqnarray}
-  - Calculate the autocorrelation vector for the time series you generated previously.$\newline$
-    You can check your results with $\texttt{R}$'s $\textcolor{blue}{\textbf{acf()}}$ 
-    function\footnote{For the AR($1$) model, the theoretical value of $\rho(h)$ is given by $\varphi^h$.}
+    to fit the previously generated data set.
+   
+    In Eq.(\ref{Eq:LinearModel}), we have:
+    \begin{itemize}
+       \item $Y$ : a $n \times 1$ column vector.
+       \item $X$ : a $n \times 3$ matrix.
+       \item $\beta$: a $3 \times 1$ column vector.
+       \item $\epsilon$ is : a $n\times 1$ column vector and $\sim \, N(0,\sigma^2)$
+    \end{itemize} 
+  
+    An estimate for $\beta$ ($\widehat{\mathbf{\beta}}$) can be found (using Least-Squares, MLE see e.g. [@SEBER:LR:2012a]) $\newline$
+    and has the following form:
+    \begin{equation}
+        \widehat{\mathbf{\beta}} = (\mathbf{X^T} \mathbf{X})^{-1} \mathbf{X^T} \mathbf{Y} \label{Eq:EstimateBeta}
+    \end{equation}
     
-## Prefix vs. infix functions:
+    where:$\newline$
+    
+    the column vector $\mathbf{Y}$ is given by:
 
-* most functions are prefix: the name of the functions $\textbf{precedes}$ the arguments.
+    \begin{equation}
+       \mathbf{Y} := \begin{bmatrix} y_1 \\ y_2 \\ .. \\ y_n \end{bmatrix} \nonumber
+    \end{equation}
+     and the matrix $\mathbf{X}\footnote{This is a known as a \href{https://en.wikipedia.org/wiki/Vandermonde_matrix}{Vandermonde} matrix.}$ takes the following form:
+    \begin{equation}
+    \mathbf{X} := \begin{bmatrix} 1 & x_1 & x^2_1 \\ 
+                                  1 & x_2 & x^2_2 \\
+                                  \vdots & \vdots & \vdots \\
+                                  1 & x_n & x^2_n
+                  \end{bmatrix} \nonumber
+    \end{equation}
+    $\textbf{Calculate}$ $\widehat{\beta}$ using Eq.(\ref{Eq:EstimateBeta}).
+    
+    An estimate for the residuals ($\widehat{\epsilon}$) is given by:
+    \begin{equation}
+             \widehat{\epsilon} =  \mathbf{Y} \,-\, \mathbf{X}\,\widehat{\mathbf{\beta}} \label{Eq:EstimateResiduals}
+    \end{equation}
+    $\textbf{Calculate}$ $\widehat{\epsilon}$ using Eq.(\ref{Eq:EstimateResiduals}).
+    
+  - $\textbf{Step 3}$: $\newline$  
+    You can check your results using the following $\texttt{R}$ code.
+    ```{R,echo=TRUE,results='hide',comment=''}
+       myquadfit <- lm(y ~ x + I(x^2))
+       cat(sprintf("The estimates for beta::\n"))
+       cat(myquadfit$coefficients)
+       cat(sprintf("The residuals::\n"))
+       cat(myquadfit$residuals)
+    ```
+    
+
+## Hash tables/dictionaries
+
+We can also use hashes for matrices. We can select one or both dimensions.
+To create hashes, for:
+- rows: use $\textcolor{blue}{\textbf{rownames}}$
+- columns: use $\textcolor{blue}{\textbf{colnames}}$
+
+To remove the hash, use the $\textcolor{blue}{\textbf{NULL}}$ (like for vectors).
+
+### Examples
+```{R, echo=TRUE, comment=''}
+A1 <- c(0      , 5471.52, 5091.57, 5392.82, 
+        5416.45, 4584.33, 4904.83, 3851.73)
+A2 <- c(5471.52,       0, 1315.28,  927.35, 
+        1505.11,  944.40, 1157.42, 1945.42)
+A3 <- c(5091.57, 1315.28,       0, 2166.00, 
+        2724.01, 1571.76,  293.52, 1240.77)
+A4 <- c(5392.82,  927.35, 2166.00,       0,        
+         577.85,  973.23, 1947.28, 2422.32)
+A5 <- c(5416.45, 1505.11, 2724.01,  577.85,             
+              0, 1366.63, 2490.97, 2838.62)
+A6 <- c(4584.33,  944.40, 1571.76,  973.23, 
+        1366.63,       0, 1290.15, 1474.26)
+A7 <- c(4904.83, 1157.42,  293.52, 1947.28, 
+        2490.97, 1290.15,       0, 1064.41)
+A8 <- c(3851.73, 1945.42, 1240.77, 2422.32, 
+        2838.62, 1474.26, 1064.41,       0)
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist <- rbind(A1,A2,A3,A4,A5,A6,A7,A8)
+dist
+```
+
+$\newline$
+```{R, echo=TRUE, comment=''}
+# Adding hashes to both rows and columns 
+cities <- c("Anchorage","Atlanta","Austin","Baltimore","Boston", "Chicago", "Dallas","Denver")
+rownames(dist) <- cities
+colnames(dist) <- cities
+dist
+```
+$\newline$
+```{R, echo=TRUE, comment=''}
+dist["Chicago", "Denver"]
+dist["Austin", "Boston"]
+```
+
+## Arrays
+
+Say something about arrays.
+
+\newpage
+
+# Special Data Types (Factors and Date/Time types)
+
+Every $\texttt{R}$ object has attributes (i.e. properties or metadata). $\newline$
+They can be classified as:
+
+* $\textbf{intrinisic}$ properties e.g. $\textcolor{blue}{\textbf{length()}}$
+* $\textbf{external}$ properties (to be set by the user)
+
+## Attributes
+
+* can be get/retrieved using $\textcolor{blue}{\textbf{attributes()}}$.
+* can be set:
+  - individually using $\textcolor{blue}{\textbf{attr()}}$
+  - in generally using $\textcolor{blue}{\textbf{structure()}}$
+* some attributes can (also) be set/unset with $\textbf{special}$ functions: 
+  - names: $\textcolor{blue}{\textbf{names()}}$
+  - dimension: $\textcolor{blue}{\textbf{dim()}}$
+  - comment  : $\textcolor{blue}{\textbf{comment()}}$
+  - time series: $\textcolor{blue}{\textbf{tsp()}}$
+  - factor   : $\textcolor{blue}{\textbf{factor()}}$ (see next section)
+
+### Examples  
+
+* $1$ attribute:
   ```{R, echo=TRUE, comment=''}
-  res <- sum(1,2)
-  res
+  x <- 1:5 
+  x
+  attr(x, 'prop1') <- "hello"
+  attributes(x)
+  x
   ```
-  
-* infix: the function name/operator is found between the arguments
+$\newline\newline$
   ```{R, echo=TRUE, comment=''}
-  res <- 1 + 2
-  res
-  ```
-  
-  In $\texttt{R}$ you can create your infix operator by defining a function as follows:
-  ```{R, echo=TRUE, eval=FALSE}
-  '%op%' <- function(x,y){
-      # Body of the function
-  }
+  attr(x, 'prop1') <- NULL
+  attributes(x)
+  x
   ```
 
-  The infix function is then invoked as follows :
-  ```{R, echo=TRUE, eval=FALSE}
-  x %op% y
+$\newline\newline\newline$
+
+* more than $1$ attribute:
+
+  ```{R, echo=TRUE, comment=''}
+  y <- 1:8
+  y
+  y <- structure(y, dim=c(2,4), tag="trial")
+  y
+  attributes(y)
+  typeof(y)
+  class(y)
+  ```
+  $\newline\newline$
+  ```{R, echo=TRUE, comment=''}
+  # Remove BOTH attributes
+  y <- structure(y, dim=NULL, tag=NULL)
+  y
+  attributes(y)
+  typeof(y)
+  class(y)
+  ```
+$\newline\newline$
+
+* $\textcolor{blue}{\textbf{names()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  # Set the names attribute
+  capitals <- c("Salt Lake City", "Carson City", "Boise", "Santa Fe")
+  names(capitals) <- c("UT", "NV", "ID", "NM")
+  capitals
+  attributes(capitals)
+  ```
+$\newline$
+  ```{R,echo=TRUE,comment=''}
+  # Remove the names attribute
+  names(capitals) <- NULL
+  capitals
+  ```
+$\newline\newline$
+
+* $\textcolor{blue}{\textbf{dim()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  x <- 1:12
+  x
+  typeof(x)
+  class(x)
+  ```
+$\newline\newline$
+  ```{R,echo=TRUE,comment=''}
+  # Set the dimension attribute
+  dim(x) <- c(3,4)
+  x
+  typeof(x)
+  class(x)
+  ```
+$\newline\newline$
+
+  ```{R,echo=TRUE,comment=''}
+  # Remove the dimension attribute
+  dim(x) <- NULL
+  x
+  typeof(x)
+  class(x)
+  ```
+* $\textcolor{blue}{\textbf{comment()}}$
+
+  ```{R,echo=TRUE,comment=''}
+  x <- structure(1:6, comment="My vector")
+  typeof(x)
+  class(x)
+  comment(x)
   ```
   
-* $\texttt{R}$ contains some $\textbf{predefined}$ infix operators:
-  \begin{itemize}
-     \item $\texttt{\%\%}$   : modulo operator
-     \item $\texttt{\%/\%}$  : integer division
-     \item $\texttt{\%*\%}$  : matrix multiplication
-     \item $\texttt{\%o\%}$  : outer product
-     \item $\texttt{\%x\%}$  : Kronecker product
-     \item $\texttt{\%in\%}$ : Matching operator 
-  \end{itemize}
-  
-  
-### Example
+## Factor variables (Categorical variables)  
 
-* Let $\mathbf{x}, \mathbf{y} \, \in \, \mathbb{R}^n$. The angle $\theta$ between $\mathbf{x}$ and $\mathbf{y}$ is given by:
-  \begin{equation}
-     \theta =  \arccos{\Bigg (  \frac{\mathbf{x} \cdot \mathbf{y} }{\|\mathbf{x}\|\,\|\mathbf{y}\|}   \Bigg )} \nonumber
-  \end{equation}
+* Factor variables (factors, categorical variables) are 
+  discrete variables (i.e not continuous). $\newline$
+  The factors bear labels ($\textbf{levels}$) which are 
+  mapped into $\textbf{integers}$.
   
-  ```{r, echo=TRUE, comment=''}
-  '%theta%' <- function(x,y){
-      nom <- sum(x*y)
-      denom <- sqrt(sum(x^2)) *sqrt(sum(y^2))
-      return(acos(nom/denom))
-  }
+* Therefore, factors are stored as integer vector with $2$ attributes:
+  - $\textcolor{blue}{\textbf{class}}$= "factor"
+  - $\textcolor{blue}{\textbf{levels}}$: a vector with the "labels".
+  
+* By default ($\textbf{unordered}$) the labels are mapped $\textbf{alphabetically}$ to the integers.
+  We can $\textbf{impose}$ our own $\textbf{ordering}$ between integers and labels (levels).
+  
+* Useful functions:
+  - $\textcolor{blue}{\textbf{levels()}}$ : provides the levels of a factor
+  - $\textcolor{blue}{\textbf{table()}}$: returns the counts of each level
+  - $\textcolor{blue}{\textbf{is.factor()}}$: tests whether a variable is a factor variable
+  - $\textcolor{blue}{\textbf{is.ordered()}}$: tests whether a variable is an ordered factor variable 
+
+
+### Examples
+
+* Creation of an $\textbf{unordered}$ factor
+
+  ```{R,echo=TRUE,comment=''}
+  # Creation of an unordered factor
+  temp.data <- c("High","Low","VeryHigh","Low","VeryLow","Medium",
+                 "VeryHigh","VeryHigh","Low","Low","Medium","VeryHigh",
+                 "VeryHigh","VeryHigh","Low","High","VeryLow")
+  myfac.temp.data <- factor(temp.data)
+  myfac.temp.data
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # by default: the levels are stored ALPHABETICALLY (i.e. unordered)
+  levels(myfac.temp.data)
+  table(myfac.temp.data)
   ```
   
   $\newline$
   
-  ```{r, echo=TRUE, comment=''}
-  x <- c(1,0,3)
-  x
-  y <- c(3,2,-1)
-  y
-  cat(sprintf("The angle (radians) between x and y is:%8.4f\n", x %theta% y))
+  ```{R,echo=TRUE,comment=''}
+  is.factor(myfac.temp.data)
+  is.ordered(myfac.temp.data)
+  ```
+  $\newline$
+
+* Creation of an $\textbf{ordered}$ factor
+
+  ```{R,echo=TRUE,comment=''}
+  # Creation of an unordered factor
+  temp.data <- c("High","Low","VeryHigh","Low","VeryLow","Medium",
+                 "VeryHigh","VeryHigh","Low","Low","Medium","VeryHigh",
+                 "VeryHigh","VeryHigh","Low","High","VeryLow")
+  myfac2.temp.data <- factor(temp.data, ordered=TRUE, 
+                             levels=c("VeryLow","Low","Medium","High","VeryHigh")) 
+  myfac2.temp.data
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # The ordering is NOW imposed
+  levels(myfac2.temp.data)
+  table(myfac2.temp.data)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  is.factor(myfac2.temp.data)
+  is.ordered(myfac2.temp.data)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Stripping a factor to the essentials: integer vector
+  attributes(myfac2.temp.data)
+  class(myfac2.temp.data) <- NULL
+  levels(myfac2.temp.data) <- NULL
+  myfac2.temp.data
+  ```
+
+
+
+## Dates and times in $\texttt{R}$.
+
+* $\textcolor{blue}{\textbf{Date}}$ class : 
+  - represents calendar dates
+  - built on top of doubles with class attribute 'Date'
+  - 0 : Jan 1. 1970 ($\href{https://en.wikipedia.org/wiki/Unix_time}{\textbf{Unix Epoch time}}$)
+  - $\textcolor{blue}{\textbf{as.Date()}}$: method to cast string to a Date
+* $\textcolor{blue}{\textbf{POSIXct}}$ and $\textcolor{blue}{\textbf{POSIXlt}}$ : date and time
+  - $\textcolor{blue}{\textbf{POSIXct}}$: stores date/time values as the #seconds since Jan. 1, 1970
+  - $\textcolor{blue}{\textbf{POSIXlt}}$: stored as $\textbf{blue}{\textbf{list}}$ with elements 
+    for seconds, minutes, hours, day, month, year, etc.
+* $\href{https://lubridate.tidyverse.org/}{\textbf{lubridate}}$: a very useful package for dates and times: $\newline$
+   
+
+### Examples
+
+* $\textbf{Date}$ 
+
+  ```{R,echo=TRUE,comment=''}
+  today <- Sys.Date()
+  today
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Attributes of Date 
+  class(today)
+  attributes(today)
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  unclass(today)
+  ```
+  
+  $\newline \newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  d0 <- structure(0, class='Date')
+  d0
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  class(d0)
+  typeof(d0)
+  ```
+  
+  $\newline\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Convert a string into a Date
+  d1  <- as.Date("2022-01-01")
+  d1
+  ```
+  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  class(d1)
+  typeof(d1)
+  ```
+  $\newline \newline$
+  
+* $\textbf{POSIXct}$
+
+  ```{R,echo=TRUE,comment=''}
+  # Convert a string into a POSIXct object
+  now_ct <- as.POSIXct("2018-08-01 22:00", tzone="MST")
+  now_ct
   ```  
   
-### Exercises
-
-* In the cyclic group $\mathbb{Z}_4$, we only have the (integer) elements: $\{0,1,2,3\}$. $\newline$ 
-  The addition ($\forall\,x,y \, \in \,\mathbb{Z}_4$) is defined as follows:
-  \begin{equation}
-   x+y \, \equiv \, x+y \mod 4 \nonumber
-  \end{equation}
-   
-  ```{R, echo=FALSE}
-  '%+%' <- function(x,y){
-     return((x+y)%% 4)
-  }
-  ```
-  ```{R, echo=TRUE, comment=''}
-  x <- sample(0:3, size=10, replace=TRUE)
-  x
-  y <- sample(0:3, size=12, replace=TRUE)
-  y
-  ```
-  Invoking the infix addition $\texttt{\%+\%}$ results into:
-  ```{R, echo=TRUE, comment=''}
-  res <- x %+% y
-  res
-  ```
-  Write the infix function ($\texttt{\%+\%}$) to perform addition in the cyclic group $\mathbb{Z}_4$.$\newline$
-
-## Function composition/piping
-
-Often the output of a function is used as the input for another function.$\newline$
-There are several options beyond the explicit creation of intermediate variables:
-
-* Function composition (e.g. $\texttt{h(g(f(x)))}$).
-
-  ```{R, echo=TRUE, comment=''}
-  x <- runif(1000)
-  xav <- mean(x)
-  res <- sqrt(sum((x-xav)^2))  
-  res
-  ```
-
-* Use of piping (cfr. the following $\texttt{Linux}$ code: $\texttt{cat *.r | grep function}$).$\newline$ 
-  The [magrittr library](https://magrittr.tidyverse.org/) was developed to 
-  provide this feature\footnote{The infix function $\texttt{\%>\%}$ is known as the "$\textit{and then}$" operator.} among others.$\newline$
+  $\newline$
   
-  ```{R, echo=TRUE, comment=''}
-  library(magrittr)
-  (x-xav)^2 %>% 
-      sum() %>% 
-      sqrt()
+  ```{R,echo=TRUE,comment=''}
+  attributes(now_ct)
+  typeof(now_ct)
   ```
   
-# Bibliography  
+  $\newline$
+  
+  ```{R,echo=TRUE,comment=''}
+  # Removal of the attributes
+  attr(now_ct,"tzone") <- NULL
+  unclass(now_ct)
+  ```
+  
+# Bibliography
+
 
   
-
-
 

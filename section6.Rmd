@@ -1,0 +1,270 @@
+---
+title: 'Introduction to R^[`r library(r2symbols) ; format(paste(symbol("copyright") , " - Wim R.M. Cardoen, 2022 - The content can neither be copied nor distributed without the **explicit** permission of the author."))`]'
+subtitle: 'Section 6: Environments, Running R , Libraries and some probability distributions'
+author: "Wim R.M. Cardoen"
+date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
+output:
+  pdf_document:
+    highlight: tango
+    df_print: tibble
+    toc: true
+    toc_depth: 5
+    number_sections: True
+    extra_dependencies:
+    - amsfonts
+    - amsmath
+    - xcolor
+    - hyperref
+bibliography: [latex/intro.bib]
+csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
+urlcolor: violet
+---
+
+\newpage
+
+# R Environments
+\texttt{under construction}
+
+# Running R
+\texttt{under construction}
+
+# R Packages
+\texttt{under construction}
+
+## Installation of R packages
+
+## Using R packages
+
+# Probability distributions
+
+R comes with the most important probability distributions installed.$\newline$
+For the theoretical underpinnings, see e.g. [@CASELLA:2002a].$\newline$
+
+Probability distributions can be grosso modo classified into:
+\begin{itemize}
+\item discrete distributions
+\item continuous distributions
+\end{itemize}
+
+## Discrete distributions
+
+Let $\mathbb{P}(X=k;\{\xi\})$) be a discrete probability mass function when the random variable $X=k$ $\newline$
+and which depends on the parameter set $\{\xi\}$.$\newline$
+Let $\texttt{keyword}$ be the (variable) name of the corresponding distribution. Then,
+
+\begin{itemize}
+   \item $\textbf{d}\texttt{keyword}(k, \ldots)$ : calculates the probability $\mathbb{P}(X=k)$  
+   \item $\textbf{p}\texttt{keyword}(k, \ldots)$ : calculates the cumulative probability function (CDF) at $k$:$\newline$
+           $\displaystyle F(X=k;\{\xi\}) := \sum_{j=0}^k \mathbb{P}(X=j)$
+   \item $\textbf{q}\texttt{keyword}(p, \ldots)$: calculates the value of $k$ where $p=F(k;\{\xi\})$ or $\newline$
+          $\displaystyle k = \lceil F^{-1}(p;\{\xi\}) \rceil$
+   \item $\textbf{r}\texttt{keyword}(n, \ldots)$: generates a vector of $n$ random values sampled from the distribution $\texttt{keyword}$.         
+\end{itemize}
+
+\newpage
+
+Some common discrete probability distributions (implemented in $\texttt{R}$) are displayed in Table \ref{TABLE:DISCRETE}.
+
+\begin{table}[ht]
+   \begin{center}
+    \begin{tabular}{c|ccc}
+  \texttt{keyword} & Name     &  $\mathbb{P}(X=k;\{\xi\})$                                           & Parameter set ($\{\xi\}$) \\
+  \hline
+  \texttt{binom}  & Binomial &  $\displaystyle \binom{n}{k}p^k(1-p)^{n-k}$         & $0 \le p \le 1$  \\
+  \texttt{nbinom} & Negative Binomial & $\displaystyle  \binom{k+r-1}{k}(1-p)^kp^r$    & $0 \le p \le 1$ ; $r>0$ \\
+  \texttt{hyper}  & Hypergeometric & $\displaystyle \frac{ \binom{K}{k} \binom{N-K}{n-k}}{\binom{N}{n}}$ &  $N\in \{0,1,2,\dots\}$; $K,n\in\{0,1,\ldots,N\}$ \\ 
+  \texttt{pois}   & Poisson  &  $\displaystyle \frac{\lambda^k\,e^{-\lambda}}{k!}$ & $0 < \lambda < \infty$ \\  
+  \hline
+  \end{tabular}
+  \end{center}
+  \caption{A few common discrete probability distributions.}
+  \label{TABLE:DISCRETE}
+\end{table}  
+
+### Examples
+
+- Let's consider the following distribution: $\texttt{binom}(p=0.3,n=5)$.$\newline$
+  
+  ```{R echo=TRUE, comment=''}
+  n <- 5
+  p <- 0.3
+  # Alternative code for the binom distribution
+  mybinom <- function(n,p){
+      v <- vector(mode="double", length=(n+1))
+      for(k in 0:n){
+        v[k+1] <- choose(n,k)*p^k*(1-p)^(n-k)  
+      }
+      return(v)
+  }
+  pvec <- mybinom(n,p)
+  ```
+  $\newline$
+
+  * Value of the PMF at $k=\{0,1,\ldots,5\}$:
+    ```{R echo=TRUE, comment=''}
+    for(k in 0:n){
+        cat(sprintf("  P(X=%d):%8.6f and should be %8.6f\n", 
+                    k, dbinom(k, size=n, p), pvec[k+1]))
+    }  
+    ```
+
+  * Value of the CDF at $k=\{0,1,\ldots,5\}$:
+    ```{R echo=TRUE, comment=''}
+    for(k in 0:n){
+        cat(sprintf("  F(X=%d):%8.6f and should be %8.6f\n", 
+        k, pbinom(k,size=n,p), sum(pvec[1:(k+1)]) ))
+    }  
+    ```
+  
+  * The quantile function:  
+    ```{R echo=TRUE, comment=''}
+    pvec <- c(0.0, 0.25, 0.50, 0.75, 1.00)
+    for(item in pvec){
+        cat(sprintf("  P:%4.2f => k=%d\n", 
+        item, qbinom(item,size=n, prob=p)))
+    }
+    ```  
+    
+  * Sampling random numbers from the distribution:
+    ```{R echo=TRUE, comment=''}
+    tot <- 15
+    vec <- rbinom(tot,size=n, prob=p)
+    print(vec)
+    ```
+     
+     
+ 
+## Continuous distributions
+
+Let $f(x; \{\xi\})$ be a continuous probability density function (pdf), which depends on the variable $x$ and $\newline$ 
+the parameter set $\{\xi\}$. $\newline$
+Let $\texttt{keyword}$ be the (variable) name of the corresponding distribution. Then,
+
+\begin{itemize}
+   \item $\textbf{d}\texttt{keyword}(x, \ldots)$ : calculates the value of the pdf at $x$, i.e.  $\newline$
+         $f(x;\{\xi\})$
+   \item $\textbf{p}\texttt{keyword}(x, \ldots)$ : calculates the cumulative probability function (cdf) at $x$:$\newline$
+           $\displaystyle F(x;\{\xi\}) := \int_{-\infty}^{x} f(t;\{\xi\})\, dt$
+   \item $\textbf{q}\texttt{keyword}(p, \ldots)$: calculates the value of $x$ where $p=F(x;\{\xi\})$ or $\newline$
+          $\displaystyle x = F^{-1}(p;\{\xi\})$
+   \item $\textbf{r}\texttt{keyword}(n, \ldots)$: generates a vector of $n$ random values sampled from the distribution $\texttt{keyword}$.         
+\end{itemize}
+
+\newpage
+
+Some common continuous probability distributions (implemented in $\texttt{R}$) are displayed in Table \ref{TABLE:CONTINUOUS}.
+
+\begin{table}[ht]
+   \begin{center}
+    \begin{tabular}{c|cccc}
+  \texttt{keyword} & Name & $f(x;\{ \xi \})$      &      \texttt{Dom}($x$)   & Parameter set ($\{\xi\}$)\\
+  \hline
+  \texttt{unif}   &  Uniform      &  $\displaystyle \frac{1}{(b-a)}$    &   $a \le x \le b$ &  $a,b$  \\
+  \texttt{norm}   &  Normal       &  $\displaystyle \frac{1}{\sqrt{2\pi\sigma^2}}\,\exp\Big (-\frac{(x-\mu)^2}{2\sigma^2} \Big )$ & $-\infty < x < \infty$  & $-\infty < \mu <  \infty$ , $\sigma >0$  \\
+  \texttt{cauchy} &  Cauchy       &  $\displaystyle \frac{1}{\pi\sigma} \frac{1}{1+\Big(\frac{x-\theta}{\sigma}  \Big)^2}$    &  $-\infty < x < \infty$  &  $-\infty < \theta <  \infty$ , $\sigma >0$ \\
+  \texttt{t}      &  Student's t  &  $\displaystyle \frac{\Gamma(\frac{\nu+1}{2})}{\Gamma(\frac{\nu}{2})}\frac{1}{\nu \pi} \frac{1}{\Big(1+\frac{x^2}{\nu}\Big)^{(\nu+1)/2}}$ &  $-\infty < x < \infty$  & $\nu=1,2, \ldots$ \\
+  \texttt{chisq}  &  Chi-squared  &  $\displaystyle \frac{1}{\Gamma(\nu/2)2^{(\nu/2)}} x^{(\nu/2)-1}e^{-\frac{x}{2}}$ & $0 \le x < \infty$  & $\nu=1,2, \ldots$ \\
+  \texttt{f}      &  F            &  $\displaystyle \frac{\Gamma \Big(\frac{\nu_1+\nu_2}{2}\Big)}{ \Gamma \Big(\frac{\nu_1}{2}\Big) \Gamma \Big(\frac{\nu_2}{2}\Big)} \frac{x^{(\nu_1-2)/2}}
+                            {\Bigg(1+  \Big( \frac{\nu_1}{\nu_2}   \Big)x \Bigg)^{(\nu_1+\nu_2)/2}}$ &  $ 0 \le x < \infty$  &   $\nu_1, \nu_2=1,2, \ldots$\\
+  \texttt{exp}    &  Exponential  &  $\displaystyle \lambda e^{-\lambda x}$ & $0 \le x < \infty$&   $\lambda >0$\\
+     \hline
+    \end{tabular}
+  \end{center}
+  \caption{A few common continuous probability distributions.}
+  \label{TABLE:CONTINUOUS}
+\end{table}   
+   
+where $\Gamma(x)$ stands for the gamma function which has the following mathematical form:
+\begin{equation}
+   \Gamma(x) := \int_0^{\infty} t^{x-1} e^{-x} dt \nonumber
+\end{equation}
+
+### Examples
+
+- Let's consider the following distribution: $N(\mu=5.0,\sigma^2=4.0)$.$\newline$
+  Therefore, $\texttt{distro}$:$\texttt{norm}$
+  
+  \begin{figure}[h]
+     \centering
+        \includegraphics[width=0.60\textwidth]{img/norm.pdf}
+        \caption{Plot of the normal distribution (red). The area under the curve (blue) represents$\newline$the cumulative probability at $x=8.0$.}
+  \end{figure}
+ 
+  ```{R echo=TRUE, comment=''}
+  x <- 8.0
+  mu <- 5.0
+  sigma <- 2.0
+  ```
+  $\newline$
+
+  * Value of the PDF at $x$:
+    ```{R echo=TRUE, comment=''}  
+    cat(sprintf("The density at %f is %12.10f\n", x, dnorm(x,mean=mu, sd=sigma)))
+    ```
+    
+  * Value of the CDF at $x$:  
+    ```{R echo=TRUE, comment=''}
+    prob <- pnorm(x,mean=mu,sd=sigma)
+    cat(sprintf("The Cumulative Probability at %f is %12.10f", x, prob))
+    ```
+    
+  * The quantile function:  
+    ```{R echo=TRUE, comment=''}
+    cat(sprintf("The point where the Cumulative Probability is %12.10f: %8.4f", 
+                 prob, qnorm(prob, mean=mu, sd=sigma)))
+    ```
+    
+  * Sampling random numbers from the distribution:
+    ```{R echo=TRUE, comment=''}
+    vec <- rnorm(n=10, mean=mu, sd=sigma)
+    print(vec)
+    ```
+
+## Exercises
+
+\begin{enumerate}
+\item Generate vectors with $10^4$, $10^5$, $10^6$, $10^7$ random numbers from the $\chi^2(\nu=5)$ distribution.$\newline$
+      Calculate the mean, as well as the variance for each of those vectors. ($\textcolor{blue}{\textbf{mean()}}$, $\textcolor{blue}{\textbf{var()}}$) $\newline$
+      Note: If $X \sim \chi^2(\nu)$ $\Rightarrow$ $\mathbb{E}[X]=\nu$ and $\mathbb{V}[X]=2\nu$
+\item A brewer from the far-away lands of Hatu wants to follow the land's alcohol ordinance (i.e. a maximum of $5\%$ ethanol per volume). In order to comply with the law he sent a batch of independent samples to a certified lab. The lab results are to be found in the file \texttt{data/beer.csv}.
+
+His plan is to perform a simple one-sided hypothesis test:
+\begin{align}
+  H_0 :& \;\mu_0=5.0 \;\;\;\nonumber \\ 
+  H_1 :& \;\mu \neq \mu_0 \nonumber
+\end{align}
+
+He assumes that the alcohol $\%$ per volume is normally distributed (over the different samples/batches of beer) i.e. $N(\mu, \sigma^2)$ 
+where $\mu$ is supposed to be $5.0$ but where $\sigma^2$ is unknown.
+
+Let $c_{1- \alpha}$ be the (critical) point that separates the acceptance region ($\mathcal{A}$) with $\mathbb{P}(\mathcal{A})=1-\alpha$ from $\newline$
+the rejection region ($\mathcal{R}$) with $\mathbb{P}(\mathcal{R})=\alpha$.
+Therefore,
+\begin{align}
+  \alpha = & \; \mathbb{P}(\overline{X} > c_{1-\alpha}| \mu=\mu_0)   \nonumber \\
+         = & \; \mathbb{P}\Big(\frac{ \overline{X} - \mu_0  }{s/\sqrt{n}} > \frac{ c_{1-\alpha} - \mu_0} {s/\sqrt{n}} \Big )  \nonumber \\
+         = & \; \mathbb{P}\Big ( \frac{ \overline{X} -  \mu_0 }{s/\sqrt{n}} > t_{1-\alpha}(\nu=n-1) \Big ) \nonumber 
+\end{align}
+where t stands for $\texttt{Student's t}$ distribution, $s^2$ is the sample variance, $n$ the number of measurements.
+
+\begin{itemize}
+\item Read the lab results from the file $\texttt{data/beer.csv}$. (Hint: use $\textcolor{blue}{\textbf{read.csv()}}$ to read the file).
+\item Calculate the numerical value ($\tau$) of the test-statistic T, given by:
+\begin{equation}
+   T = \frac{\overline{X}-\mu_0}{s/\sqrt{n}} \;\; \sim \, t(\nu=n-1) \nonumber
+\end{equation}
+\item Determine $t_{0.95}(\nu=n-1)$, i.e. the critical point such that $\mathbb{P}(\mathcal{R})=0.05$.
+\item Decide whether the brewer should reject $H_0$ (i.e. reject if $\tau >t_{0.95}(\nu=n-1)$).
+\item What is the probability of the area under the curve for $t \in [\tau,+\infty)$?
+\end{itemize}
+
+\item Check out the following \href{https://higherlogicdownload.s3.amazonaws.com/AMSTAT/1484431b-3202-461e-b7e6-ebce10ca8bcd/UploadedImages/Classroom_Activities/HS_7__t-ditribution_and_GOSSET.pdf}{link} 
+      if you are interested in the origin of $\texttt{Student's t}$ distribution.
+\end{enumerate}
+# Bibliography
+
+
+  
+
+
+
