@@ -33,71 +33,101 @@ R can be summarized in $\textbf{three}$ principles (John M. Chambers, 2016)
 
 # R Objects 
 
-* An object in R is (internally) represented as a pair: (**symbol**, **value**).
-* A **symbol** is assigned a **value** by the use of an arrow pointing to the left ($\textcolor{blue}{\textbf{<-}}$).
-* There are $\textbf{less favored}$ ways:
-  * A simple equality sign ($\textcolor{blue}{\textbf{=}}$).
+* R provides a number of specialized data structures: **R objects**.
+* The most common types of R objects are:
+  * $\textcolor{blue}{\textbf{logical}}$, $\textcolor{blue}{\textbf{integer}}$,
+    $\textcolor{blue}{\textbf{double}}$, $\textcolor{blue}{\textbf{character}}$, 
+    [$\textcolor{blue}{\textbf{complex}}$, $\textcolor{blue}{\textbf{raw}}$] (atomic vectors)
+  * $\textcolor{blue}{\textbf{list}}$ (heterogeneous/recursive vectors)
+  * $\textcolor{blue}{\textbf{closure}}$ (functions)
+  * $\textcolor{blue}{\textbf{environment}}$
+  * $\textcolor{blue}{\textbf{S4}}$
+  * $\textcolor{blue}{\textbf{symbol}}$ (variable name)
+  * $\textcolor{blue}{\textbf{NULL}}$
+* An R object can be referred to by symbols/variables.   
+* The **type** of an object in R is determined by the $\textcolor{blue}{\textbf{typeof()}}$ function.  
+
+## The creation of R objects
+* The following code creates an R object (vector of $4$ integers) which bears the name **x**, e.g.:
+  ```{R, echo=TRUE, comment=''}
+  x <- c(3L,17L,12L,5L) 
+  x
+  cat(sprintf(" typeof(x):%s\n", typeof(x)))
+  ```
+  Under the hood it passes through the following steps:
+  - creation of an R object i.e. vector of $4$ integers in memory.
+  - binding/assigning the R object to the variable name $x$ using $\textcolor{blue}{\textbf{<-}}$ (left arrow symbol).
+  
+* There are $\textbf{less common}$ ways to assign variables in R:
+  * A simple equality sign ($\textcolor{blue}{\textbf{=}}$). This approach is mainly used to assign default function arguments.
   * Using the $\textcolor{blue}{\textbf{assign()}}$ function.
   
-## Examples 
+### Examples
 
-* Clean up the global environment i.e. remove all objects from the current R environment.\newline
-  $\textcolor{orange}{\texttt{Recommended!}}$
+* $\textbf{preferred}$ way to assign variables
+  ```{R, echo=TRUE, comment=''}
+  x <- 5.0 
+  x
+  cat(sprintf("typeof(x):%s\n", typeof(x)))
+  ```
+$\newline$
+* $\textbf{less common}$ way to assign variables
+  - Alternative $1$:
+    ```{R, echo=TRUE, comment=''}
+    y = 5.0
+    y
+    cat(sprintf("typeof(y):%s\n", typeof(y)))
+    ```
+    $\newline$
+  - Alternative $2$:
+    ```{R, echo=TRUE, comment=''}
+    assign("z",5.0)
+    z
+    cat(sprintf("typeof(y):%s\n", typeof(y)))
+    ```
 
+* functions are objects (as stated previously)
+  ```{R, echo=TRUE, comment=''}
+  mysamplevar <- function(x, av=0){
+  
+    n <- length(x)
+    if(n>1){
+      return(1.0/(n-1)*sum((x-av)^2))
+    }else{
+      stop("ERROR:: Dividing by zero (n==1) || (n==0) ")
+    }  
+  }
+  cat(sprintf("typeof(mysamplevar):%s\n", typeof(mysamplevar)))
+  ```
+  $\newline$
+
+  ```{R, echo=TRUE, comment=''}
+  x <- rnorm(100)
+  mysamplevar(x)
+  mysamplevar(x,mean(x))
+  var(x)
+  ```
+
+## The deletion of R objects
+You can remove objects from (the current environment) by invoking the $\textcolor{blue}{\textbf{rm()}}$ function.
+The removal process consists of $2$ steps i.e.:
+
+* the binding between the variable name and the R object is severed.
+* the R object is automatically removed from memory by R's internal garbage collector ($\textcolor{blue}{\textbf{gc()}}$).
+
+### Examples
+* Remove the variable $x$ from the current environment
 ```{R, echo=TRUE, comment=''}
-rm(list=ls())
+ls()
+rm(x)
 ls()
 ```
 
-$\newline$
-
-* $\textbf{preferred}$ way to assign variables
-```{R, echo=TRUE, comment=''}
-x <- 5.0 
-x
-```
-
-$\newline$
-
-* alternative 1: mainly used to assign default function arguments
-```{R, echo=TRUE, comment=''}
-y = 5.0 
-y
-
-mysamplevariance <- function(x, av=0){
-  
-  n <- length(x)
-  if(n>1){
-      return(1.0/(n-1)*sum((x-av)^2))
-  }
-  else{
-      stop("ERROR:: Dividing by zero (n==1) || (n==0) ")
-  }  
-}
-
-x <- rnorm(10)
-mysamplevariance(x)
-mysamplevariance(x,mean(x))
-var(x)
-```
-
-$\newline$
-
-* alternative 2: even less used
-
-```{R, echo=TRUE, comment=''}
-assign("z", 5.0) 
-z
-```
-
-$\newline$
-
-* functions are objects
-```{R, echo=TRUE, comment=''}
-f <- mean
-f
-val <- f(1:10)
-val
+* Remove **all** variables from the current environment
+```{R, echo=TRUE, comment=''} 
+ls()
+rm(list=ls())
+ls()
 ```
 
 \newpage
