@@ -217,7 +217,6 @@ sum(y4)
 ```{R,eval=FALSE}
 install.packages(pkgs=c("lobstr"), repos=c("http://cran.us.r-project.org"), verbose= TRUE)
 packageVersion("lobstr")                        # Check version of the package installed
-installed.packages()[which("lobstr" == s[,1]),] # Info on the lobstr package
 ```
 Info on the $\texttt{lobstr}$ package can be found at:
 
