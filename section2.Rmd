@@ -34,7 +34,9 @@ R can be summarized in $\textbf{three}$ principles (John M. Chambers, 2016)
 # R Objects 
 
 * R provides a number of specialized data structures: **R objects**.
-* The most common types of R objects are:
+* The most common types of R objects^[For people interested in the details we recommend 
+to have a look at the file 
+$\href{https://cran.r-project.org/doc/manuals/r-release/R-ints.pdf}{R\,Internals\,}$ and the R source code (especially the header file *Rinternals.h*) where all the current object types are defined.] are:
   * $\textcolor{blue}{\textbf{logical}}$, $\textcolor{blue}{\textbf{integer}}$,
     $\textcolor{blue}{\textbf{double}}$, $\textcolor{blue}{\textbf{character}}$, 
     [$\textcolor{blue}{\textbf{complex}}$, $\textcolor{blue}{\textbf{raw}}$] (atomic vectors)
@@ -45,7 +47,8 @@ R can be summarized in $\textbf{three}$ principles (John M. Chambers, 2016)
   * $\textcolor{blue}{\textbf{symbol}}$ (variable name)
   * $\textcolor{blue}{\textbf{NULL}}$
 * An R object can be referred to by symbols/variables.   
-* The **type** of an object in R is determined by the $\textcolor{blue}{\textbf{typeof()}}$ function.  
+* The **type** of an object in R is determined by the $\textcolor{blue}{\textbf{typeof()}}$ function.
+  
 
 ## The creation of R objects
 * The following code creates an R object (vector of $4$ integers) which bears the name **x**, e.g.:
@@ -58,7 +61,7 @@ R can be summarized in $\textbf{three}$ principles (John M. Chambers, 2016)
   - creation of an R object i.e. vector of $4$ integers in memory.
   - binding/assigning the R object to the variable name $x$ using $\textcolor{blue}{\textbf{<-}}$ (left arrow symbol).
   
-* There are $\textbf{less common}$ ways to assign variables in R:
+* There are $\textbf{less common}$ ways to bind variables to R objects:
   * A simple equality sign ($\textcolor{blue}{\textbf{=}}$). This approach is mainly used to assign default function arguments.
   * Using the $\textcolor{blue}{\textbf{assign()}}$ function.
   
@@ -70,7 +73,7 @@ R can be summarized in $\textbf{three}$ principles (John M. Chambers, 2016)
   x
   cat(sprintf("typeof(x):%s\n", typeof(x)))
   ```
-$\newline$
+  
 * $\textbf{less common}$ way to assign variables
   - Alternative $1$:
     ```{R, echo=TRUE, comment=''}
