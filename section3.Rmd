@@ -447,15 +447,17 @@ extSoftVersion()["BLAS"]
 
   - $\textbf{Step 2}$: $\newline$
     Our goal is to use the following linear model, i.e.:
-    \begin{equation}
-       Y_i = \beta_0 \,+\, \beta_1 \, x_i \, + \, \beta_2\,x^2_i + \, \epsilon_i \nonumber
-    \end{equation} 
-    or in matrix form: 
+    \begin{eqnarray}
+       Y_i & = & \beta_0 \,+\, \beta_1 \, x_i \, + \, \beta_2\,x^2_i + \, \epsilon_i \nonumber \\
+           & = & \beta_0 \,+\, x_{i1} \,\beta_1 \,+ \, x_{i2}\,\beta_2 \, +\,   \epsilon_i \nonumber
+    \end{eqnarray} 
+    where $x_{ij}:= x^j_i$.
+    
+    The aforementioned equation takes on the following matrix form: 
     \begin{equation}
        Y = X\,\beta  \, + \, \mathcal{\epsilon} \label{Eq:LinearModel}
     \end{equation}
-    to fit the previously generated data set.
-   
+  
     In Eq.(\ref{Eq:LinearModel}), we have:
     \begin{itemize}
        \item $Y$ : a $n \times 1$ column vector.
@@ -464,44 +466,44 @@ extSoftVersion()["BLAS"]
        \item $\epsilon$ is : a $n\times 1$ column vector and $\sim \, N(0,\sigma^2)$
     \end{itemize} 
   
-    An estimate for $\beta$ ($\widehat{\mathbf{\beta}}$) can be found (using Least-Squares, MLE see e.g. [@SEBER:LR:2012a]) $\newline$
+    An estimate for $\beta$ ($\widehat{\beta}$) can be found (using Least-Squares, MLE see e.g. [@SEBER:LR:2012a]) $\newline$
     and has the following form:
     \begin{equation}
-        \widehat{\mathbf{\beta}} = (\mathbf{X^T} \mathbf{X})^{-1} \mathbf{X^T} \mathbf{Y} \label{Eq:EstimateBeta}
+        \widehat{\beta} = (X^T X)^{-1} X^T Y \label{Eq:EstimateBeta}
     \end{equation}
     
-    where:$\newline$
+    where,$\newline$
     
-    the column vector $\mathbf{Y}$ is given by:
+    the column vector $Y$ is given by:
 
     \begin{equation}
-       \mathbf{Y} := \begin{bmatrix} y_1 \\ y_2 \\ .. \\ y_n \end{bmatrix} \nonumber
+       Y := \begin{bmatrix} y_1 \\ y_2 \\ .. \\ y_n \end{bmatrix} \nonumber
     \end{equation}
-     and the matrix $\mathbf{X}\footnote{This is a known as a \href{https://en.wikipedia.org/wiki/Vandermonde_matrix}{Vandermonde} matrix.}$ takes the following form:
+     and the matrix X\footnote{This is a known as a \href{https://en.wikipedia.org/wiki/Vandermonde_matrix}{Vandermonde} matrix.} takes the following form:
     \begin{equation}
-    \mathbf{X} := \begin{bmatrix} 1 & x_1 & x^2_1 \\ 
+    X := \begin{bmatrix} 1 & x_1 & x^2_1 \\ 
                                   1 & x_2 & x^2_2 \\
                                   \vdots & \vdots & \vdots \\
                                   1 & x_n & x^2_n
                   \end{bmatrix} \nonumber
     \end{equation}
-    *Note*:\newline
+    *Note (additional background)*:\newline
     1. The underlying assumption for Eq. (\ref{Eq:EstimateBeta}) is that the inverse of 
-    the matrix $(\mathbf{X^T} \mathbf{X})$ exists. This is the case
-    iff the $\texttt{rank}(\mathbf{X^T X})=\texttt{rank}(\mathbf{X})$ is maximal 
-    or if the the columns of the matrix $\mathbf{X}$ are linearly independent.\newline
-    2. In the field of machine learning (ML), the vector $\mathbf{\beta}$ is split into 2 parts:
-       the scalar $\texttt{b}:=\mathbf{\beta}_0$ ($\texttt{bias}$) and the 
-       remainder of the vector $\mathbf{\beta}$, i.e. ($\texttt{w}$) also 
+    the matrix $(X^T X)$ exists. This is the case
+    iff the $\texttt{rank}(X^T X)=\texttt{rank}(X)$ is maximal 
+    or if the the columns of the matrix $X$ are linearly independent.\newline
+    2. In the field of machine learning (ML), the vector $\beta$ is split into 2 parts:
+       the scalar $\texttt{b}:=\beta_0$ ($\texttt{bias}$) and the 
+       remainder of the vector $\beta$, i.e. ($\texttt{w}$) also 
        known as the $\texttt{weight}$ vector.\newline
        In the current exercise, the column vector $\texttt{w}$ is given by 
-       $\begin{pmatrix} \beta_1 \beta_2 \end{pmatrix}^T$.   \newline
+       $\begin{pmatrix} \beta_1 \beta_2 \end{pmatrix}^T$.
     
-    $\textbf{Calculate}$ $\widehat{\beta}$ using Eq.(\ref{Eq:EstimateBeta}).
+    $\textbf{Calculate}$ $\widehat{\beta}$ using Eq.(\ref{Eq:EstimateBeta}).\newline
     
     An estimate for the residuals ($\widehat{\epsilon}$) is given by:
     \begin{equation}
-             \widehat{\epsilon} =  \mathbf{Y} \,-\, \mathbf{X}\,\widehat{\mathbf{\beta}} \label{Eq:EstimateResiduals}
+             \widehat{\epsilon} =  Y \,-\, X\,\widehat{\beta} \label{Eq:EstimateResiduals}
     \end{equation}
     $\textbf{Calculate}$ $\widehat{\epsilon}$ using Eq.(\ref{Eq:EstimateResiduals}).
     
