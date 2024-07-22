@@ -485,15 +485,17 @@ extSoftVersion()["BLAS"]
                                   1 & x_n & x^2_n
                   \end{bmatrix} \nonumber
     \end{equation}
-    *Notes*:\newline
+    *Note*:\newline
     1. The underlying assumption for Eq. (\ref{Eq:EstimateBeta}) is that the inverse of 
     the matrix $(\mathbf{X^T} \mathbf{X})$ exists. This is the case
-    iff the $\textrm{rank}(\mathbf{X^T X})=\mathrm{rank}(\mathbf{X})$ is maximal 
-    or if the the columns of $\mathbf{X}$ are linearly independent.\newline
-    2. In the area of machine learning, the vector $\widehat{\mathbf{\beta}}$ is split up in 2 parts:
-       the scalar $\widehat{\mathbf{\beta}_0}$ and the remainder of the vector $\widehat{\mathbf{\beta}}$.
-       The scalar part is known as the $\textit{bias}$; 
-       the remainder is known as the $\textit{weight}$ vector.\newline
+    iff the $\texttt{rank}(\mathbf{X^T X})=\texttt{rank}(\mathbf{X})$ is maximal 
+    or if the the columns of the matrix $\mathbf{X}$ are linearly independent.\newline
+    2. In the field of machine learning (ML), the vector $\mathbf{\beta}$ is split into 2 parts:
+       the scalar $\texttt{b}:=\mathbf{\beta}_0$ ($\texttt{bias}$) and the 
+       remainder of the vector $\mathbf{\beta}$, i.e. ($\texttt{w}$) also 
+       known as the $\texttt{weight}$ vector.\newline
+       In the current exercise, the column vector $\texttt{w}$ is given by 
+       $\begin{pmatrix} \beta_1 \beta_2 \end{pmatrix}^T$.   \newline
     
     $\textbf{Calculate}$ $\widehat{\beta}$ using Eq.(\ref{Eq:EstimateBeta}).
     
