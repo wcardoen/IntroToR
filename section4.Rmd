@@ -4,33 +4,27 @@ subtitle: 'Section 4: Control-flow and functions'
 author: "Wim R.M. Cardoen"
 date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
-  pdf_document:
+  html_document:
     highlight: tango
     df_print: tibble
     toc: true
     toc_depth: 5
-    number_sections: True
-    extra_dependencies:
-    - amsfonts
-    - amsmath
-    - xcolor
-    - hyperref
+    number_sections: true
+    mathjax: default
 bibliography: [latex/intro.bib]
 csl: https://raw.githubusercontent.com/citation-style-language/styles/master/research-institute-for-nature-and-forest.csl
-urlcolor: violet
+lang: en
 ---
-
-\newpage
 
 # R Control flow
 
-$\texttt{Stay out of the loop, the club, the inner circle. (Michael Leunig)}$
+*"Stay out of the loop, the club, the inner circle." — Michael Leunig*
 
 ## Conditional constructs
 
-* $\textcolor{blue}{\textbf{if}}$,  $\textcolor{blue}{\textbf{else if}}$, $\textcolor{blue}{\textbf{else}}$
+* `if`, `else if`, `else`
 
-  $\texttt{Syntax}$:
+  Syntax:
   ```{R, echo=TRUE, eval=FALSE}
   if(condition1){
       ...
@@ -41,23 +35,23 @@ $\texttt{Stay out of the loop, the club, the inner circle. (Michael Leunig)}$
   }]
   ```
 
-* $\textcolor{blue}{\textbf{ifelse()}}$
-  
-  The $\texttt{R}$ language provides a $\textbf{vectorized}$ version: $\textcolor{blue}{\textbf{ifelse()}}$ .  
+* `ifelse()`
 
-  $\textbf{Syntax}$:$\newline$
+  The R language provides a **vectorized** version: `ifelse()`.
+
+  **Syntax**:
   ```{R, echo=TRUE, eval=FALSE}
   ifelse(condition, vecy, vecn)
   ```
   where:
-  - $\textit{condition}$ : test condition
-  - $\textit{vecy}$ : values in case of $\textcolor{blue}{\textbf{TRUE}}$ values
-  - $\textit{vecn}$ : values in case of $\textcolor{blue}{\textbf{FALSE}}$ values
-  
-  There exists a more general version of $\textcolor{blue}{\textbf{ifelse()}}$ i.e.
+  - *condition*: test condition
+  - *vecy*: values in case of `TRUE` values
+  - *vecn*: values in case of `FALSE` values
+
+  There exists a more general version of `ifelse()` i.e.
   [dplyr::case_when()](https://dplyr.tidyverse.org/reference/case_when.html)
-  
-  
+
+
 ### Examples
 ```{R, echo=TRUE, comment=''}
 score <- 75.0
@@ -74,34 +68,31 @@ if(score>=90.0){
 cat(sprintf("Score:%4.2f -> Grade:%s\n", score, grade))
 ```
 
-
 ```{R, echo=TRUE, comment=''}
 x <- c(-1,2,1,-5,-7)
 c
 res <- ifelse(x>=0, x,-x)
 res
-
-
 ```
 
 ### Exercises
 
-* Write code to find the smallest of three numbers, e.g. 21, 12, 17 using 
-  an $\textcolor{blue}{\textbf{if}}$, ($\textcolor{blue}{\textbf{else if}}$, $\textcolor{blue}{\textbf{else}}$) construct.
+* Write code to find the smallest of three numbers, e.g. 21, 12, 17 using
+  an `if`, (`else if`, `else`) construct.
 
 ## Loop constructs
 
 There are several loop constructs:
 
-* $\textcolor{blue}{\textbf{while}}$
+* `while`
 
   ```{R, echo=TRUE, eval=FALSE}
   while(condition){
     body of the loop 
   }
   ```
-  
-* $\textcolor{blue}{\textbf{for}}$
+
+* `for`
 
   ```{R, echo=TRUE, eval=FALSE}
   for(item in sequence){
@@ -109,22 +100,17 @@ There are several loop constructs:
   }
   ```
 
-* $\textcolor{blue}{\textbf{repeat}}$
- 
+* `repeat`
+
   ```{R, echo=TRUE, eval=FALSE}
   repeat{
     body of the loop 
   }
   ```
-  The $\textcolor{blue}{\textbf{repeat}}$ loop has no condition to leave the loop:
-  insert a $\textcolor{blue}{\textbf{break}}$.
+  The `repeat` loop has no condition to leave the loop: insert a `break`.
 
-  $\newline$
-  
-The $\textcolor{blue}{\textbf{break}}$ statement allows one to break out of the 
-$\textcolor{blue}{\textbf{while}}$, $\textcolor{blue}{\textbf{for}}$ and 
-$\textcolor{blue}{\textbf{repeat}}$ constructs.$\newline$
-The $\textcolor{blue}{\textbf{next}}$ statement allows one to go to the next iteration.
+The `break` statement allows one to break out of the `while`, `for` and `repeat` constructs.
+The `next` statement allows one to go to the next iteration.
 
 ### Examples
 
@@ -137,15 +123,12 @@ for(item in fruit){
   cat(sprintf(" Fruit:%s\n", item))
 }
 ```
-$\newline$
 
 ```{R, echo=TRUE, comment=''}
 # Skip all numbers which are multiples of 3
 x <- sample(1:100, size=10, replace=FALSE)
 x
 ```
-
-$\newline$
 
 ```{R, echo=TRUE, comment=''}
 for(item in x){
@@ -154,8 +137,6 @@ for(item in x){
   cat(sprintf(" %3d is NOT a multiple of 3\n", item))
 }
 ```
-
-$\newline$
 
 * while loop
 
@@ -174,8 +155,6 @@ while(!isFound){
   }
 }
 ```
-
-$\newline$
 
 * repeat loop
 
@@ -196,13 +175,13 @@ repeat{
 
 ### Exercises
 
-* The [$\textbf{Fibonacci}$ sequence](https://en.wikipedia.org/wiki/Fibonacci_number) is defined by the following recurrence relation:
-  \begin{equation}
-       F_n =  F_{n-1} + F_{n-2} \;\;\; ,\;\; \forall \; n \in \mathbb{N} \nonumber
-  \end{equation}
-  where $F_1=F_2=1$.$\newline$
+* The [**Fibonacci** sequence](https://en.wikipedia.org/wiki/Fibonacci_number) is defined by the following recurrence relation:
+
+  $$F_n = F_{n-1} + F_{n-2} \;, \quad \forall \; n \in \mathbb{N}$$
+
+  where $F_1 = F_2 = 1$.
   Calculate all Fibonacci numbers up to $F_{15}$, i.e.:
-  
+
   ```{R, echo=FALSE, eval=TRUE, comment=''}
   x <- vector(mode="integer", length=15)
   x[1] <- 1
@@ -214,78 +193,71 @@ repeat{
   ```
 
 * The square root of a number $n$ is equivalent to solving the following equation:
-  \begin{equation}
-    x^2 - n = 0 \nonumber
-  \end{equation}
-  The solution to this equation can be found iteratively by using e.g. the [Newton-Raphson method](https://en.wikipedia.org/wiki/Newton%27s_method).
 
-  Iteration $i+1$ for $x$ is then given by: 
-  \begin{equation}
-     x_{i+1} = \frac{1}{2}(x_i + \frac{n}{x_i}) \nonumber
-  \end{equation}
+  $$x^2 - n = 0$$
+
+  The solution to this equation can be found iteratively by using e.g. the
+  [Newton-Raphson method](https://en.wikipedia.org/wiki/Newton%27s_method).
+
+  Iteration $i+1$ for $x$ is then given by:
+
+  $$x_{i+1} = \frac{1}{2}\left(x_i + \frac{n}{x_i}\right)$$
 
   Find the square root of $751$ to a precision of at least 8 decimals. You can set $x_0$ to $n$ itself.
 
-\newpage
+---
 
 # R Functions
 
-## General statements:
-* The $\textbf{most common way}$ to create a function is:
-  \begin{itemize}
-     \item to assign a function name $\textbf{and}$
-     \item use the $\textcolor{blue}{\textbf{function()}}$ statement 
-  \end{itemize}
+## General statements
 
-  $\texttt{\textbf{Syntax}}$:
+* The **most common way** to create a function is to assign a function name **and**
+  use the `function()` statement.
+
+  **Syntax**:
 
   ```{R, echo=TRUE, eval=FALSE}
   function_name <- function(arg_list){
       # body of the function
   }
   ```
-  An $\textbf{anonymous}$ function does $\textbf{not}$ bear a name. It can be useful for short expressions.
 
-* A function in $\texttt{R}$ has 3 important components:
-  \begin{itemize}
-  \item arguments of the function: $\textcolor{blue}{\textbf{formals()}}$ $\newline$
-        $\texttt{R}$ allows default arguments. The default values are assigned using the $\textcolor{blue}{\textbf{=}}$ sign.
-  \item body of the function: $\textcolor{blue}{\textbf{body()}}$
-  \item environment in which the function runs: $\textcolor{blue}{\textbf{environment()}}$
-  \end{itemize}
-  
-  Primitive functions (e.g. $\textcolor{blue}{\textbf{prod()}}$) call directly $\texttt{C}$ code with $\texttt{.Primitive()}$ (no $\texttt{R}$ code involved).$\newline$
-  These primitive functions can be found in $\texttt{package:base}$.$\newline$
-  If the functions $\textcolor{blue}{\textbf{formals()}}$, $\textcolor{blue}{\textbf{body()}}$ and $\textcolor{blue}{\textbf{environment()}}$
-  are applied to primitive functions $\textcolor{blue}{\textbf{NULL}}$ will be returned.
+  An **anonymous** function does **not** bear a name. It can be useful for short expressions.
+
+* A function in R has 3 important components:
+  * arguments of the function: `formals()`
+    R allows default arguments. The default values are assigned using the `=` sign.
+  * body of the function: `body()`
+  * environment in which the function runs: `environment()`
+
+  Primitive functions (e.g. `prod()`) call directly C code with `.Primitive()` (no R code involved).
+  These primitive functions can be found in `package:base`.
+  If the functions `formals()`, `body()` and `environment()`
+  are applied to primitive functions `NULL` will be returned.
 
 * A function can exit in 2 ways:
-  \begin{itemize}
-     \item by returning a value
-        \begin{itemize}
-           \item implicit return: last expression evaluated in the body
-           \item explicit return: by invoking the $\textcolor{blue}{\textbf{return()}}$ function
-        \end{itemize}
-     \item through error e.g. by invoking the $\textcolor{blue}{\textbf{stop()}}$ function   
-  \end{itemize}
+  * by returning a value:
+    * implicit return: last expression evaluated in the body
+    * explicit return: by invoking the `return()` function
+  * through error e.g. by invoking the `stop()` function
 
-  An $\texttt{R}$ function returns $\textbf{only}$ $1$ object. $\newline$ 
-  If you want to return more than $1$ object, put the objects in an $\texttt{R}$ $\textcolor{blue}{\textbf{list()}}$
-  and return the list\footnote{The $\texttt{R}$ concept of a list will be discussed in a later section}. 
-  
-* Assigment of variables in functions:
+  An R function returns **only** 1 object.
+  If you want to return more than 1 object, put the objects in an R `list()`
+  and return the list^[The R concept of a list will be discussed in a later section.].
 
-  Ordinary assignments performed with the function are local and temporary to the function.
+* Assignment of variables in functions:
+
+  Ordinary assignments performed within the function are local and temporary to the function.
   After the function has been exited the values of these assignments are lost.
-  
-  If global and permanent assignment are needed within a function, you can use the 
-  superassignment operator $\textcolor{blue}{\textbf{<<-}}$ or the $\textcolor{blue}{\textbf{assign()}}$ function.
-  
-* Pass by value or pass by reference
 
-  By default $\texttt{R}$ does a $\textbf{pass by value}$. The $\textbf{pass by reference}$ is possible in $\texttt{R}$ but 
-  requires the use/understanding of the concept of an $\texttt{R}$ environment\footnote{The $\texttt{R}$ concept of an environment will be discussed in a later section}.
-  
+  If global and permanent assignment are needed within a function, you can use the
+  superassignment operator `<<-` or the `assign()` function.
+
+* Pass by value or pass by reference:
+
+  By default R does a **pass by value**. The **pass by reference** is possible in R but
+  requires the use/understanding of the concept of an R environment^[The R concept of an environment will be discussed in a later section.].
+
 
 ### Examples
 
@@ -298,7 +270,6 @@ myprod1 <- function(x,y){
 }
 cat(sprintf(" Prod of %.1f and %.1f is %.1f\n", a, b, myprod1(a,b)))
 ```
-$\newline$
 
 * Use of an explicit return statement
 ```{R, echo=TRUE, comment=''}
@@ -307,8 +278,6 @@ myprod2 <- function(x,y){
 }
 cat(sprintf(" Prod of %.1f and %.1f is %.1f\n", a, b, myprod2(a,b)))
 ```
-
-$\newline$
 
 * Default argument
 ```{R, echo=TRUE, comment=''}
@@ -324,8 +293,6 @@ y3 <- myshift(x,3)
 y3
 ```
 
-$\newline$
-
 * Anonymous functions (i.e. function without a name)
 ```{R, echo=TRUE, comment=''}
 # sapply: apply a function on a vector.
@@ -335,37 +302,27 @@ out <- sapply(inp, function(x){return(x%%2==0)})
 out
 ```
 
-$\newline$
+  Numerical integration of $\displaystyle \int_{0}^{1} \frac{4}{1+x^2} \, dx$
 
-  Numerical integration of $\displaystyle \int_{0}^{1} \frac{4}{1+x^2} \, dx$ 
-  
 ```{R, echo=TRUE, comment=''}
 res <- integrate(function(x){4.0/(1.0+x^2)}, 0.0, 1.0)
 res
 ```
-
-$\newline$
 
 * Retrieve the formal arguments of a function
 ```{R, echo=TRUE, comment=''}
 formals(myprod2)
 ```
 
-$\newline$
-
 * Retrieve the body of a function
 ```{R, echo=TRUE, comment=''}
 body(myprod2)
 ```
 
-$\newline$
-
 * Retrieve the environment of a function
 ```{R, echo=TRUE, comment=''}
 environment(myprod2)
 ```
-
-$\newline$
 
 * Local vs. global variables
 
@@ -378,8 +335,6 @@ res <- myfunc1()
 cat(sprintf(" Value of x:%d\n",x))
 ```
 
-$\newline$
-
 ```{R, echo=TRUE, comment=''}
 myfunc2 <- function(){
   x <<-5
@@ -387,8 +342,6 @@ myfunc2 <- function(){
 res <- myfunc2()
 cat(sprintf(" Value of x:%d\n",x))
 ```
-
-$\newline$
 
 * Pass by value
 ```{R, echo=TRUE, comment=''}
@@ -407,91 +360,89 @@ x
 
 ### Exercises
 
-* Write your own factorial function named $\texttt{myfactorial(n)}$.$\newline$
+* Write your own factorial function named `myfactorial(n)`.
   The factorial function, $n!$ is defined as:
-  \begin{equation}
-     n! = n\,(n-1)! \nonumber
-  \end{equation}
-  where $0!:=1$.
-* Write your own function named $\texttt{castdie(n)}$ which simulates casting a die $n$ times.
-  - Assume you have a fair die.
-  - Adjust the function $\texttt{castdie(n)}$ for the general case i.e. a non-fair die, $\newline$
-    e.g. $p=(\frac{1}{10},\frac{1}{10},\frac{3}{10},\frac{3}{10},\frac{1}{10},\frac{1}{10})$
-  - Hint: use $\texttt{R}$'s $\textcolor{blue}{\textbf{sample()}}$ function.
-* An auto-regressive time series of type AR($1$) is defined as follows (see e.g. [@BROCKWELL:2009a]):
-  \begin{equation}
-     x_i = \varphi \, x_{i-1}\, + \, \varepsilon_i \nonumber
-  \end{equation}
-  where $\varepsilon_i \, \sim \, N(0,\sigma^2)$ and are iid\footnote{iid:identically and independently distributed}.
-  
-  - Write the function $\texttt{genAR1Series(n=1000, x0=0.0, phi=0.7)}$ $\newline$
-    which returns the AR($1$) time series $\{x_i\}$ for $i \in \{1, \ldots,n\}$, $\newline$ where:
-    \begin{eqnarray}
-          x_0  & = & 0.0   \nonumber \\
-       \varphi & = & 0.7 \nonumber \\
-       \varepsilon_i & \sim & N(0,1) \;\;,\, \forall \, i \, \in \, \{1, \ldots,n\}\nonumber 
-    \end{eqnarray}
-  - Write the sample autocorrelation function ($\texttt{myacf(x)}$) ($\texttt{ACF}$)
-    which calculates $\newline$ a vector of $\rho(h)$'s 
-    where the $\texttt{lag}$ $h\,\in \, \{0,1,2,\ldots,n-1\}$.
-    
-    The autocorrelation with lag $h$, i.e. $\rho(h)$ is defined as follows:
-    \begin{equation}
-       \rho(h)    :=  \frac{\gamma(h)}{\gamma(0)} \nonumber
-    \end{equation}
-    where:
-    \begin{eqnarray}
-       \gamma(h)   & := & \frac{1}{n} \sum_{i=1}^{n-h} \Big( x_{i+h} \,-\,\overline{x} \Big)\Big ( x_i \,-\,\overline{x} \Big) \nonumber \\
-      \overline{x} &:=& \frac{1}{n} \sum_{i=1}^n x_i \nonumber
-    \end{eqnarray}
-  - Calculate the autocorrelation vector for the time series you generated previously.$\newline$
-    You can check your results with $\texttt{R}$'s $\textcolor{blue}{\textbf{acf()}}$ 
-    function\footnote{For the AR($1$) model, the theoretical value of $\rho(h)$ is given by $\varphi^h$.}
-    
-## Prefix vs. infix functions:
 
-* most functions are prefix: the name of the functions $\textbf{precedes}$ the arguments.
+  $$n! = n\,(n-1)!$$
+
+  where $0! := 1$.
+
+* Write your own function named `castdie(n)` which simulates casting a die $n$ times.
+  - Assume you have a fair die.
+  - Adjust the function `castdie(n)` for the general case i.e. a non-fair die,
+    e.g. $p=\left(\frac{1}{10},\frac{1}{10},\frac{3}{10},\frac{3}{10},\frac{1}{10},\frac{1}{10}\right)$
+  - Hint: use R's `sample()` function.
+
+* An auto-regressive time series of type AR(1) is defined as follows (see e.g. [@BROCKWELL:2009a]):
+
+  $$x_i = \varphi \, x_{i-1}\, + \, \varepsilon_i$$
+
+  where $\varepsilon_i \, \sim \, N(0,\sigma^2)$ and are iid^[iid: identically and independently distributed.].
+
+  - Write the function `genAR1Series(n=1000, x0=0.0, phi=0.7)`
+    which returns the AR(1) time series $\{x_i\}$ for $i \in \{1, \ldots, n\}$, where:
+
+    $$x_0 = 0.0, \quad \varphi = 0.7, \quad \varepsilon_i \sim N(0,1) \;, \; \forall \, i \, \in \, \{1, \ldots, n\}$$
+
+  - Write the sample autocorrelation function (`myacf(x)`) (ACF)
+    which calculates a vector of $\rho(h)$'s
+    where the lag $h \, \in \, \{0, 1, 2, \ldots, n-1\}$.
+
+    The autocorrelation with lag $h$, i.e. $\rho(h)$ is defined as follows:
+
+    $$\rho(h) := \frac{\gamma(h)}{\gamma(0)}$$
+
+    where:
+
+    $$\gamma(h) := \frac{1}{n} \sum_{i=1}^{n-h} \Big( x_{i+h} \,-\,\overline{x} \Big)\Big( x_i \,-\,\overline{x} \Big)$$
+
+    $$\overline{x} := \frac{1}{n} \sum_{i=1}^n x_i$$
+
+  - Calculate the autocorrelation vector for the time series you generated previously.
+    You can check your results with R's `acf()`
+    function^[For the AR(1) model, the theoretical value of $\rho(h)$ is given by $\varphi^h$.].
+
+## Prefix vs. infix functions
+
+* most functions are prefix: the name of the functions **precedes** the arguments.
   ```{R, echo=TRUE, comment=''}
   res <- sum(1,2)
   res
   ```
-  
+
 * infix: the function name/operator is found between the arguments
   ```{R, echo=TRUE, comment=''}
   res <- 1 + 2
   res
   ```
-  
-  In $\texttt{R}$ you can create your infix operator by defining a function as follows:
+
+  In R you can create your own infix operator by defining a function as follows:
   ```{R, echo=TRUE, eval=FALSE}
   '%op%' <- function(x,y){
       # Body of the function
   }
   ```
 
-  The infix function is then invoked as follows :
+  The infix function is then invoked as follows:
   ```{R, echo=TRUE, eval=FALSE}
   x %op% y
   ```
-  
-* $\texttt{R}$ contains some $\textbf{predefined}$ infix operators:
-  \begin{itemize}
-     \item $\texttt{\%\%}$   : modulo operator
-     \item $\texttt{\%/\%}$  : integer division
-     \item $\texttt{\%*\%}$  : matrix multiplication
-     \item $\texttt{\%o\%}$  : outer product
-     \item $\texttt{\%x\%}$  : Kronecker product
-     \item $\texttt{\%in\%}$ : Matching operator 
-  \end{itemize}
-  
-  
+
+* R contains some **predefined** infix operators:
+  * `%%`: modulo operator
+  * `%/%`: integer division
+  * `%*%`: matrix multiplication
+  * `%o%`: outer product
+  * `%x%`: Kronecker product
+  * `%in%`: matching operator
+
+
 ### Example
 
 * Let $\mathbf{x}, \mathbf{y} \, \in \, \mathbb{R}^n$. The angle $\theta$ between $\mathbf{x}$ and $\mathbf{y}$ is given by:
-  \begin{equation}
-     \theta =  \arccos{\Bigg (  \frac{\mathbf{x} \cdot \mathbf{y} }{\|\mathbf{x}\|\,\|\mathbf{y}\|}   \Bigg )} \nonumber
-  \end{equation}
-  
+
+  $$\theta = \arccos{\left( \frac{\mathbf{x} \cdot \mathbf{y}}{\|\mathbf{x}\|\,\|\mathbf{y}\|} \right)}$$
+
   ```{r, echo=TRUE, comment=''}
   '%theta%' <- function(x,y){
       nom <- sum(x*y)
@@ -499,25 +450,22 @@ x
       return(acos(nom/denom))
   }
   ```
-  
-  $\newline$
-  
+
   ```{r, echo=TRUE, comment=''}
   x <- c(1,0,3)
   x
   y <- c(3,2,-1)
   y
   cat(sprintf("The angle (radians) between x and y is:%8.4f\n", x %theta% y))
-  ```  
-  
+  ```
+
 ### Exercises
 
-* In the cyclic group $\mathbb{Z}_4$, we only have the (integer) elements: $\{0,1,2,3\}$. $\newline$ 
+* In the cyclic group $\mathbb{Z}_4$, we only have the (integer) elements: $\{0,1,2,3\}$.
   The addition ($\forall\,x,y \, \in \,\mathbb{Z}_4$) is defined as follows:
-  \begin{equation}
-   x+y \, \equiv \, x+y \mod 4 \nonumber
-  \end{equation}
-   
+
+  $$x+y \, \equiv \, x+y \mod 4$$
+
   ```{R, echo=FALSE}
   '%+%' <- function(x,y){
      return((x+y)%% 4)
@@ -529,19 +477,19 @@ x
   y <- sample(0:3, size=12, replace=TRUE)
   y
   ```
-  Invoking the infix addition $\texttt{\%+\%}$ results into:
+  Invoking the infix addition `%+%` results into:
   ```{R, echo=TRUE, comment=''}
   res <- x %+% y
   res
   ```
-  Write the infix function ($\texttt{\%+\%}$) to perform addition in the cyclic group $\mathbb{Z}_4$.$\newline$
+  Write the infix function (`%+%`) to perform addition in the cyclic group $\mathbb{Z}_4$.
 
 ## Function composition/piping
 
-Often the output of a function is used as the input for another function.$\newline$
+Often the output of a function is used as the input for another function.
 There are several options beyond the explicit creation of intermediate variables:
 
-* Function composition (e.g. $\texttt{h(g(f(x)))}$).
+* Function composition (e.g. `h(g(f(x)))`).
 
   ```{R, echo=TRUE, comment=''}
   x <- runif(1000)
@@ -550,20 +498,15 @@ There are several options beyond the explicit creation of intermediate variables
   res
   ```
 
-* Use of piping (cfr. the following $\texttt{Linux}$ code: $\texttt{cat *.r | grep function}$).$\newline$ 
-  The [magrittr library](https://magrittr.tidyverse.org/) was developed to 
-  provide this feature\footnote{The infix function $\texttt{\%>\%}$ is known as the "$\textit{and then}$" operator.} among others.$\newline$
-  
+* Use of piping (cfr. the following Linux code: `cat *.r | grep function`).
+  The [magrittr library](https://magrittr.tidyverse.org/) was developed to
+  provide this feature^[The infix function `%>%` is known as the "and then" operator.] among others.
+
   ```{R, echo=TRUE, comment=''}
   library(magrittr)
   (x-xav)^2 %>% 
       sum() %>% 
       sqrt()
   ```
-  
-# Bibliography  
 
-  
-
-
-
+# Bibliography

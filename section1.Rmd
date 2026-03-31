@@ -4,21 +4,15 @@ subtitle: 'Part 1: Overview of R'
 author: 'Wim R.M. Cardoen'
 date: "Last updated: `r format(Sys.time(), ' %2m/%2d/%Y @ %2H:%2M:%2S')`"
 output:
-  pdf_document:
+  html_document:
     highlight: tango
     df_print: tibble
     toc: true
     toc_depth: 5
-    number_sections: True
-    extra_dependencies:
-    - amsfonts
-    - amsmath
-    - xcolor
-    - hyperref
-urlcolor: violet
+    number_sections: true
+    mathjax: default
+lang: en
 ---
-
-\newpage
 
 # R: What's in the name?
 * Scripting language (vs. compiled language)
@@ -38,16 +32,16 @@ urlcolor: violet
   
 # From S to R
 
-$\texttt{People are trapped in history and history is trapped in them. (James Baldwin)}$
+*"People are trapped in history and history is trapped in them." — James Baldwin*
 
-* **S** programming language: created at Bell Labs (1975-1976). \newline Before, statistical computing was mainly done by calling Fortran routines. 
+* **S** programming language: created at Bell Labs (1975-1976). Before, statistical computing was mainly done by calling Fortran routines.
   * Richard A. Becker
-  * *[John M. Chambers](https://statweb.stanford.edu/~jmc4/) *
+  * *[John M. Chambers](https://statweb.stanford.edu/~jmc4/)*
   * Allan R. Wilks
-* 1988: ["New S" (aka "Blue Book" by Becker, Chambers & Wilks)](https://www.amazon.com/New-S-Language-R-Becker/dp/0534091938)  introduced a lot of new features:
+* 1988: ["New S" (aka "Blue Book" by Becker, Chambers & Wilks)](https://www.amazon.com/New-S-Language-R-Becker/dp/0534091938) introduced a lot of new features:
   * functions (instead of macros)
   * double precision arithmetic
-  * interface to Fortan, C[^1]
+  * interface to Fortran, C[^1]
   * etc.
   * became *similar* to the modern versions of S-PLUS and R.
 * 1991: *Statistical Models in S* (Chambers & [Hastie](https://hastie.su.domains/))
@@ -58,11 +52,11 @@ $\texttt{People are trapped in history and history is trapped in them. (James Ba
   * more advanced object-oriented features ([S4](http://adv-r.had.co.nz/S4.html) - quite different from [S3](http://adv-r.had.co.nz/S3.html))
     (inheritance & multiple dispatch)
 * 1991: [**R**oss Ihaka](https://www.stat.auckland.ac.nz/~ihaka/) and 
-        [**R**obert Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)) (Auckland, New Zealand) 
+        [**R**obert Gentleman](https://en.wikipedia.org/wiki/Robert_Gentleman_(statistician)) (Auckland, New Zealand)
   * started their own implementation of S and named it ... **R**.
     (*"a free implementation of something 'close to' version 3 of the S language"*)
-  * borrowed features from [Scheme](https://groups.csail.mit.edu/mac/projects/scheme/) (static/lexical scoping). 
-* 1995: R becomes open-source. 
+  * borrowed features from [Scheme](https://groups.csail.mit.edu/mac/projects/scheme/) (static/lexical scoping).
+* 1995: R becomes open-source.
 * 2000: Release of R v.1.0.
 * 2003: Start of the R Foundation.
 * **S** still exists as a commercial product (**S-PLUS**). It is currently owned by TIBCO Software Inc.
@@ -76,7 +70,7 @@ $\texttt{People are trapped in history and history is trapped in them. (James Ba
   * [https://www.r-bloggers.com/](https://www.r-bloggers.com/)
   
 # Using R 
-  * interactively: **R** CLI or in an IDE. 
+  * interactively: **R** CLI or in an IDE.
   * run as a script containing R code.
   * the cloud: e.g. [https://rstudio.cloud/](https://rstudio.cloud/)
   
@@ -87,10 +81,10 @@ $\texttt{People are trapped in history and history is trapped in them. (James Ba
 
 # Getting help on R
 * Within R itself:
-  * $\textcolor{blue}{\textbf{help(cmd)}}$
-  * $\textcolor{blue}{\textbf{help(?cmd)}}$
-  * $\textcolor{blue}{\textbf{help(??cmd)}}$
-  * some keywords require quotes e.g. $\textcolor{blue}{\textbf{?'if'}}$, $\textcolor{blue}{\textbf{?'for'}}$
+  * `help(cmd)`
+  * `help(?cmd)`
+  * `help(??cmd)`
+  * some keywords require quotes e.g. `?'if'`, `?'for'`
   
 ```{R, eval=FALSE}
 help(mean)
@@ -102,8 +96,7 @@ help(mean)
   * [The Comprehensive R Archive Network](https://cran.r-project.org/)
     * [An Introduction to R](https://cran.r-project.org/doc/manuals/R-intro.pdf)
     * [R Language Definition](https://cran.r-project.org/doc/manuals/R-lang.pdf)
-  * [The Art of R Programming 
-    (Normam Matloff)](https://heather.cs.ucdavis.edu/~matloff/132/NSPpart.pdf)
+  * [The Art of R Programming (Norman Matloff)](https://heather.cs.ucdavis.edu/~matloff/132/NSPpart.pdf)
   * [Hadley Wickham's Website](https://hadley.nz/)
   * [R-Bloggers](https://www.r-bloggers.com/)
   * [R Mailing List](https://www.r-project.org/mail.html)
@@ -115,26 +108,25 @@ help(mean)
 * Symbol names/variables: letters, digits, ., _ are allowed.
   * **must** start with a **.** (dot) or a **letter**.
   * if symbol starts with **.** (dot), then second character **must** be a letter.
-  * can't use **reserved** keywords ( $\textcolor{blue}{\textbf{?Reserved}}$), i.e.:
-    - $\textcolor{blue}{\textbf{if, else, repeat, while, function, for, in, next, break}}$
-    - $\textcolor{blue}{\textbf{TRUE, FALSE, NULL, Inf, NaN, NA}}$ 
-    - $\textcolor{blue}{\textbf{NA\_integer\_,NA\_real\_,NA\_complex\_,NA\_character\_}}$
-  * the aforementioned rules can be overriden by the use of **backticks**, e.g.:
-    - $\textcolor{blue}{\textbf{`if`}}$
-    - $\textcolor{blue}{\textbf{`\_myvar`}}$
+  * can't use **reserved** keywords (`?Reserved`), i.e.:
+    - `if, else, repeat, while, function, for, in, next, break`
+    - `TRUE, FALSE, NULL, Inf, NaN, NA`
+    - `NA_integer_, NA_real_, NA_complex_, NA_character_`
+  * the aforementioned rules can be overridden by the use of **backticks**, e.g.:
+    - `` `if` ``
+    - `` `_myvar` ``
 * R commands are separated by:
-  * either $\textcolor{blue}{\textbf{;}}$ (semi colon).
+  * either `;` (semi colon).
   * or newline.
-* R commands can be grouped together using $\textcolor{blue}{\textbf{\{\}}}$ (curly braces).   
-* R comments: start with $\textcolor{blue}{\textbf{\#}}$ (pound sign) (limited to the same line)
+* R commands can be grouped together using `{}` (curly braces).
+* R comments: start with `#` (pound sign) (limited to the same line)
 * History: use **arrow up** & **arrow down** to retrieve previous cmds.
-  * <font color="blue"><b>.Rhistory</b></font>: contains the recently used R commands
-  * <font color="blue"><b>.RData</b></font>: contains the objects stored in the Global Environment
+  * `.Rhistory`: contains the recently used R commands
+  * `.RData`: contains the objects stored in the Global Environment
 
-\newpage
+---
 
-$\texttt{Oefening baart kunst! ("Exercise gives birth to art!" - Dutch proverb)}$
-$\newline$
+*"Oefening baart kunst!" ("Exercise gives birth to art!" — Dutch proverb)*
 
 # Exercises: A taste of R
 * Start R or RStudio
@@ -148,93 +140,92 @@ getwd()
 ```
 
 ## Creation of variables
-```{R,eval=FALSE,results='asis'}
+```{R, eval=FALSE, results='asis'}
 x1 <- 5
 x1
 typeof(x1)
 ls()
 ```
 
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x2 <- 5L
 x2
 typeof(x2)
 ls()
 ```
 
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x3 <- FALSE
 x3
 typeof(x3)
 ```
 
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x4 <- "Programming is cool"
 x4
 typeof(x4)
 ```
 
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x5 <- -15
 typeof(x5)
 sqrt(x5)
 ```
 
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x6 <- -15+0i
 typeof(x6)
 sqrt(x6)
 ```
 
 ## Tinkering with vectors
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 y1 <- 1:5
 y1
 length(y1)
 ```
 
-```{R,eval=FALSE}
-y2 <- seq(10.,50,by=10)
+```{R, eval=FALSE}
+y2 <- seq(10., 50, by=10)
 y2
 length(y2)
 y2^y1
 ```
 
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 y3 <- c("Hello", "world", "!")
 y3
 s <- paste(y3)
 s
 ```
 
-```{R,eval=FALSE}
-y4 <- c(TRUE,FALSE,TRUE)
+```{R, eval=FALSE}
+y4 <- c(TRUE, FALSE, TRUE)
 sum(y4)
 ```
 
-## Install the $\texttt{lobstr}$ package within R
+## Install the `lobstr` package within R
 
-```{R,eval=FALSE}
-install.packages(pkgs=c("lobstr"), repos=c("http://cran.us.r-project.org"), verbose= TRUE)
+```{R, eval=FALSE}
+install.packages(pkgs=c("lobstr"), repos=c("http://cran.us.r-project.org"), verbose=TRUE)
 packageVersion("lobstr")                        # Check version of the package installed
 ```
-Info on the $\texttt{lobstr}$ package can be found at:
+Info on the `lobstr` package can be found at:
 
 - [cran.r-project.org website](https://cran.r-project.org/web/packages/lobstr/index.html)
 - [lobstr website](https://lobstr.r-lib.org/)
 
-## Use the newly installated package 
+## Use the newly installed package
 * approach 1:
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x <- 1:10
 lobstr::obj_addr(x)
 lobstr::ref(x, character=TRUE)
 cat(sprintf("Size of the object (Bytes):%s\n", lobstr::obj_size(x)))
-
 ```
 
 * approach 2 (more common):
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 x <- 1:10
 library(lobstr)
 obj_addr(x)
@@ -243,14 +234,11 @@ cat(sprintf("Size of the object (Bytes):%s\n", obj_size(x)))
 ```
 
 ## Removing objects from your environment
-```{R,eval=FALSE}
+```{R, eval=FALSE}
 ls()
 rm(c("y1","y2","y3","y4"))
 ls()
 ```
 
 [^1]:
-'Function <font color="blue"><b>mode</b></font> gives information about the mode of an object  in the sense of Becker, Chambers & Wilks (1988), and is  more compatible with other implementations of the S language. Finally, the function <font color="blue"><b>storage.mode</b></font> returns the storage mode of its argument in the sense of Becker et al. (1988). It is generally used when calling functions written in another language, such as C or FORTRAN, to ensure that R objects have the data type expected by the routine being called. (In the S language, vectors with integer or real values are both of mode "numeric",
-so their storage modes need to be distinguished.)' [R Language Definition, v.4.1.2 (2021-11-01) p. 2](https://cran.r-project.org/doc/manuals/r-release/R-lang.pdf)
-
-
+'Function `mode` gives information about the mode of an object in the sense of Becker, Chambers & Wilks (1988), and is more compatible with other implementations of the S language. Finally, the function `storage.mode` returns the storage mode of its argument in the sense of Becker et al. (1988). It is generally used when calling functions written in another language, such as C or FORTRAN, to ensure that R objects have the data type expected by the routine being called. (In the S language, vectors with integer or real values are both of mode "numeric", so their storage modes need to be distinguished.)' [R Language Definition, v.4.1.2 (2021-11-01) p. 2](https://cran.r-project.org/doc/manuals/r-release/R-lang.pdf)

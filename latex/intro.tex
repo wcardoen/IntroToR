@@ -1,85 +1,98 @@
+% !TeX program = lualatex
+\DocumentMetadata{
+  lang        = en-US,
+  pdfstandard = ua-2,
+  tagging     = on,
+  tagging-setup = { math/setup = {mathml-SE}}
+}
 \documentclass[10pt]{article}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel} % Language to be used
-\usepackage[T1]{fontenc}
+% inputenc and fontenc are not needed with LuaLaTeX (it is natively UTF-8)
+\usepackage[english]{babel}
+% unicode-math must be loaded BEFORE any other math/font package under LuaLaTeX.
+% It supersedes amssymb and amsfonts entirely (both define \eth, causing a clash).
+% txfonts is also incompatible with unicode-math; omit it here.
+\usepackage{unicode-math}
 \usepackage{amsmath}
-\usepackage{amssymb}
+% amssymb and amsfonts are intentionally omitted: unicode-math provides all their
+% symbols without the \eth redefinition conflict.
 \usepackage{amsthm}
-\usepackage{cite}  % Package to cite multiple references at once
+\usepackage{cite}
 \usepackage{url}
 \usepackage{hyperref}
 \usepackage[usenames,dvipsnames]{xcolor}
 \usepackage{listings}
 \usepackage{graphicx}
-\usepackage{enumitem} 
-%\usepackage{mathpazo}  Palatino-fonts
-\usepackage{txfonts}
+\usepackage{enumitem}
+% txfonts is intentionally omitted: it conflicts with unicode-math under LuaLaTeX.
+% Use \setmathfont / \setmainfont below to choose fonts instead.
 \usepackage[stable]{footmisc}
 
-\urlstyle{same} 
+% ADA/PDF-UA: set PDF metadata for screen readers
+\hypersetup{%
+  colorlinks  = true,
+  linkcolor   = blue,         % changed from green for WCAG contrast compliance
+  urlcolor    = blue,
+  citecolor   = blue,
+  pdfborderstyle = {/S/U/W 1},
+  pdftitle    = {Hands-on Intro to R},
+  pdfauthor   = {Wim R. M. Cardoen and Ashley Dederich},
+  pdfsubject  = {Introduction to the R programming language},
+  pdflang     = {en-US}
+}
 
+\urlstyle{same}
 
 \lstset{
-  basicstyle=\ttfamily,
-  language=python,
-  tabsize=4,
-  frame=single,
-  showstringspaces=false,
-  showspaces=false,
-  showtabs=false,
-  captionpos=b,
-  breaklines=true,
-  breakatwhitespace=false,        % sets if automatic breaks should only happen at whitespace
-  keywordstyle=\color{RoyalBlue},      % keyword style
-  commentstyle=\color{ForestGreen},   % comment style
-  stringstyle=\color{BrickRed}
+  basicstyle        = \ttfamily,
+  language          = python,
+  tabsize           = 4,
+  frame             = single,
+  showstringspaces  = false,
+  showspaces        = false,
+  showtabs          = false,
+  captionpos        = b,
+  breaklines        = true,
+  breakatwhitespace = false,
+  keywordstyle      = \color{RoyalBlue},
+  commentstyle      = \color{ForestGreen},
+  stringstyle       = \color{BrickRed}
 }
 
-\hypersetup{%
-  colorlinks=true,    % hyperlinks will be black
-  linkcolor=green,% hyperlink text will be green
-  linkbordercolor=red,% hyperlink borders will be red
-  pdfborderstyle={/S/U/W 1}% border style will be underline of width 1pt
-}
-
-% Parameters to the margins
+% Page margins
 \setlength{\topmargin}{-0.50in}
 \setlength{\oddsidemargin}{-0.25in}
 \setlength{\evensidemargin}{-0.25in}
 \setlength{\textwidth}{7.0in}
 \setlength{\textheight}{9.00in}
 
-% Here is where all the new theorem environments are defined.
-% Their use is described in the text.
+% Theorem environments
 \newtheorem{prop}{Proposition}
 \newtheorem{thm}{Theorem}[section]
 \newtheorem{lem}[thm]{Lemma}
 \newtheorem*{Zorn}{Zorn's Lemma}
 
-% Use a new style for definitions
 \theoremstyle{definition}
 \newtheorem{dfn}{Definition}
 
-% Use a new style for remarks
 \theoremstyle{remark}
 \newtheorem*{rmk}{Remark}
 
-\title{\centering{Hands-on Intro to R}}
+% ADA/PDF-UA: title must be a plain string (no \centering inside \title)
+\title{Hands-on Intro to R}
 
 \author{Wim R.\,M.\, Cardoen \& Ashley Dederich\\
-	Center for High-Performance Computing (CHPC)\\
-	University of Utah}
-
+        Center for High-Performance Computing (CHPC)\\
+        University of Utah}
 
 \begin{document}
 \date{\today}
 \maketitle
 \thispagestyle{empty}
-% ----------------------------------------------------------------
+
 \pagestyle{plain}
 \pagenumbering{arabic}
 \setcounter{page}{1}
-\renewcommand \thesection{\Roman{section}}
+\renewcommand{\thesection}{\Roman{section}}
 
 \include{content}
 
